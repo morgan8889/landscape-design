@@ -26,5 +26,7 @@ jobs:
       - run: npm run test
 
       # E2E tests only on PRs to main (expensive)
+      - run: npx playwright install --with-deps chromium
+        if: github.event_name == 'pull_request'
       - run: npm run test:e2e
         if: github.event_name == 'pull_request'
