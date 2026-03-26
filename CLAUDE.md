@@ -11,6 +11,18 @@
 
 Run this loop without human input. Only stop to ask for help when stuck (3+ failed attempts), or at PR creation.
 
+### Phase -1: PREFLIGHT (Before Starting Any Work)
+
+Before touching code, run through this checklist:
+
+1. **Enumerate blockers**: What could prevent completion? Missing dependencies, unclear requirements, files that don't exist yet?
+2. **Identify destructive operations**: Will this work require deletes, migrations, or force operations? List them explicitly.
+3. **Confirm permissions**: Will any operation require human approval? Check for `git push`, `rm`, `npm install` that might prompt. If so, plan around them or flag upfront.
+4. **Signal session start**: Create `/tmp/claude-session-active-<repo-hash>` with a summary of what you're working on. This tells the Stop hook not to let you quit mid-task.
+5. **Verify dev environment**: Is the dev server running (if needed)? Are dependencies installed? Is the test suite passing on the current branch?
+
+If any blocker is unresolvable, stop and ask the user before proceeding.
+
 ### Phase 0: ORIENT
 
 - Read the spec, plan, and tasks for the current feature
@@ -91,6 +103,7 @@ Run this loop without human input. Only stop to ask for help when stuck (3+ fail
   - Test plan (how to verify)
   - Screenshots (if UI changes)
   - Constitution compliance notes
+- Remove the session signal file (`/tmp/claude-session-active-<repo-hash>`) to allow clean stop
 - Notify user — this is the first human touchpoint
 
 ## Error Recovery
