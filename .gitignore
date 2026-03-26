@@ -17,6 +17,7 @@ out/
 .claude/data/
 .claude/tasks/
 .claude/plans/
+.claude/settings.local.json
 
 # OS files
 .DS_Store
