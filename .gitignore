@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+build/
+.next/
+out/
+
+# Claude Code ephemeral files
+.claude/cache/
+.claude/data/
+.claude/tasks/
+.claude/plans/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+
+# Playwright
+test-results/
+playwright-report/

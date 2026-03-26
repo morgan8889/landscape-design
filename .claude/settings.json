@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "npx playwright",
+      "npm run test",
+      "npm run build",
+      "npm run dev",
+      "npm run lint",
+      "npm run format",
+      "npx tsc --noEmit",
+      "npx biome"
+    ]
+  }
+}
