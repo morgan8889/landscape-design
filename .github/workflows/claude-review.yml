@@ -21,10 +21,11 @@ jobs:
       (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
       (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude'))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
 
-      - uses: anthropics/claude-code-action@v1
+      - uses: anthropics/claude-code-action@3ac52d0da9f8ec9ca7b4dc23bb477e36ef9c77a9 # v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           trigger_phrase: "@claude"
