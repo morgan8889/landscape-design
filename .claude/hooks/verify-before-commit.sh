@@ -119,12 +119,17 @@ else
 fi
 echo ""
 
+# Temp log for subprocess output (keeps hook stdout clean for Claude Code runner)
+_LOG="/tmp/agent-commit-gate-$$.log"
+
 # -- Unit Tests --
 if [ -f "package.json" ] && grep -q '"test"' package.json 2>/dev/null; then
   echo "  > Running unit tests..."
-  if ! npm test 2>&1; then
+  if ! npm test > "$_LOG" 2>&1; then
     echo ""
     echo "BLOCKED: Unit tests failed. Fix failing tests before committing."
+    echo "  Output: $(tail -5 "$_LOG")"
+    rm -f "$_LOG"
     exit 2
   fi
   echo "  Unit tests passed"
@@ -133,11 +138,13 @@ fi
 # -- TypeScript Type Check --
 if [ -f "tsconfig.json" ]; then
   echo "  > Running type check..."
-  if npm run typecheck 2>&1; then
+  if npm run typecheck > "$_LOG" 2>&1; then
     echo "  Type check passed"
   else
     echo ""
     echo "BLOCKED: TypeScript errors found. Fix type errors before committing."
+    echo "  Output: $(tail -5 "$_LOG")"
+    rm -f "$_LOG"
     exit 2
   fi
 fi
@@ -145,9 +152,11 @@ fi
 # -- Linting --
 if [ -f "biome.json" ] || [ -f "biome.jsonc" ]; then
   echo "  > Running Biome lint..."
-  if ! npx biome check ./src 2>&1; then
+  if ! npx biome check ./src > "$_LOG" 2>&1; then
     echo ""
     echo "BLOCKED: Lint errors found. Run 'npx biome check --write ./src' to fix."
+    echo "  Output: $(tail -5 "$_LOG")"
+    rm -f "$_LOG"
     exit 2
   fi
   echo "  Lint passed"
@@ -172,9 +181,11 @@ done
 if [ "$SKIP_BROWSER_TESTS" = "false" ] && [ "$_HAS_PLAYWRIGHT_CONFIG" = "true" ]; then
   if [ -d "tests/e2e" ] || [ -d "e2e" ] || [ -d "test/e2e" ]; then
     echo "  > Running E2E tests (excluding visual)..."
-    if ! npx playwright test --grep-invert @visual 2>&1; then
+    if ! npx playwright test --grep-invert @visual > "$_LOG" 2>&1; then
       echo ""
       echo "BLOCKED: E2E tests failed. Fix browser tests before committing."
+      echo "  Output: $(tail -10 "$_LOG")"
+      rm -f "$_LOG"
       exit 2
     fi
     echo "  E2E tests passed"
@@ -191,11 +202,13 @@ fi
 if [ "$SKIP_BROWSER_TESTS" = "false" ] && [ "$_HAS_PLAYWRIGHT_CONFIG" = "true" ]; then
   if [ -d "screenshots/baseline" ] && [ "$(ls -A screenshots/baseline 2>/dev/null)" ]; then
     echo "  > Running visual regression tests..."
-    if ! npx playwright test --grep @visual 2>&1; then
+    if ! npx playwright test --grep @visual > "$_LOG" 2>&1; then
       echo ""
       echo "BLOCKED: Visual regression detected. Screenshots don't match baselines."
       echo "  Review screenshots in test-results/ and update baselines if intentional:"
-      echo "  cp test-results/actual/* screenshots/baseline/"
+      echo "  npx playwright test --grep @visual --update-snapshots"
+      echo "  Output: $(tail -10 "$_LOG")"
+      rm -f "$_LOG"
       exit 2
     fi
     echo "  Visual regression passed"
@@ -205,6 +218,7 @@ else
 fi
 
 # -- All checks passed --
+rm -f "$_LOG"
 touch "$PASS_FILE"
 echo ""
 echo "All verification checks passed. Commit proceeding."
