@@ -1,5 +1,5 @@
 // src/storage/local-store.test.ts
-// @vitest-environment happy-dom
+// @vitest-environment jsdom
 import { afterEach, describe, expect, it } from "vitest";
 import type { YardDesign } from "../types";
 import { exportDesignJson, loadDesign, saveDesign } from "./local-store";
