@@ -198,3 +198,157 @@ body {
 .save-status {
   color: #4ade80;
 }
+
+/* Image Upload */
+.image-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+  text-align: center;
+}
+
+.drop-zone {
+  width: 100%;
+  max-width: 500px;
+  padding: 48px 24px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  margin-bottom: 16px;
+}
+
+.drop-zone:hover,
+.drop-zone.drag-over {
+  border-color: var(--blue);
+  background: rgba(59, 130, 246, 0.05);
+}
+
+.drop-label {
+  color: var(--text-muted);
+}
+.file-input {
+  display: none;
+}
+.upload-error {
+  color: #ef4444;
+  margin-top: 8px;
+}
+
+/* Calibration */
+.calibration-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.image-canvas {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  background: #000;
+}
+
+.uploaded-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
+.calibration-overlay,
+.draw-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.calibration-overlay circle,
+.calibration-overlay line,
+.draw-overlay circle,
+.draw-overlay polygon,
+.draw-overlay polyline {
+  pointer-events: auto;
+}
+
+.calibration-marker {
+  fill: #f59e0b;
+  stroke: white;
+  stroke-width: 2;
+  cursor: default;
+}
+.calibration-label {
+  fill: white;
+  font-size: 14px;
+  text-anchor: middle;
+  font-weight: 600;
+}
+.calibration-line {
+  stroke: #f59e0b;
+  stroke-width: 2;
+  stroke-dasharray: 6 3;
+}
+
+.calibration-instructions {
+  padding: 12px 20px;
+  background: var(--surface);
+  color: var(--text);
+  text-align: center;
+  font-size: 14px;
+}
+
+.calibration-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 20px;
+  background: var(--surface);
+}
+
+.calibration-input {
+  width: 100px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 14px;
+}
+
+.calibration-cancel {
+  margin: 8px auto;
+}
+
+/* Image Boundary Drawing */
+.image-draw-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.boundary-polygon {
+  fill: rgba(59, 130, 246, 0.15);
+  stroke: none;
+}
+.boundary-polyline {
+  fill: none;
+  stroke: var(--blue);
+  stroke-width: 2;
+  stroke-dasharray: 6 3;
+}
+.boundary-vertex {
+  fill: var(--blue);
+  stroke: white;
+  stroke-width: 2;
+  cursor: pointer;
+}
+.boundary-vertex-first {
+  fill: #22c55e;
+}
