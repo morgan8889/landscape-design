@@ -34,10 +34,13 @@ export function renderYardSummary(
   const grid = document.createElement("div");
   grid.className = "summary-grid";
 
+  const pointCount = design.pixelBoundary
+    ? design.pixelBoundary.length
+    : design.boundary.length;
   const cards = [
     { label: "Total Area", value: formatArea(design.areaSqFt) },
     { label: "Perimeter", value: formatPerimeter(design.perimeterFt) },
-    { label: "Points", value: String(design.boundary.length) },
+    { label: "Points", value: String(pointCount) },
     { label: "USDA Zone", value: design.usdaZone ?? "Unknown" },
   ];
 
@@ -80,12 +83,16 @@ export function renderYardSummary(
   container.appendChild(wrapper);
 
   saveBtn.addEventListener("click", () => {
-    saveDesign(design);
-    status.textContent = "Design saved!";
+    const ok = saveDesign(design);
+    status.textContent = ok
+      ? "Design saved!"
+      : "Save failed — image may be too large for browser storage.";
     status.hidden = false;
-    setTimeout(() => {
-      status.hidden = true;
-    }, 2000);
+    if (ok) {
+      setTimeout(() => {
+        status.hidden = true;
+      }, 2000);
+    }
   });
 
   exportBtn.addEventListener("click", () => {
