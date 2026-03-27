@@ -29,3 +29,4 @@ coverage/
 # Playwright
 test-results/
 playwright-report/
+.superpowers/
