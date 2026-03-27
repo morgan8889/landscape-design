@@ -2,12 +2,18 @@
 import "./style.css";
 import { renderAddressSearch } from "./components/address-search";
 import { createBoundaryDrawer } from "./components/boundary-drawer";
+import { renderCalibrationTool } from "./components/calibration-tool";
+import { renderImageBoundaryDrawer } from "./components/image-boundary-drawer";
+import { renderImageUpload } from "./components/image-upload";
 import { createMapView } from "./components/map-view";
 import { renderYardSummary } from "./components/yard-summary";
 import { calculateAreaSqFt } from "./geo/area";
 import { calculatePerimeterFt } from "./geo/perimeter";
+import { calculatePixelAreaSqFt } from "./geo/pixel-area";
+import { calculatePixelPerimeterFt } from "./geo/pixel-perimeter";
 import { loadDesign } from "./storage/local-store";
 import type { LatLng, YardDesign } from "./types";
+import type { Point } from "./types";
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string | undefined;
 
@@ -35,26 +41,14 @@ function renderSearch(): void {
   const app = getApp();
 
   if (!MAPBOX_TOKEN) {
-    const msg = document.createElement("div");
-    msg.className = "address-search";
-    const h1 = document.createElement("h1");
-    h1.textContent = "Design Your Yard";
-    const p = document.createElement("p");
-    p.className = "subtitle";
-    p.textContent =
-      "Mapbox token not configured. Set VITE_MAPBOX_TOKEN in .env";
-    msg.append(h1, p);
-    app.textContent = "";
-    app.appendChild(msg);
+    renderImageUploadView();
     return;
   }
 
   renderAddressSearch(
     app,
     (result) => renderMap({ lat: result.lat, lng: result.lng }, result.address),
-    () => {
-      /* image upload fallback — future task */
-    },
+    () => renderImageUploadView(),
     MAPBOX_TOKEN,
   );
 }
@@ -94,10 +88,83 @@ async function renderMap(center: LatLng, address: string): Promise<void> {
   });
 }
 
+function renderImageUploadView(): void {
+  const app = getApp();
+  renderImageUpload(
+    app,
+    (dataUrl) => renderCalibration(dataUrl),
+    MAPBOX_TOKEN ? () => renderSearch() : null,
+  );
+}
+
+function renderCalibration(imageDataUrl: string): void {
+  const app = getApp();
+  renderCalibrationTool(
+    app,
+    imageDataUrl,
+    (result) =>
+      renderImageDraw(
+        imageDataUrl,
+        result.pixelsPerFoot,
+        result.points,
+        result.distanceFt,
+      ),
+    () => renderImageUploadView(),
+  );
+}
+
+function renderImageDraw(
+  imageDataUrl: string,
+  pixelsPerFoot: number,
+  calibrationPoints: [Point, Point],
+  calibrationDistanceFt: number,
+): void {
+  const app = getApp();
+  renderImageBoundaryDrawer(
+    app,
+    imageDataUrl,
+    (vertices) => {
+      const areaSqFt = calculatePixelAreaSqFt(vertices, pixelsPerFoot);
+      const perimeterFt = calculatePixelPerimeterFt(vertices, pixelsPerFoot);
+
+      const design: YardDesign = {
+        id: crypto.randomUUID(),
+        address: "Uploaded image",
+        center: { lat: 0, lng: 0 },
+        boundary: [],
+        pixelBoundary: vertices,
+        areaSqFt,
+        perimeterFt,
+        usdaZone: null,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        imageMode: {
+          imageDataUrl,
+          pixelsPerFoot,
+          calibrationPoints,
+          calibrationDistanceFt,
+        },
+      };
+
+      renderSummary(design);
+    },
+    () => renderCalibration(imageDataUrl),
+  );
+}
+
 function renderSummary(design: YardDesign): void {
   const app = getApp();
   renderYardSummary(app, design, () => {
-    void renderMap(design.center, design.address);
+    if (design.imageMode) {
+      renderImageDraw(
+        design.imageMode.imageDataUrl,
+        design.imageMode.pixelsPerFoot,
+        design.imageMode.calibrationPoints,
+        design.imageMode.calibrationDistanceFt,
+      );
+    } else {
+      void renderMap(design.center, design.address);
+    }
   });
 }
 

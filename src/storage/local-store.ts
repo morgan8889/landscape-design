@@ -3,8 +3,13 @@ import type { YardDesign } from "../types";
 
 const STORAGE_KEY = "yard-design";
 
-export function saveDesign(design: YardDesign): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(design));
+export function saveDesign(design: YardDesign): boolean {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(design));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export function loadDesign(): YardDesign | null {
