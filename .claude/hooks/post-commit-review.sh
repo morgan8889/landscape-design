@@ -20,6 +20,20 @@ if ! echo "$COMMAND" | grep -qE '(feat:|fix:|refactor:)'; then
 fi
 
 REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+
+# Skip infra-only commits (hooks, CI, config changes don't need code review)
+CHANGED_FILES=$(git -C "$REPO_ROOT" diff-tree --no-commit-id --name-only -r HEAD 2>/dev/null || true)
+INFRA_ONLY=true
+while IFS= read -r file; do
+  case "$file" in
+    .claude/*|.github/*|biome.json|package.json|package-lock.json|*.config.*|.gitignore|.nvmrc|.env.example) ;;
+    *) INFRA_ONLY=false; break ;;
+  esac
+done <<< "$CHANGED_FILES"
+
+if [ "$INFRA_ONLY" = "true" ]; then
+  exit 0
+fi
 PENDING_DIR="${REPO_ROOT}/.reviews/pending"
 COMPLETED_DIR="${REPO_ROOT}/.reviews/completed"
 mkdir -p "$PENDING_DIR" "$COMPLETED_DIR"

@@ -31,3 +31,5 @@ test-results/
 playwright-report/
 .superpowers/
 .reviews/
+.playwright-mcp/
+screenshots/*.png
