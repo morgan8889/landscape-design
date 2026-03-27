@@ -45,6 +45,11 @@ describe("loadDesign", () => {
     saveDesign(sampleDesign);
     expect(loadDesign()).toEqual(sampleDesign);
   });
+
+  it("returns null when localStorage contains invalid JSON", () => {
+    localStorage.setItem(STORAGE_KEY, "not valid json{{{");
+    expect(loadDesign()).toBeNull();
+  });
 });
 
 describe("exportDesignJson", () => {

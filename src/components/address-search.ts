@@ -9,6 +9,8 @@ export async function geocodeAddress(
   mapboxToken: string,
 ): Promise<GeocodeResult | null> {
   try {
+    // Note: token appears in URL query string (visible in browser history/network tab).
+    // Use a URL-restricted token from https://account.mapbox.com/access-tokens/
     const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${mapboxToken}&limit=1`;
     const response = await fetch(url);
     if (!response.ok) return null;

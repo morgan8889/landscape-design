@@ -36,7 +36,8 @@ export async function createMapView(
     if (!document.querySelector('link[href*="mapbox-gl"]')) {
       const link = document.createElement("link");
       link.rel = "stylesheet";
-      link.href = "https://api.mapbox.com/mapbox-gl-js/v3.9.4/mapbox-gl.css";
+      const version = (mb as Record<string, unknown>).version ?? "3.9.4";
+      link.href = `https://api.mapbox.com/mapbox-gl-js/v${version}/mapbox-gl.css`;
       document.head.appendChild(link);
     }
 

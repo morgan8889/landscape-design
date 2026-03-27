@@ -10,7 +10,11 @@ export function saveDesign(design: YardDesign): void {
 export function loadDesign(): YardDesign | null {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return null;
-  return JSON.parse(raw) as YardDesign;
+  try {
+    return JSON.parse(raw) as YardDesign;
+  } catch {
+    return null;
+  }
 }
 
 export function exportDesignJson(design: YardDesign): string {

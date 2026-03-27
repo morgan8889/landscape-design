@@ -107,9 +107,9 @@ export function createBoundaryDrawer(
       .setLngLat([vertex.lng, vertex.lat])
       .addTo(map);
 
-    if (vertices.length > 1) {
-      el.addEventListener("click", (e) => {
-        if (markers.indexOf(marker) === 0 && vertices.length >= 3) {
+    if (vertices.length === 2) {
+      markers[0].getElement().addEventListener("click", (e) => {
+        if (vertices.length >= 3) {
           e.stopPropagation();
           closePolygon();
         }

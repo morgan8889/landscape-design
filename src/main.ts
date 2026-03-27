@@ -60,10 +60,14 @@ function renderSearch(): void {
 }
 
 async function renderMap(center: LatLng, address: string): Promise<void> {
+  if (!MAPBOX_TOKEN) {
+    renderSearch();
+    return;
+  }
+
   const app = getApp();
 
-  const token = MAPBOX_TOKEN ?? "";
-  const handle = await createMapView(app, center, token, () => {
+  const handle = await createMapView(app, center, MAPBOX_TOKEN, () => {
     renderSearch();
   });
 
@@ -93,7 +97,7 @@ async function renderMap(center: LatLng, address: string): Promise<void> {
 function renderSummary(design: YardDesign): void {
   const app = getApp();
   renderYardSummary(app, design, () => {
-    renderMap(design.center, design.address);
+    void renderMap(design.center, design.address);
   });
 }
 
