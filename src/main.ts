@@ -93,7 +93,7 @@ function renderImageUploadView(): void {
   renderImageUpload(
     app,
     (dataUrl) => renderCalibration(dataUrl),
-    () => renderSearch(),
+    MAPBOX_TOKEN ? () => renderSearch() : () => {},
   );
 }
 
