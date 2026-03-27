@@ -185,6 +185,7 @@ export function renderCalibrationTool(
 
   img.addEventListener("click", (e: MouseEvent) => {
     if (points.length >= 2) return;
+    if (img.naturalWidth === 0) return; // image not yet loaded
     points.push(getImagePoint(e));
     updateUI();
   });

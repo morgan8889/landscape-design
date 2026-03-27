@@ -4,7 +4,6 @@ import type { Point } from "../types";
 export function renderImageBoundaryDrawer(
   container: HTMLElement,
   imageDataUrl: string,
-  pixelsPerFoot: number,
   onClosed: (vertices: Point[]) => void,
   onCancel: () => void,
 ): void {
@@ -191,6 +190,7 @@ export function renderImageBoundaryDrawer(
 
   svg.addEventListener("click", (e: MouseEvent) => {
     if (closed) return;
+    if (img.naturalWidth === 0) return; // image not yet loaded
     const pt = getImagePoint(e);
     vertices.push(pt);
     renderOverlay();
@@ -234,8 +234,4 @@ export function renderImageBoundaryDrawer(
   wrapper.addEventListener("dblclick", (e: MouseEvent) => {
     e.preventDefault();
   });
-
-  // Export pixelsPerFoot is accepted but not used internally in the drawer;
-  // callers use it for downstream area/perimeter calculations.
-  void pixelsPerFoot;
 }

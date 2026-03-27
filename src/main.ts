@@ -93,7 +93,7 @@ function renderImageUploadView(): void {
   renderImageUpload(
     app,
     (dataUrl) => renderCalibration(dataUrl),
-    MAPBOX_TOKEN ? () => renderSearch() : () => {},
+    MAPBOX_TOKEN ? () => renderSearch() : null,
   );
 }
 
@@ -123,7 +123,6 @@ function renderImageDraw(
   renderImageBoundaryDrawer(
     app,
     imageDataUrl,
-    pixelsPerFoot,
     (vertices) => {
       const areaSqFt = calculatePixelAreaSqFt(vertices, pixelsPerFoot);
       const perimeterFt = calculatePixelPerimeterFt(vertices, pixelsPerFoot);
@@ -132,7 +131,8 @@ function renderImageDraw(
         id: crypto.randomUUID(),
         address: "Uploaded image",
         center: { lat: 0, lng: 0 },
-        boundary: vertices.map((p) => ({ lat: p.y, lng: p.x })),
+        boundary: [],
+        pixelBoundary: vertices,
         areaSqFt,
         perimeterFt,
         usdaZone: null,
