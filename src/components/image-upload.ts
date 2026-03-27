@@ -1,13 +1,22 @@
 const VALID_TYPES = new Set(["image/jpeg", "image/png"]);
+export const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
 
 export function isValidImageType(mimeType: string): boolean {
   return VALID_TYPES.has(mimeType);
 }
 
+export function validateFile(file: { type: string; size: number }):
+  | string
+  | null {
+  if (file.size > MAX_IMAGE_BYTES) return "Image must be smaller than 5 MB.";
+  if (!isValidImageType(file.type)) return "Please upload a JPG or PNG image.";
+  return null;
+}
+
 export function renderImageUpload(
   container: HTMLElement,
   onImageLoaded: (dataUrl: string) => void,
-  onCancel: () => void,
+  onCancel: (() => void) | null,
 ): void {
   const wrapper = document.createElement("div");
   wrapper.className = "image-upload";
@@ -37,19 +46,25 @@ export function renderImageUpload(
   error.className = "upload-error";
   error.hidden = true;
 
-  const cancelBtn = document.createElement("button");
-  cancelBtn.type = "button";
-  cancelBtn.className = "btn btn-secondary";
-  cancelBtn.textContent = "Back to address search";
-
   dropZone.append(dropLabel, fileInput);
-  wrapper.append(h2, subtitle, dropZone, error, cancelBtn);
+  wrapper.append(h2, subtitle, dropZone, error);
+
+  if (onCancel !== null) {
+    const cancelBtn = document.createElement("button");
+    cancelBtn.type = "button";
+    cancelBtn.className = "btn btn-secondary";
+    cancelBtn.textContent = "Back to address search";
+    cancelBtn.addEventListener("click", onCancel);
+    wrapper.appendChild(cancelBtn);
+  }
+
   container.textContent = "";
   container.appendChild(wrapper);
 
   function handleFile(file: File): void {
-    if (!isValidImageType(file.type)) {
-      error.textContent = "Please upload a JPG or PNG image.";
+    const validationError = validateFile(file);
+    if (validationError) {
+      error.textContent = validationError;
       error.hidden = false;
       return;
     }
@@ -57,6 +72,10 @@ export function renderImageUpload(
     const reader = new FileReader();
     reader.onload = () => {
       onImageLoaded(reader.result as string);
+    };
+    reader.onerror = () => {
+      error.textContent = "Failed to read the image file.";
+      error.hidden = false;
     };
     reader.readAsDataURL(file);
   }
@@ -83,6 +102,4 @@ export function renderImageUpload(
     const file = e.dataTransfer?.files[0];
     if (file) handleFile(file);
   });
-
-  cancelBtn.addEventListener("click", onCancel);
 }

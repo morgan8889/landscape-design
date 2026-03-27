@@ -21,6 +21,7 @@ export interface YardDesign {
   address: string;
   center: LatLng;
   boundary: LatLng[];
+  pixelBoundary?: Point[];
   areaSqFt: number;
   perimeterFt: number;
   usdaZone: string | null;
@@ -28,17 +29,3 @@ export interface YardDesign {
   updatedAt: string;
   imageMode?: ImageMode;
 }
-
-export type AppState =
-  | { phase: "search" }
-  | { phase: "drawing"; center: LatLng; address: string }
-  | { phase: "summary"; design: YardDesign }
-  | { phase: "image-upload" }
-  | { phase: "image-calibrating"; imageDataUrl: string }
-  | {
-      phase: "image-drawing";
-      imageDataUrl: string;
-      pixelsPerFoot: number;
-      calibrationPoints: [Point, Point];
-      calibrationDistanceFt: number;
-    };
