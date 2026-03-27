@@ -10,7 +10,7 @@ on:
 
 jobs:
   auto-review:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' && github.actor != 'claude[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
