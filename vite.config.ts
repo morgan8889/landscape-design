@@ -12,6 +12,8 @@ export default defineConfig({
         "src/**/*.test.ts",
         "src/components/map-view.ts",
         "src/components/boundary-drawer.ts",
+        "src/components/calibration-tool.ts",
+        "src/components/image-boundary-drawer.ts",
       ],
       thresholds: {
         lines: 35,
