@@ -8,5 +8,20 @@ export default defineConfig({
       ["src/storage/**", "jsdom"],
       ["src/components/**", "jsdom"],
     ],
+    coverage: {
+      provider: "v8",
+      include: ["src/**/*.ts"],
+      exclude: [
+        "src/test-setup.ts",
+        "src/**/*.test.ts",
+        "src/components/map-view.ts",
+        "src/components/boundary-drawer.ts",
+      ],
+      thresholds: {
+        lines: 35,
+        functions: 40,
+        branches: 50,
+      },
+    },
   },
 });

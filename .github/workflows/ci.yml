@@ -23,7 +23,7 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
-      - run: npm run test
+      - run: npm run test:coverage
 
       # E2E tests only on PRs to main (expensive)
       - run: npx playwright install --with-deps chromium
