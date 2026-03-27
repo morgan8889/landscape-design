@@ -31,8 +31,13 @@ case "$COMMAND" in
   "ls "*|"cat "*|"head "*|"tail "*|"pwd"|"echo "*|"wc "*|"find "*) exit 0 ;;
   "git commit"*) exit 0 ;;
   "git add"*) exit 0 ;;
+  "git push"*) exit 0 ;;
+  "git checkout"*|"git switch"*|"git branch"*|"git merge"*|"git rebase"*|"git fetch"*|"git pull"*) exit 0 ;;
+  "gh "*) exit 0 ;;
   "mkdir "*) exit 0 ;;
   "chmod "*) exit 0 ;;
+  "cp "*) exit 0 ;;
+  "rm "*) exit 0 ;;
 esac
 
 # Check if pending reviews have been resolved
