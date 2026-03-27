@@ -15,7 +15,16 @@
       "Bash(git push -u origin *)",
       "Bash(git checkout -b *)",
       "Bash(git switch -c *)",
-      "Bash(gh pr create *)"
+      "Bash(gh pr create *)",
+      "Bash(gh pr view *)",
+      "Bash(gh pr diff *)",
+      "Bash(gh pr checks *)",
+      "Bash(gh pr list *)",
+      "Bash(gh api repos/morgan8889/*)",
+      "Bash(gh run view *)",
+      "Bash(gh run list *)",
+      "Bash(chmod +x *)",
+      "Bash(npx playwright install *)"
     ]
   },
   "hooks": {
@@ -32,6 +41,16 @@
             "type": "command",
             "command": ".claude/hooks/circuit-breaker.sh",
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/review-enforcer.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/review-gate.sh",
+            "timeout": 5
           }
         ]
       }
@@ -44,6 +63,16 @@
             "type": "command",
             "command": ".claude/hooks/post-edit-format.sh",
             "timeout": 15
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/post-commit-review.sh",
+            "timeout": 5
           }
         ]
       },

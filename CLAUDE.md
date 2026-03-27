@@ -69,19 +69,21 @@ If any blocker is unresolvable, stop and ask the user before proceeding.
   - If broken → fix and re-run from Phase 2
 - All checks green? → Phase 5
 
-### Phase 5: SELF-REVIEW
+### Phase 5: REVIEW (Per-Task, Hook-Enforced)
 
-- Run `git diff` to see all staged/unstaged changes
-- Review every changed file as if reviewing someone else's PR:
-  - Logic errors or bugs?
-  - Security vulnerabilities (OWASP top 10)?
-  - Missing edge cases the tests don't cover?
-  - Code quality — naming, structure, readability?
-  - Constitution compliance — data accuracy, simplicity?
-  - Unnecessary changes outside task scope?
-- If issues found → fix and re-run from Phase 2
-- Use the code-review agent for a structured second opinion
-- Only proceed to commit when review passes
+After implementation, dispatch review subagents. This phase is enforced by hooks:
+- `post-commit-review.sh` automatically queues every `feat:/fix:/refactor:` commit for review
+- `review-enforcer.sh` BLOCKS the next implementation task if pending reviews exist
+- Review artifacts must be written by the review subagents to `.reviews/completed/`
+
+Steps:
+
+1. **Spec compliance review**: Dispatch a spec-reviewer subagent (or `pr-review-toolkit:code-reviewer`). Verify the implementation matches the task requirements — nothing missing, nothing extra. The reviewer MUST write findings to `.reviews/completed/<commit-sha>-spec.md`.
+2. **Code quality review**: Only after spec passes. Dispatch `superpowers:code-reviewer` agent. The reviewer MUST write findings to `.reviews/completed/<commit-sha>-quality.md`.
+3. **Code simplifier**: Run `code-simplifier` on changed files. Write output to `.reviews/completed/<commit-sha>-simplifier.md`.
+4. **Fix loop**: If reviewers find Critical or Important issues, fix them and re-review. Only proceed when all review files contain approval.
+
+Do NOT create review files manually — they must be created by the review subagents.
 
 ### Phase 6: COMMIT
 
@@ -92,12 +94,16 @@ If any blocker is unresolvable, stop and ask the user before proceeding.
 - Mark task as completed via TodoWrite
 - Return to Phase 0 for next task
 
-### Phase 7: PR (After All Tasks Complete)
+### Phase 7: PR (After All Tasks Complete, Hook-Enforced)
+
+The `review-gate.sh` hook BLOCKS `gh pr create` unless all review artifacts exist.
 
 - Run full test suite one final time
 - Browser verify all UI pages end-to-end
-- Self-review the full branch diff against the spec
-- Use code-review agent on the full diff
+- Run `superpowers:verification-before-completion` → writes `.reviews/verification-pass.md`
+- Dispatch `code-review:code-review` on the full branch diff → writes `.reviews/completed/final-review.md`
+- Run `code-simplifier` on all changed files → writes `.reviews/completed/final-simplifier.md`
+- Run `superpowers:finishing-a-development-branch` for structured completion
 - Create PR with:
   - Summary (what was built and why)
   - Test plan (how to verify)

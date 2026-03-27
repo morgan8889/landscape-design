@@ -1,0 +1,65 @@
+#!/usr/bin/env bash
+# ============================================================================
+# review-gate.sh — PreToolUse: Block PR Creation Without Complete Reviews
+# ============================================================================
+# Blocks `gh pr create` unless ALL conditions are met:
+# 1. No pending (unreviewed) implementation commits
+# 2. Final branch code review artifact exists
+# 3. Final code-simplifier pass artifact exists
+# 4. Verification-before-completion artifact exists
+# ============================================================================
+set -euo pipefail
+
+INPUT=$(cat)
+COMMAND=$(printf '%s\n' "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null || true)
+
+[[ "$COMMAND" != *"gh pr create"* ]] && exit 0
+
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+REVIEWS_DIR="${REPO_ROOT}/.reviews"
+PENDING_DIR="${REVIEWS_DIR}/pending"
+COMPLETED_DIR="${REVIEWS_DIR}/completed"
+
+ERRORS=""
+
+# Check for any pending reviews
+if [ -d "$PENDING_DIR" ]; then
+  PENDING_COUNT=$(find "$PENDING_DIR" -name "*.pending" 2>/dev/null | wc -l | tr -d ' ')
+  if [ "$PENDING_COUNT" -gt 0 ]; then
+    ERRORS="${ERRORS}\n- ${PENDING_COUNT} commit(s) still pending per-task review"
+  fi
+fi
+
+# Check for final review artifacts
+if [ ! -f "${COMPLETED_DIR}/final-review.md" ]; then
+  ERRORS="${ERRORS}\n- Missing final branch code review (.reviews/completed/final-review.md)"
+fi
+
+if [ ! -f "${COMPLETED_DIR}/final-simplifier.md" ]; then
+  ERRORS="${ERRORS}\n- Missing final code-simplifier pass (.reviews/completed/final-simplifier.md)"
+fi
+
+if [ ! -f "${REVIEWS_DIR}/verification-pass.md" ]; then
+  ERRORS="${ERRORS}\n- Missing verification-before-completion (.reviews/verification-pass.md)"
+fi
+
+if [ -n "$ERRORS" ]; then
+  cat <<BLOCK
+BLOCKED: PR creation requires completed reviews.
+
+Missing:
+$(printf "$ERRORS")
+
+Required steps before creating PR:
+1. Complete all per-task reviews (spec + quality for each impl commit)
+2. Run superpowers:verification-before-completion → .reviews/verification-pass.md
+3. Dispatch code-review on full branch diff → .reviews/completed/final-review.md
+4. Run code-simplifier on all changed files → .reviews/completed/final-simplifier.md
+5. Run superpowers:finishing-a-development-branch
+
+Dispatch review subagents to create these artifacts.
+BLOCK
+  exit 2
+fi
+
+exit 0
