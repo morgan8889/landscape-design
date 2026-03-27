@@ -19,7 +19,19 @@ COMMAND=$(printf '%s\n' "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/n
 
 # Skip trivial read-only commands (don't pollute the log)
 case "$COMMAND" in
-  "git status"*|"git diff"*|"git log"*|"ls "*|"cat "*|"pwd"|"echo "*|"which "*|"type "*|"head "*|"tail "*)
+  "git status"*|"git diff"*|"git log"*|"git show"*|"git rev-parse"*|"git branch"*)
+    exit 0
+    ;;
+  "git push"*|"git pull"*|"git fetch"*|"git checkout"*|"git switch"*|"git merge"*|"git add"*|"git commit"*)
+    exit 0
+    ;;
+  "ls "*|"cat "*|"pwd"|"echo "*|"which "*|"type "*|"head "*|"tail "*|"wc "*|"find "*)
+    exit 0
+    ;;
+  "rm "*|"mkdir "*|"cp "*|"chmod "*|"mv "*)
+    exit 0
+    ;;
+  "gh "*|"npm run lint"*|"npm run typecheck"*|"npm run format"*)
     exit 0
     ;;
 esac
