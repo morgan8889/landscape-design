@@ -5,8 +5,8 @@ export default defineConfig({
     exclude: ["e2e/**", "node_modules/**"],
     setupFiles: ["src/test-setup.ts"],
     environmentMatchGlobs: [
-      ["src/storage/**", "happy-dom"],
-      ["src/components/**", "happy-dom"],
+      ["src/storage/**", "jsdom"],
+      ["src/components/**", "jsdom"],
     ],
   },
 });
