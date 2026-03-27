@@ -16,7 +16,7 @@
   },
   "lint-staged": {
     "*.{ts,tsx,js,jsx}": ["biome check --write", "biome format --write"],
-    "*.{json,md,yml,yaml,css,html}": ["biome format --write"]
+    "*.{json,md,css,html}": ["biome format --write"]
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.0",
