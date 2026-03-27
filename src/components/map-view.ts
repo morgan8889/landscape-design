@@ -54,11 +54,16 @@ export async function createMapView(
         resolve({ map, container });
       });
 
-      map.on("error", () => {
-        loading.textContent = "Failed to load map.";
+      // Timeout: if the map doesn't load within 15 seconds, fail gracefully.
+      // We don't use map.on("error") because Mapbox fires error events for
+      // non-fatal issues (missing tiles, sprite 404s) even after a successful
+      // load, which would destroy a working map.
+      setTimeout(() => {
+        if (loading.hidden) return; // already loaded
+        loading.textContent = "Map failed to load.";
         onMapFailed();
         resolve(null);
-      });
+      }, 15000);
     });
   } catch {
     onMapFailed();
