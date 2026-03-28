@@ -7,11 +7,12 @@ import { renderImageBoundaryDrawer } from "./components/image-boundary-drawer";
 import { renderImageUpload } from "./components/image-upload";
 import { createMapView } from "./components/map-view";
 import { renderYardSummary } from "./components/yard-summary";
+import { renderZoneManager } from "./components/zone-manager";
 import { calculateAreaSqFt } from "./geo/area";
 import { calculatePerimeterFt } from "./geo/perimeter";
 import { calculatePixelAreaSqFt } from "./geo/pixel-area";
 import { calculatePixelPerimeterFt } from "./geo/pixel-perimeter";
-import { loadDesign } from "./storage/local-store";
+import { loadDesign, saveDesign } from "./storage/local-store";
 import type { LatLng, YardDesign } from "./types";
 import type { Point } from "./types";
 
@@ -152,20 +153,72 @@ function renderImageDraw(
   );
 }
 
+async function renderZoneEditor(design: YardDesign): Promise<void> {
+  if (!MAPBOX_TOKEN) return;
+
+  const app = getApp();
+  const handle = await createMapView(app, design.center, MAPBOX_TOKEN, () => {
+    renderSummary(design);
+  });
+
+  if (!handle) return;
+
+  // Show boundary as static overlay
+  const boundaryCoords = design.boundary.map((v) => [v.lng, v.lat]);
+  boundaryCoords.push(boundaryCoords[0]);
+
+  handle.map.addSource("boundary-overlay", {
+    type: "geojson",
+    data: {
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [boundaryCoords] },
+      properties: {},
+    },
+  });
+
+  handle.map.addLayer({
+    id: "boundary-overlay-line",
+    type: "line",
+    source: "boundary-overlay",
+    paint: {
+      "line-color": "#3b82f6",
+      "line-width": 2,
+      "line-dasharray": [4, 2],
+    },
+  });
+
+  renderZoneManager(handle.map, design.zones ?? [], (zones) => {
+    design.zones = zones;
+    design.updatedAt = new Date().toISOString();
+    renderSummary(design);
+  });
+}
+
 function renderSummary(design: YardDesign): void {
   const app = getApp();
-  renderYardSummary(app, design, () => {
-    if (design.imageMode) {
-      renderImageDraw(
-        design.imageMode.imageDataUrl,
-        design.imageMode.pixelsPerFoot,
-        design.imageMode.calibrationPoints,
-        design.imageMode.calibrationDistanceFt,
-      );
-    } else {
-      void renderMap(design.center, design.address);
-    }
-  });
+  renderYardSummary(
+    app,
+    design,
+    () => {
+      if (design.imageMode) {
+        renderImageDraw(
+          design.imageMode.imageDataUrl,
+          design.imageMode.pixelsPerFoot,
+          design.imageMode.calibrationPoints,
+          design.imageMode.calibrationDistanceFt,
+        );
+      } else {
+        void renderMap(design.center, design.address);
+      }
+    },
+    design.imageMode ? undefined : () => void renderZoneEditor(design),
+    (zoneId) => {
+      design.zones = (design.zones ?? []).filter((z) => z.id !== zoneId);
+      design.updatedAt = new Date().toISOString();
+      saveDesign(design);
+      renderSummary(design);
+    },
+  );
 }
 
 function bootstrap(): void {

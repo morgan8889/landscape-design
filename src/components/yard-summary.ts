@@ -1,6 +1,7 @@
 import { exportDesignJson, saveDesign } from "../storage/local-store";
 // src/components/yard-summary.ts
 import type { YardDesign } from "../types";
+import { renderZoneSummary } from "./zone-summary";
 
 export function formatArea(sqFt: number): string {
   return `${Math.round(sqFt).toLocaleString("en-US")} sq ft`;
@@ -24,6 +25,8 @@ export function renderYardSummary(
   container: HTMLElement,
   design: YardDesign,
   onEdit: () => void,
+  onAddZones?: () => void,
+  onDeleteZone?: (zoneId: string) => void,
 ): void {
   const wrapper = document.createElement("div");
   wrapper.className = "yard-summary";
@@ -79,6 +82,18 @@ export function renderYardSummary(
   status.hidden = true;
 
   wrapper.append(h2, grid, actionsDiv, status);
+
+  if (onAddZones) {
+    renderZoneSummary(
+      wrapper,
+      design,
+      (zoneId) => {
+        if (onDeleteZone) onDeleteZone(zoneId);
+      },
+      onAddZones,
+    );
+  }
+
   container.textContent = "";
   container.appendChild(wrapper);
 
