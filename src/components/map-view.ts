@@ -18,8 +18,8 @@ export async function createMapView(
 
   const mapEl = document.createElement("div");
   mapEl.className = "map-element";
-  mapEl.style.width = "100%";
-  mapEl.style.height = "100%";
+  mapEl.style.position = "absolute";
+  mapEl.style.inset = "0";
 
   const loading = document.createElement("div");
   loading.className = "map-loading";
