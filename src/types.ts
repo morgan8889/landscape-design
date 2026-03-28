@@ -16,6 +16,21 @@ export interface ImageMode {
   calibrationDistanceFt: number;
 }
 
+export type ZoneCategory =
+  | "garden-bed"
+  | "lawn"
+  | "patio"
+  | "path"
+  | "deck"
+  | "pool";
+
+export interface Zone {
+  id: string;
+  category: ZoneCategory;
+  vertices: LatLng[];
+  areaSqFt: number;
+}
+
 export interface YardDesign {
   id: string;
   address: string;
@@ -28,4 +43,5 @@ export interface YardDesign {
   createdAt: string;
   updatedAt: string;
   imageMode?: ImageMode;
+  zones?: Zone[];
 }
