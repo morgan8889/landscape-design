@@ -1,4 +1,3 @@
-import { saveDesign } from "../storage/local-store";
 // src/components/zone-summary.ts
 import type { YardDesign, Zone, ZoneCategory } from "../types";
 import { getCategoryColor, getCategoryLabel } from "./zone-manager";

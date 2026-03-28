@@ -113,7 +113,7 @@ export function renderZoneManager(
 
   const countDisplay = document.createElement("div");
   countDisplay.className = "zone-count";
-  countDisplay.textContent = `${zones.length} zones`;
+  countDisplay.textContent = `${zones.length} zone${zones.length !== 1 ? "s" : ""}`;
 
   toolbar.append(instructions, controls, countDisplay);
   map.getContainer().appendChild(toolbar);
@@ -121,7 +121,7 @@ export function renderZoneManager(
   let activeDrawer: ZoneDrawerHandle | null = null;
 
   function updateCount(): void {
-    countDisplay.textContent = `${zones.length} zones`;
+    countDisplay.textContent = `${zones.length} zone${zones.length !== 1 ? "s" : ""}`;
   }
 
   drawBtn.addEventListener("click", () => {
