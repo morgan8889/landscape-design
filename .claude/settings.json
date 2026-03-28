@@ -24,7 +24,11 @@
       "Bash(gh run view *)",
       "Bash(gh run list *)",
       "Bash(chmod +x *)",
-      "Bash(npx playwright install *)"
+      "Bash(npx playwright install *)",
+      "Bash(cp *)",
+      "Bash(npx vite preview *)",
+      "Bash(sleep *)",
+      "Bash(pkill -f vite*)"
     ]
   },
   "hooks": {
