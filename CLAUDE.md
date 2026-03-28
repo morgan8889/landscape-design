@@ -57,17 +57,29 @@ If any blocker is unresolvable, stop and ask the user before proceeding.
 - Run tests after every refactor change — must stay green
 - Keep refactoring minimal — YAGNI applies
 
-### Phase 4: VERIFY
+### Phase 4: VERIFY (Screenshot Evidence Required for UI Changes)
 
 - Run full test suite (unit + integration)
 - Run type check (if TypeScript)
 - Run linter
-- If UI was changed:
-  - Start dev server if not running
-  - Use Playwright to navigate to affected page(s)
-  - Take screenshot(s) and visually verify rendering matches intent
-  - If broken → fix and re-run from Phase 2
+- If UI was changed (hook-enforced — `verify-before-commit.sh` blocks without screenshots):
+  - Use **superpowers-chrome** (real browser with WebGL), not headless Playwright
+  - Run `list_tabs` first — verify you're on the correct tab
+  - Use `eval` to check computed styles (`offsetHeight`, `getComputedStyle`) — DOM existence alone is NOT verification
+  - Take screenshot — **if dark/blank, that IS the bug** — investigate immediately, never explain away
+  - Save screenshot to `.reviews/screenshots/` (the commit gate checks for this)
+  - For WebGL content: wait for render completion, check canvas dimensions match container
+  - For Playwright regression: mask dynamic content (maps, timestamps)
+  - Never declare "verified" unless the screenshot visually confirms correct rendering
 - All checks green? → Phase 5
+
+**Browser Verification Tools:**
+
+| Tool | Use For | Captures WebGL? |
+|------|---------|----------------|
+| superpowers-chrome | Novel feature verification, interactive testing | Yes (real browser) |
+| Playwright MCP | Headless checks, accessibility snapshots | No WebGL |
+| Playwright test runner | Automated regression (toHaveScreenshot) | No WebGL |
 
 ### Phase 5: REVIEW (Per-Task, Hook-Enforced)
 

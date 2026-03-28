@@ -63,6 +63,11 @@
             "type": "command",
             "command": ".claude/hooks/post-edit-format.sh",
             "timeout": 15
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/ui-edit-reminder.sh",
+            "timeout": 5
           }
         ]
       },
