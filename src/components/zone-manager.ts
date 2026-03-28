@@ -155,7 +155,7 @@ export function renderZoneManager(
 
   doneBtn.addEventListener("click", () => {
     if (activeDrawer) {
-      activeDrawer.destroy();
+      activeDrawer.destroy(true);
       activeDrawer = null;
     }
     toolbar.remove();

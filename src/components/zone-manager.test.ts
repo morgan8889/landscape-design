@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   ZONE_CATEGORIES,
   getCategoryColor,
+  getCategoryFillOpacity,
   getCategoryLabel,
 } from "./zone-manager";
 
@@ -31,5 +32,16 @@ describe("getCategoryColor", () => {
     expect(getCategoryColor("path")).toBe("#fbbf24");
     expect(getCategoryColor("deck")).toBe("#f97316");
     expect(getCategoryColor("pool")).toBe("#38bdf8");
+  });
+});
+
+describe("getCategoryFillOpacity", () => {
+  it("returns correct opacity for each category", () => {
+    expect(getCategoryFillOpacity("garden-bed")).toBe(0.3);
+    expect(getCategoryFillOpacity("lawn")).toBe(0.2);
+    expect(getCategoryFillOpacity("patio")).toBe(0.3);
+    expect(getCategoryFillOpacity("path")).toBe(0.3);
+    expect(getCategoryFillOpacity("deck")).toBe(0.3);
+    expect(getCategoryFillOpacity("pool")).toBe(0.4);
   });
 });

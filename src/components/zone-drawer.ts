@@ -4,7 +4,7 @@ import type { LatLng, Zone, ZoneCategory } from "../types";
 import { getCategoryColor, getCategoryFillOpacity } from "./zone-manager";
 
 export interface ZoneDrawerHandle {
-  destroy(): void;
+  destroy(silent?: boolean): void;
 }
 
 export function createZoneDrawer(
@@ -113,7 +113,7 @@ export function createZoneDrawer(
   }
 
   function onMapClick(e: import("mapbox-gl").MapMouseEvent): void {
-    addVertex(e.lngLat);
+    void addVertex(e.lngLat).catch(console.error);
   }
 
   function onMapDblClick(e: import("mapbox-gl").MapMouseEvent): void {
@@ -127,7 +127,7 @@ export function createZoneDrawer(
   map.on("dblclick", onMapDblClick);
 
   return {
-    destroy() {
+    destroy(silent = false) {
       map.off("click", onMapClick);
       map.off("dblclick", onMapDblClick);
       map.doubleClickZoom.enable();
@@ -135,7 +135,7 @@ export function createZoneDrawer(
       if (map.getLayer(fillLayerId)) map.removeLayer(fillLayerId);
       if (map.getLayer(lineLayerId)) map.removeLayer(lineLayerId);
       if (map.getSource(sourceId)) map.removeSource(sourceId);
-      onCancel();
+      if (!silent) onCancel();
     },
   };
 }

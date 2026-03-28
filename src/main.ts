@@ -155,6 +155,7 @@ function renderImageDraw(
 
 async function renderZoneEditor(design: YardDesign): Promise<void> {
   if (!MAPBOX_TOKEN) return;
+  if (design.boundary.length === 0) return;
 
   const app = getApp();
   const handle = await createMapView(app, design.center, MAPBOX_TOKEN, () => {
@@ -190,6 +191,7 @@ async function renderZoneEditor(design: YardDesign): Promise<void> {
   renderZoneManager(handle.map, design.zones ?? [], (zones) => {
     design.zones = zones;
     design.updatedAt = new Date().toISOString();
+    saveDesign(design);
     renderSummary(design);
   });
 }
