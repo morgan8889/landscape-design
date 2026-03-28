@@ -52,14 +52,34 @@ for pending_file in "$PENDING_DIR"/*.pending; do
   spec_file="${COMPLETED_DIR}/${sha}-spec.md"
   quality_file="${COMPLETED_DIR}/${sha}-quality.md"
 
-  if [ -f "$spec_file" ] && [ -f "$quality_file" ]; then
-    # Both reviews completed — clear pending
+  # Validate review signatures: each file must contain "review-signed: <sha>"
+  spec_signed=false
+  quality_signed=false
+  if [ -f "$spec_file" ]; then
+    signed_sha=$(grep -m1 '^review-signed:' "$spec_file" 2>/dev/null | awk '{print $2}' || true)
+    [ "$signed_sha" = "$sha" ] && spec_signed=true
+  fi
+  if [ -f "$quality_file" ]; then
+    signed_sha=$(grep -m1 '^review-signed:' "$quality_file" 2>/dev/null | awk '{print $2}' || true)
+    [ "$signed_sha" = "$sha" ] && quality_signed=true
+  fi
+
+  if [ "$spec_signed" = "true" ] && [ "$quality_signed" = "true" ]; then
+    # Both reviews completed and signed — clear pending
     rm -f "$pending_file"
   else
     STILL_PENDING=$((STILL_PENDING + 1))
     MISSING=""
-    [ ! -f "$spec_file" ] && MISSING="spec review"
-    [ ! -f "$quality_file" ] && MISSING="${MISSING:+$MISSING + }quality review"
+    if [ "$spec_signed" = "false" ]; then
+      [ ! -f "$spec_file" ] && MISSING="spec review" || MISSING="spec review (missing review-signed: ${sha} header)"
+    fi
+    if [ "$quality_signed" = "false" ]; then
+      if [ ! -f "$quality_file" ]; then
+        MISSING="${MISSING:+$MISSING + }quality review"
+      else
+        MISSING="${MISSING:+$MISSING + }quality review (missing review-signed: ${sha} header)"
+      fi
+    fi
     PENDING_LIST="${PENDING_LIST}  - ${sha}: needs ${MISSING}\n"
   fi
 done
@@ -74,13 +94,16 @@ $(printf "$PENDING_LIST")
 Required actions:
 1. Dispatch spec compliance reviewer for each pending commit
    → Reviewer writes findings to .reviews/completed/<sha>-spec.md
+   → File MUST start with: review-signed: <sha>
 2. Dispatch code quality reviewer (after spec passes)
    → Reviewer writes findings to .reviews/completed/<sha>-quality.md
+   → File MUST start with: review-signed: <sha>
 3. Run code-simplifier on changed files
    → Write output to .reviews/completed/<sha>-simplifier.md
 4. Fix any Critical/Important issues found
 
-This blocker clears automatically when review artifacts exist.
+This blocker clears automatically when both review files exist AND contain
+a valid "review-signed: <sha>" header matching the commit being reviewed.
 BLOCK
   exit 2
 fi

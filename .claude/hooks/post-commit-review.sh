@@ -45,7 +45,7 @@ if [ -n "$COMMIT_SHA" ]; then
   # Record commit as pending review
   git -C "$REPO_ROOT" log -1 --format="%H %s" > "${PENDING_DIR}/${COMMIT_SHA}.pending"
 
-  echo "{\"additionalContext\": \"REVIEW REQUIRED: Commit ${COMMIT_SHA} queued for review. The review-enforcer hook will BLOCK your next implementation action until reviews are complete. Dispatch: (1) spec compliance reviewer → .reviews/completed/${COMMIT_SHA}-spec.md, (2) code quality reviewer → .reviews/completed/${COMMIT_SHA}-quality.md, (3) code-simplifier → .reviews/completed/${COMMIT_SHA}-simplifier.md\"}"
+  echo "{\"additionalContext\": \"REVIEW REQUIRED: Commit ${COMMIT_SHA} queued for review. The review-enforcer hook will BLOCK your next implementation action until reviews are complete. Each review file MUST begin with 'review-signed: ${COMMIT_SHA}' on its own line — the enforcer validates this signature and will reject files without it. Dispatch: (1) spec compliance reviewer → .reviews/completed/${COMMIT_SHA}-spec.md (first line: 'review-signed: ${COMMIT_SHA}'), (2) code quality reviewer → .reviews/completed/${COMMIT_SHA}-quality.md (first line: 'review-signed: ${COMMIT_SHA}'), (3) code-simplifier → .reviews/completed/${COMMIT_SHA}-simplifier.md\"}"
 fi
 
 exit 0
