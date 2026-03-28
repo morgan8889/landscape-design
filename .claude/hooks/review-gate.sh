@@ -44,7 +44,7 @@ if [ ! -f "${REVIEWS_DIR}/verification-pass.md" ]; then
 fi
 
 # Check for screenshot artifacts when UI files changed
-UI_FILES_IN_BRANCH=$(git diff --name-only main...HEAD 2>/dev/null | grep -E '(\.css|components/|src/app/|public/|src/style)' || true)
+UI_FILES_IN_BRANCH=$(git diff --name-only main...HEAD 2>/dev/null | grep -E '(\.css|components/|src/app/|public/|src/style|src/main\.ts)' || true)
 if [ -n "$UI_FILES_IN_BRANCH" ] && [ ! -d "${REVIEWS_DIR}/screenshots" ]; then
   ERRORS="${ERRORS}\n- UI files changed but no browser verification screenshots (.reviews/screenshots/)"
 fi

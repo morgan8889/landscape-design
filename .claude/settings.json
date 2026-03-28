@@ -84,6 +84,16 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "Bash|Edit|Write|MultiEdit|Read|Glob|Grep|TodoWrite|Agent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/audit-log.sh",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "Notification": [

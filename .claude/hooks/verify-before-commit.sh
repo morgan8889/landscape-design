@@ -80,6 +80,11 @@ detect_ui_changes() {
         found_ui=true
         UI_FILES_DETECTED="${UI_FILES_DETECTED}    ${file}"$'\n'
         ;;
+      src/main.ts)
+        # Render orchestrator — controls all top-level view transitions
+        found_ui=true
+        UI_FILES_DETECTED="${UI_FILES_DETECTED}    ${file}"$'\n'
+        ;;
       tests/e2e/*|tests/visual/*)
         found_ui=true
         UI_FILES_DETECTED="${UI_FILES_DETECTED}    ${file}"$'\n'
@@ -173,7 +178,9 @@ fi
 # -- Screenshot Evidence (when UI files staged) --
 if [ "$SKIP_BROWSER_TESTS" = "false" ]; then
   SCREENSHOTS_DIR="${REPO_ROOT}/.reviews/screenshots"
-  if [ ! -d "$SCREENSHOTS_DIR" ] || [ -z "$(find "$SCREENSHOTS_DIR" -name '*.png' -mmin -60 2>/dev/null | head -1)" ]; then
+  # Override recency window with SCREENSHOT_MAX_AGE_MINS env var (default: 60)
+  _MAX_AGE_MINS="${SCREENSHOT_MAX_AGE_MINS:-60}"
+  if [ ! -d "$SCREENSHOTS_DIR" ] || [ -z "$(find "$SCREENSHOTS_DIR" -name '*.png' -mmin -"$_MAX_AGE_MINS" 2>/dev/null | head -1)" ]; then
     echo ""
     echo "BLOCKED: UI files staged but no recent screenshots in .reviews/screenshots/"
     echo "  Take a screenshot during browser verification before committing."

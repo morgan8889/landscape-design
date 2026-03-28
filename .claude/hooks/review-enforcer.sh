@@ -51,8 +51,9 @@ for pending_file in "$PENDING_DIR"/*.pending; do
 
   spec_file="${COMPLETED_DIR}/${sha}-spec.md"
   quality_file="${COMPLETED_DIR}/${sha}-quality.md"
+  simplifier_file="${COMPLETED_DIR}/${sha}-simplifier.md"
 
-  # Validate review signatures: each file must contain "review-signed: <sha>"
+  # Validate review signatures: spec and quality files must contain "review-signed: <sha>"
   spec_signed=false
   quality_signed=false
   if [ -f "$spec_file" ]; then
@@ -64,8 +65,8 @@ for pending_file in "$PENDING_DIR"/*.pending; do
     [ "$signed_sha" = "$sha" ] && quality_signed=true
   fi
 
-  if [ "$spec_signed" = "true" ] && [ "$quality_signed" = "true" ]; then
-    # Both reviews completed and signed — clear pending
+  if [ "$spec_signed" = "true" ] && [ "$quality_signed" = "true" ] && [ -f "$simplifier_file" ]; then
+    # All three review artifacts present and signed — clear pending
     rm -f "$pending_file"
   else
     STILL_PENDING=$((STILL_PENDING + 1))
@@ -80,6 +81,7 @@ for pending_file in "$PENDING_DIR"/*.pending; do
         MISSING="${MISSING:+$MISSING + }quality review (missing review-signed: ${sha} header)"
       fi
     fi
+    [ ! -f "$simplifier_file" ] && MISSING="${MISSING:+$MISSING + }simplifier"
     PENDING_LIST="${PENDING_LIST}  - ${sha}: needs ${MISSING}\n"
   fi
 done

@@ -26,7 +26,7 @@ CHANGED_FILES=$(git -C "$REPO_ROOT" diff-tree --no-commit-id --name-only -r HEAD
 INFRA_ONLY=true
 while IFS= read -r file; do
   case "$file" in
-    .claude/*|.github/*|biome.json|package.json|package-lock.json|*.config.*|.gitignore|.nvmrc|.env.example) ;;
+    .claude/*|.github/*|biome.json|package.json|package-lock.json|*.config.*|.gitignore|.nvmrc|.env.example|CLAUDE.md|.specify/*) ;;
     *) INFRA_ONLY=false; break ;;
   esac
 done <<< "$CHANGED_FILES"
