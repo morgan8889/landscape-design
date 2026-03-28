@@ -6,6 +6,9 @@ export default defineConfig({
     command: "npm run dev",
     port: 5173,
     reuseExistingServer: true,
+    env: {
+      VITE_MAPBOX_TOKEN: process.env.VITE_MAPBOX_TOKEN ?? "test-token-e2e",
+    },
   },
   use: {
     baseURL: "http://localhost:5173",
