@@ -27,11 +27,21 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           track_progress: true
           prompt: |
+            You are a security reviewer examining this PR with fresh eyes.
+
             REPO: ${{ github.repository }}
             PR NUMBER: ${{ github.event.pull_request.number }}
 
-            Review this PR against CLAUDE.md and the constitution in .specify/memory/constitution.md.
-            Focus on bugs, security (OWASP top 10), test coverage, and constitution compliance.
+            The author has already run local code reviews for spec compliance and code quality.
+            Your role is to provide orthogonal perspective the author cannot give themselves:
+
+            1. Security vulnerabilities (OWASP Top 10): injection, XSS, insecure data exposure, broken access control
+            2. Supply chain risks: new dependencies, version pins, suspicious package names
+            3. Secrets/credentials accidentally committed
+            4. Logic bugs that only appear at boundaries (off-by-one, null handling, race conditions)
+            5. Any concern that a fresh reviewer would catch that self-review misses
+
+            Be concise. Only flag genuine issues — skip style/naming/formatting.
 
             Use `gh pr comment` for top-level feedback.
             Use `mcp__github_inline_comment__create_inline_comment` (with `confirmed: true`) for specific code issues.

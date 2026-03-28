@@ -2,11 +2,13 @@
 # ============================================================================
 # on-stop.sh — Stop Event Handler: Completion Verifier + Notification
 # ============================================================================
-# Fires after each Claude response completes. Checks whether there are
-# incomplete tasks (via TodoWrite task files) and returns a block decision
-# if work remains. Also sends desktop notification.
+# Fires after each Claude response completes. Checks for an active session
+# signal file (/tmp/claude-session-active-<hash>) and blocks exit if found,
+# prompting Claude to continue working. Session file is created by
+# session-start.sh (first Edit/Write) and removed by review-gate.sh (PR ready)
+# or manually when intentionally stopping.
 #
-# Returns JSON with "decision": "block" if tasks remain incomplete,
+# Returns JSON with "decision": "block" if session file exists,
 # prompting Claude to continue working rather than stopping.
 # ============================================================================
 set -euo pipefail

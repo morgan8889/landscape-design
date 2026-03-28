@@ -38,6 +38,13 @@ PENDING_DIR="${REPO_ROOT}/.reviews/pending"
 COMPLETED_DIR="${REPO_ROOT}/.reviews/completed"
 mkdir -p "$PENDING_DIR" "$COMPLETED_DIR"
 
+# Belt-and-suspenders: ensure session lock is active for any implementation commit
+REPO_HASH=$(printf '%s' "$REPO_ROOT" | md5 -q 2>/dev/null || printf '%s' "$REPO_ROOT" | md5sum | cut -d' ' -f1)
+SESSION_FILE="/tmp/claude-session-active-${REPO_HASH}"
+if [ ! -f "$SESSION_FILE" ]; then
+  printf 'Auto-started: implementation commit (post-commit-review.sh)\n' > "$SESSION_FILE"
+fi
+
 # Get the SHA of the commit that just happened
 COMMIT_SHA=$(git -C "$REPO_ROOT" rev-parse HEAD 2>/dev/null | head -c 12)
 
