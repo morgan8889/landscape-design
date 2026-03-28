@@ -95,6 +95,18 @@ Steps:
 3. **Code simplifier**: Run `code-simplifier` on changed files. Write output to `.reviews/completed/<commit-sha>-simplifier.md`.
 4. **Fix loop**: If reviewers find Critical or Important issues, fix them and re-review. Only proceed when all review files contain approval.
 
+**Review file format (enforced by hook):** Every spec and quality review file MUST include a signature line so the `review-enforcer.sh` hook can verify the file came from an actual review pass:
+
+```
+review-signed: <12-char-commit-sha>
+reviewer: spec-compliance | code-quality
+reviewed-at: <ISO timestamp>
+
+[review content]
+```
+
+The hook validates `review-signed: <sha>` matches the pending commit's SHA. Files without this header — including manually created files — will not clear the enforcement gate.
+
 Do NOT create review files manually — they must be created by the review subagents.
 
 ### Phase 6: COMMIT
