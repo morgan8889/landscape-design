@@ -31,6 +31,18 @@ REPO_HASH=$(printf '%s' "$REPO_ROOT" | md5 -q 2>/dev/null || printf '%s' "$REPO_
 SESSION_FILE="/tmp/claude-session-active-${REPO_HASH}"
 
 if [ -f "$SESSION_FILE" ]; then
+  # Auto-disarm if Claude's last message indicates PR was created
+  LAST_MSG=$(printf '%s' "$INPUT" | jq -r '.last_assistant_message // ""' 2>/dev/null || true)
+  if echo "$LAST_MSG" | grep -qE 'github\.com/.*/pull/[0-9]+' 2>/dev/null; then
+    rm -f "$SESSION_FILE"
+    if command -v osascript &>/dev/null; then
+      osascript -e 'display notification "PR created — session complete. Exiting cleanly." with title "Claude Code" sound name "Hero"' 2>/dev/null || true
+    elif command -v notify-send &>/dev/null; then
+      notify-send "Claude Code" "PR created — session complete. Exiting cleanly." 2>/dev/null || true
+    fi
+    exit 0
+  fi
+
   # Expiry check: stale session files (>4h) from crashed/forgotten sessions deadlock Claude
   FILE_AGE_SECS=$(( $(date +%s) - $(stat -f %m "$SESSION_FILE" 2>/dev/null || stat -c %Y "$SESSION_FILE" 2>/dev/null || echo 0) ))
   if [ "$FILE_AGE_SECS" -gt $((4 * 3600)) ]; then
@@ -46,7 +58,7 @@ if [ -f "$SESSION_FILE" ]; then
   TASK_CONTEXT=$(cat "$SESSION_FILE" 2>/dev/null || true)
 
   # Session is active but Claude is stopping — nudge to continue
-  echo '{"decision": "block", "reason": "Autonomous session still active. Tasks remain incomplete. Continue working through the task list, or remove the session signal file ('"$SESSION_FILE"') when finished."}'
+  echo '{"decision": "block", "reason": "Autonomous session still active. Tasks remain incomplete. Continue working through the task list, or remove the session signal file ('"$SESSION_FILE"') to stop."}'
 
   # Still send notification so user knows there was a pause
   if command -v osascript &>/dev/null; then

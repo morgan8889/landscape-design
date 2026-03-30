@@ -93,16 +93,14 @@ REVIEW ENFORCER: ${STILL_PENDING} commit(s) awaiting review before new work can 
 Pending reviews:
 $(printf "$PENDING_LIST")
 
-Required actions:
-1. Dispatch spec compliance reviewer for each pending commit
-   → Reviewer writes findings to .reviews/completed/<sha>-spec.md
-   → File MUST start with: review-signed: <sha>
-2. Dispatch code quality reviewer (after spec passes)
-   → Reviewer writes findings to .reviews/completed/<sha>-quality.md
-   → File MUST start with: review-signed: <sha>
-3. Run code-simplifier on changed files
-   → Write output to .reviews/completed/<sha>-simplifier.md
-4. Fix any Critical/Important issues found
+Required actions — dispatch these agents IN PARALLEL (all have background: true):
+1. Agent tool with subagent_type=spec-reviewer
+2. Agent tool with subagent_type=code-quality-reviewer
+3. Agent tool with subagent_type=code-simplifier-reviewer
+
+Each agent reads .reviews/pending/, reviews the commit diff, and writes a signed
+artifact to .reviews/completed/. Do NOT write review files manually.
+After all three complete, fix any Critical/Important issues found.
 
 This blocker clears automatically when both review files exist AND contain
 a valid "review-signed: <sha>" header matching the commit being reviewed.

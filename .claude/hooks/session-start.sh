@@ -10,14 +10,20 @@
 # ============================================================================
 set -euo pipefail
 
+INPUT=$(cat)
 REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+
+# Only arm session for edits to files inside this repo — not ~/.claude/ or other paths
+FILE_PATH=$(printf '%s\n' "$INPUT" | jq -r '.tool_input.file_path // .tool_input.path // ""' 2>/dev/null || true)
+if [ -z "$FILE_PATH" ] || [[ "$FILE_PATH" != "$REPO_ROOT"* ]]; then
+  exit 0
+fi
+
 REPO_HASH=$(printf '%s' "$REPO_ROOT" | md5 -q 2>/dev/null || printf '%s' "$REPO_ROOT" | md5sum | cut -d' ' -f1)
 SESSION_FILE="/tmp/claude-session-active-${REPO_HASH}"
 
 # Only create if it doesn't exist — don't overwrite original task context
 if [ ! -f "$SESSION_FILE" ]; then
-  INPUT=$(cat)
-  FILE_PATH=$(printf '%s\n' "$INPUT" | jq -r '.tool_input.file_path // .tool_input.path // "unknown"' 2>/dev/null || true)
   printf 'Auto-started: first file write in session (%s)\n' "$FILE_PATH" > "$SESSION_FILE"
 fi
 

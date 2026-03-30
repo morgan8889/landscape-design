@@ -52,7 +52,7 @@ if [ -n "$COMMIT_SHA" ]; then
   # Record commit as pending review
   git -C "$REPO_ROOT" log -1 --format="%H %s" > "${PENDING_DIR}/${COMMIT_SHA}.pending"
 
-  echo "{\"additionalContext\": \"REVIEW REQUIRED: Commit ${COMMIT_SHA} queued for review. The review-enforcer hook will BLOCK your next implementation action until reviews are complete. Each review file MUST begin with 'review-signed: ${COMMIT_SHA}' on its own line — the enforcer validates this signature and will reject files without it. Dispatch: (1) spec compliance reviewer → .reviews/completed/${COMMIT_SHA}-spec.md (first line: 'review-signed: ${COMMIT_SHA}'), (2) code quality reviewer → .reviews/completed/${COMMIT_SHA}-quality.md (first line: 'review-signed: ${COMMIT_SHA}'), (3) code-simplifier → .reviews/completed/${COMMIT_SHA}-simplifier.md\"}"
+  echo "{\"additionalContext\": \"REVIEW REQUIRED: Commit ${COMMIT_SHA} queued for review. The review-enforcer hook will BLOCK your next implementation action until reviews are complete. Dispatch these three agents IN PARALLEL (all have background: true): (1) Agent tool with subagent_type=spec-reviewer, (2) Agent tool with subagent_type=code-quality-reviewer, (3) Agent tool with subagent_type=code-simplifier-reviewer. Each agent reads .reviews/pending/, reviews the diff, and writes a signed artifact to .reviews/completed/. Do NOT write review files manually — the agents handle it.\"}"
 fi
 
 exit 0

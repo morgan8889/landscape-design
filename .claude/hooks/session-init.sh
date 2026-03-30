@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# ============================================================================
+# session-init.sh — SessionStart: Restore Task Context on Session Start
+# ============================================================================
+# Fires when a Claude Code session starts (startup, resume, clear, compact).
+# Reads the current spec/tasks to inject task context, so Claude doesn't lose
+# its place after a crash, context compaction, or manual restart.
+#
+# Also checks for pending reviews that need to be dispatched.
+# ============================================================================
+set -euo pipefail
+
+INPUT=$(cat)
+SOURCE=$(printf '%s' "$INPUT" | jq -r '.source // "startup"' 2>/dev/null || echo "startup")
+
+REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+
+# Find the most recent spec directory with a tasks.md
+CURRENT_SPEC=""
+for spec_dir in "$REPO_ROOT"/.specify/specs/[0-9]* ; do
+  [ -d "$spec_dir" ] && [ -f "$spec_dir/tasks.md" ] && CURRENT_SPEC="$spec_dir"
+done
+
+CONTEXT_PARTS=""
+
+# Check for in-progress or pending tasks
+if [ -n "$CURRENT_SPEC" ]; then
+  TASK=$(grep -m1 -E '\[[ x]\].*in_progress|\[ \]' "$CURRENT_SPEC/tasks.md" 2>/dev/null || true)
+  if [ -n "$TASK" ]; then
+    SPEC_NAME=$(basename "$CURRENT_SPEC")
+    CONTEXT_PARTS="Current spec: ${SPEC_NAME}. Next task: ${TASK}."
+  fi
+fi
+
+# Check for pending reviews
+PENDING_DIR="${REPO_ROOT}/.reviews/pending"
+if [ -d "$PENDING_DIR" ]; then
+  PENDING=$(find "$PENDING_DIR" -name "*.pending" 2>/dev/null | wc -l | tr -d ' ')
+  if [ "$PENDING" -gt 0 ]; then
+    CONTEXT_PARTS="${CONTEXT_PARTS:+$CONTEXT_PARTS }${PENDING} pending review(s) — dispatch spec-reviewer, code-quality-reviewer, code-simplifier-reviewer agents before continuing implementation."
+  fi
+fi
+
+# Output context if we found anything useful
+if [ -n "$CONTEXT_PARTS" ]; then
+  # Escape for JSON
+  CONTEXT_PARTS=$(printf '%s' "$CONTEXT_PARTS" | sed 's/"/\\"/g' | tr '\n' ' ')
+  echo "{\"additionalContext\": \"Session ${SOURCE}. ${CONTEXT_PARTS} Resume the autonomous development loop from CLAUDE.md Phase 0.\"}"
+fi
+
+exit 0

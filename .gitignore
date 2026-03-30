@@ -18,6 +18,7 @@ out/
 .claude/tasks/
 .claude/plans/
 .claude/settings.local.json
+.claude/scheduled_tasks.lock
 
 # OS files
 .DS_Store
