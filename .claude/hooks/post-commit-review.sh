@@ -34,6 +34,13 @@ done <<< "$CHANGED_FILES"
 if [ "$INFRA_ONLY" = "true" ]; then
   exit 0
 fi
+
+# Branch discipline: warn if feat: commit lands on a non-main branch
+CURRENT_BRANCH=$(git -C "$REPO_ROOT" branch --show-current 2>/dev/null || true)
+if echo "$COMMAND" | grep -qE 'feat:' && [ -n "$CURRENT_BRANCH" ] && [ "$CURRENT_BRANCH" != "main" ] && [ "$CURRENT_BRANCH" != "master" ]; then
+  BRANCH_WARNING="WARNING: New feature commit on branch '${CURRENT_BRANCH}'. If this is a separate feature from the branch scope, create a dedicated branch. New feature = new branch keeps PRs focused."
+fi
+
 PENDING_DIR="${REPO_ROOT}/.reviews/pending"
 COMPLETED_DIR="${REPO_ROOT}/.reviews/completed"
 mkdir -p "$PENDING_DIR" "$COMPLETED_DIR"
@@ -52,7 +59,11 @@ if [ -n "$COMMIT_SHA" ]; then
   # Record commit as pending review
   git -C "$REPO_ROOT" log -1 --format="%H %s" > "${PENDING_DIR}/${COMMIT_SHA}.pending"
 
-  echo "{\"additionalContext\": \"REVIEW REQUIRED: Commit ${COMMIT_SHA} queued for review. The review-enforcer hook will BLOCK your next implementation action until reviews are complete. Dispatch these three agents IN PARALLEL (all have background: true): (1) Agent tool with subagent_type=spec-reviewer, (2) Agent tool with subagent_type=code-quality-reviewer, (3) Agent tool with subagent_type=code-simplifier-reviewer. Each agent reads .reviews/pending/, reviews the diff, and writes a signed artifact to .reviews/completed/. Do NOT write review files manually — the agents handle it.\"}"
+  REVIEW_MSG="REVIEW REQUIRED: Commit ${COMMIT_SHA} queued for review. The review-enforcer hook will BLOCK your next implementation action until reviews are complete. Dispatch these three agents IN PARALLEL (all have background: true): (1) Agent tool with subagent_type=spec-reviewer, (2) Agent tool with subagent_type=code-quality-reviewer, (3) Agent tool with subagent_type=code-simplifier-reviewer. Each agent reads .reviews/pending/, reviews the diff, and writes a signed artifact to .reviews/completed/. Do NOT write review files manually — the agents handle it."
+  if [ -n "${BRANCH_WARNING:-}" ]; then
+    REVIEW_MSG="${REVIEW_MSG} ${BRANCH_WARNING}"
+  fi
+  echo "{\"additionalContext\": \"${REVIEW_MSG}\"}"
 fi
 
 exit 0
