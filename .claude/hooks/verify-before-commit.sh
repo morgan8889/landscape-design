@@ -14,6 +14,11 @@
 # ============================================================================
 set -euo pipefail
 
+# Prevent husky pre-commit hooks from re-running inside our hook.
+# We already run tests, typecheck, and lint — husky would double them and
+# can crash under set -euo pipefail when lint-staged finds no staged files.
+export HUSKY=0
+
 # Read the tool input from stdin
 INPUT=$(cat)
 COMMAND=$(printf '%s\n' "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null || true)
