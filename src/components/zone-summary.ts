@@ -1,12 +1,11 @@
-// src/components/zone-summary.ts
-import type { YardDesign, Zone, ZoneCategory } from "../types";
-import { getCategoryColor, getCategoryLabel } from "./zone-categories";
+import type { YardDesign, Zone } from "../types";
+import { renderZoneDetail } from "./zone-detail";
 
-export function formatZoneArea(
-  category: ZoneCategory,
-  areaSqFt: number,
-): string {
-  return `${getCategoryLabel(category)} — ${Math.round(areaSqFt).toLocaleString("en-US")} sq ft`;
+export function formatZoneArea(category: string, areaSqFt: number): string {
+  const label = category
+    .replace("-", " ")
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+  return `${label} — ${Math.round(areaSqFt).toLocaleString("en-US")} sq ft`;
 }
 
 export function getTotalZoneArea(zones: Zone[]): number {
@@ -18,6 +17,8 @@ export function renderZoneSummary(
   design: YardDesign,
   onDelete: (zoneId: string) => void,
   onAddZones: () => void,
+  onAddPlants: (zoneId: string) => void,
+  onRemovePlant: (zoneId: string, plantId: string) => void,
 ): void {
   const section = document.createElement("div");
   section.className = "zone-summary-section";
@@ -32,24 +33,23 @@ export function renderZoneSummary(
     list.className = "zone-list";
 
     for (const zone of zones) {
-      const item = document.createElement("div");
-      item.className = "zone-item";
+      const wrapper = document.createElement("div");
+      wrapper.className = "zone-item-wrapper";
 
-      const dot = document.createElement("span");
-      dot.className = "zone-dot";
-      dot.style.backgroundColor = getCategoryColor(zone.category);
-
-      const label = document.createElement("span");
-      label.className = "zone-label";
-      label.textContent = formatZoneArea(zone.category, zone.areaSqFt);
+      renderZoneDetail(
+        wrapper,
+        zone,
+        () => onAddPlants(zone.id),
+        (plantId) => onRemovePlant(zone.id, plantId),
+      );
 
       const deleteBtn = document.createElement("button");
-      deleteBtn.className = "zone-delete";
-      deleteBtn.textContent = "Delete";
+      deleteBtn.className = "zone-delete zone-delete-bottom";
+      deleteBtn.textContent = "Delete Zone";
       deleteBtn.addEventListener("click", () => onDelete(zone.id));
+      wrapper.appendChild(deleteBtn);
 
-      item.append(dot, label, deleteBtn);
-      list.appendChild(item);
+      list.appendChild(wrapper);
     }
     section.appendChild(list);
   }
