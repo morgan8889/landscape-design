@@ -73,8 +73,21 @@ for pending_file in "$PENDING_DIR"/*.pending; do
     [ "$signed_sha" = "$sha" ] && [ "$reviewer" = "code-simplifier" ] && simplifier_signed=true
   fi
 
-  if [ "$spec_signed" = "true" ] && [ "$quality_signed" = "true" ] && [ "$simplifier_signed" = "true" ]; then
-    # All three review artifacts present and signed — clear pending
+  # Check if commit touched UI files — require screenshot evidence
+  ui_needs_screenshot=false
+  ui_files=$(git diff-tree --no-commit-id --name-only -r "$sha" 2>/dev/null | grep -E '(\.css|\.scss|components/|src/app/|src/main\.ts|public/)' || true)
+  if [ -n "$ui_files" ]; then
+    screenshots_dir="${REPO_ROOT}/.reviews/screenshots"
+    max_age="${SCREENSHOT_MAX_AGE_MINS:-120}"
+    recent_screenshot=""
+    if [ -d "$screenshots_dir" ]; then
+      recent_screenshot=$(find "$screenshots_dir" -name '*.png' -mmin -"$max_age" 2>/dev/null | head -1 || true)
+    fi
+    [ -z "$recent_screenshot" ] && ui_needs_screenshot=true
+  fi
+
+  if [ "$spec_signed" = "true" ] && [ "$quality_signed" = "true" ] && [ "$simplifier_signed" = "true" ] && [ "$ui_needs_screenshot" = "false" ]; then
+    # All review artifacts present, signed, and screenshot requirements met — clear pending
     rm -f "$pending_file"
   else
     STILL_PENDING=$((STILL_PENDING + 1))
@@ -96,6 +109,9 @@ for pending_file in "$PENDING_DIR"/*.pending; do
         MISSING="${MISSING:+$MISSING + }simplifier (invalid signature or reviewer-agent)"
       fi
     fi
+    if [ "$ui_needs_screenshot" = "true" ]; then
+      MISSING="${MISSING:+$MISSING + }browser screenshot (UI files changed, none in .reviews/screenshots/)"
+    fi
     PENDING_LIST="${PENDING_LIST}  - ${sha}: needs ${MISSING}\n"
   fi
 done
@@ -116,8 +132,11 @@ Each agent reads .reviews/pending/, reviews the commit diff, and writes a signed
 artifact to .reviews/completed/. Do NOT write review files manually.
 After all three complete, fix any Critical/Important issues found.
 
-This blocker clears automatically when both review files exist AND contain
-a valid "review-signed: <sha>" header matching the commit being reviewed.
+4. For commits with UI changes: take a browser screenshot using superpowers-chrome
+   and save to .reviews/screenshots/ BEFORE reviews can clear.
+
+This blocker clears automatically when review files exist with valid
+"review-signed: <sha>" and "reviewer-agent:" headers, plus screenshots for UI commits.
 BLOCK
   exit 2
 fi
