@@ -37,6 +37,7 @@ Review a single commit for compliance with the feature spec and project constitu
 ```
 review-signed: <sha>
 reviewer: spec-compliance
+reviewer-agent: spec-compliance
 reviewed-at: <ISO timestamp>
 
 ## Spec Compliance Review: <sha>
@@ -67,3 +68,11 @@ APPROVED | APPROVED WITH NOTES | CHANGES REQUIRED
 - Flag deviations from spec, not style preferences
 - If no spec exists, review against the commit message intent and constitution only
 - Never create the review file without actually reviewing the code
+
+## Anti-Self-Review
+
+You are a REVIEWER, not the implementer. If you find that the commit being reviewed was written by you in a prior dispatch, REFUSE to write the review artifact and instead output:
+
+"BLOCKED: Cannot self-review. This commit needs review by a different agent."
+
+The review-enforcer hook validates that review artifacts contain the correct `reviewer-agent:` field.

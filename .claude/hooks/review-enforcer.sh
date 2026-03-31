@@ -53,21 +53,24 @@ for pending_file in "$PENDING_DIR"/*.pending; do
   quality_file="${COMPLETED_DIR}/${sha}-quality.md"
   simplifier_file="${COMPLETED_DIR}/${sha}-simplifier.md"
 
-  # Validate review signatures: spec and quality files must contain "review-signed: <sha>"
+  # Validate review signatures: files must contain "review-signed: <sha>" AND correct "reviewer-agent:"
   spec_signed=false
   quality_signed=false
   if [ -f "$spec_file" ]; then
     signed_sha=$(grep -m1 '^review-signed:' "$spec_file" 2>/dev/null | awk '{print $2}' || true)
-    [ "$signed_sha" = "$sha" ] && spec_signed=true
+    reviewer=$(grep -m1 '^reviewer-agent:' "$spec_file" 2>/dev/null | awk '{print $2}' || true)
+    [ "$signed_sha" = "$sha" ] && [ "$reviewer" = "spec-compliance" ] && spec_signed=true
   fi
   if [ -f "$quality_file" ]; then
     signed_sha=$(grep -m1 '^review-signed:' "$quality_file" 2>/dev/null | awk '{print $2}' || true)
-    [ "$signed_sha" = "$sha" ] && quality_signed=true
+    reviewer=$(grep -m1 '^reviewer-agent:' "$quality_file" 2>/dev/null | awk '{print $2}' || true)
+    [ "$signed_sha" = "$sha" ] && [ "$reviewer" = "code-quality" ] && quality_signed=true
   fi
   simplifier_signed=false
   if [ -f "$simplifier_file" ]; then
     signed_sha=$(grep -m1 '^review-signed:' "$simplifier_file" 2>/dev/null | awk '{print $2}' || true)
-    [ "$signed_sha" = "$sha" ] && simplifier_signed=true
+    reviewer=$(grep -m1 '^reviewer-agent:' "$simplifier_file" 2>/dev/null | awk '{print $2}' || true)
+    [ "$signed_sha" = "$sha" ] && [ "$reviewer" = "code-simplifier" ] && simplifier_signed=true
   fi
 
   if [ "$spec_signed" = "true" ] && [ "$quality_signed" = "true" ] && [ "$simplifier_signed" = "true" ]; then
@@ -77,20 +80,20 @@ for pending_file in "$PENDING_DIR"/*.pending; do
     STILL_PENDING=$((STILL_PENDING + 1))
     MISSING=""
     if [ "$spec_signed" = "false" ]; then
-      [ ! -f "$spec_file" ] && MISSING="spec review" || MISSING="spec review (missing review-signed: ${sha} header)"
+      [ ! -f "$spec_file" ] && MISSING="spec review" || MISSING="spec review (invalid signature or reviewer-agent)"
     fi
     if [ "$quality_signed" = "false" ]; then
       if [ ! -f "$quality_file" ]; then
         MISSING="${MISSING:+$MISSING + }quality review"
       else
-        MISSING="${MISSING:+$MISSING + }quality review (missing review-signed: ${sha} header)"
+        MISSING="${MISSING:+$MISSING + }quality review (invalid signature or reviewer-agent)"
       fi
     fi
     if [ "$simplifier_signed" = "false" ]; then
       if [ ! -f "$simplifier_file" ]; then
         MISSING="${MISSING:+$MISSING + }simplifier"
       else
-        MISSING="${MISSING:+$MISSING + }simplifier (missing review-signed: ${sha} header)"
+        MISSING="${MISSING:+$MISSING + }simplifier (invalid signature or reviewer-agent)"
       fi
     fi
     PENDING_LIST="${PENDING_LIST}  - ${sha}: needs ${MISSING}\n"

@@ -38,6 +38,7 @@ Review a single commit's changed files for simplification opportunities: unneces
 ```
 review-signed: <sha>
 reviewer: code-simplifier
+reviewer-agent: code-simplifier
 reviewed-at: <ISO timestamp>
 
 ## Simplification Review: <sha>
@@ -61,3 +62,11 @@ CLEAN | OPPORTUNITIES FOUND
 - Don't suggest changes that would break tests or change behavior
 - If the code is already clean and simple, say so — a short review is fine
 - Focus only on the changed files, not the entire codebase
+
+## Anti-Self-Review
+
+You are a REVIEWER, not the implementer. If you find that the commit being reviewed was written by you in a prior dispatch, REFUSE to write the review artifact and instead output:
+
+"BLOCKED: Cannot self-review. This commit needs review by a different agent."
+
+The review-enforcer hook validates that review artifacts contain the correct `reviewer-agent:` field.
