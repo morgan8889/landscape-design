@@ -24,7 +24,17 @@ SESSION_FILE="/tmp/claude-session-active-${REPO_HASH}"
 
 # Only create if it doesn't exist — don't overwrite original task context
 if [ ! -f "$SESSION_FILE" ]; then
-  printf 'Auto-started: first file write in session (%s)\n' "$FILE_PATH" > "$SESSION_FILE"
+  # Detect phase from file path: spec/plan files = interactive, src files = implementation
+  PHASE="implementation"
+  case "$FILE_PATH" in
+    */specs/*|*/plans/*|*/brainstorm/*|*.md)
+      PHASE="interactive"
+      ;;
+    */src/*|*/tests/*|*.ts|*.tsx|*.js|*.jsx|*.css)
+      PHASE="implementation"
+      ;;
+  esac
+  printf 'phase: %s\ntask: first file write (%s)\nstarted: %s\n' "$PHASE" "$FILE_PATH" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$SESSION_FILE"
 fi
 
 exit 0
