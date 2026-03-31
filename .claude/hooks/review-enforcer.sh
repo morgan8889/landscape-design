@@ -64,8 +64,13 @@ for pending_file in "$PENDING_DIR"/*.pending; do
     signed_sha=$(grep -m1 '^review-signed:' "$quality_file" 2>/dev/null | awk '{print $2}' || true)
     [ "$signed_sha" = "$sha" ] && quality_signed=true
   fi
+  simplifier_signed=false
+  if [ -f "$simplifier_file" ]; then
+    signed_sha=$(grep -m1 '^review-signed:' "$simplifier_file" 2>/dev/null | awk '{print $2}' || true)
+    [ "$signed_sha" = "$sha" ] && simplifier_signed=true
+  fi
 
-  if [ "$spec_signed" = "true" ] && [ "$quality_signed" = "true" ] && [ -f "$simplifier_file" ]; then
+  if [ "$spec_signed" = "true" ] && [ "$quality_signed" = "true" ] && [ "$simplifier_signed" = "true" ]; then
     # All three review artifacts present and signed — clear pending
     rm -f "$pending_file"
   else
@@ -81,7 +86,13 @@ for pending_file in "$PENDING_DIR"/*.pending; do
         MISSING="${MISSING:+$MISSING + }quality review (missing review-signed: ${sha} header)"
       fi
     fi
-    [ ! -f "$simplifier_file" ] && MISSING="${MISSING:+$MISSING + }simplifier"
+    if [ "$simplifier_signed" = "false" ]; then
+      if [ ! -f "$simplifier_file" ]; then
+        MISSING="${MISSING:+$MISSING + }simplifier"
+      else
+        MISSING="${MISSING:+$MISSING + }simplifier (missing review-signed: ${sha} header)"
+      fi
+    fi
     PENDING_LIST="${PENDING_LIST}  - ${sha}: needs ${MISSING}\n"
   fi
 done
