@@ -1,11 +1,11 @@
-// src/components/zone-manager.test.ts
+// src/components/zone-categories.test.ts
 import { describe, expect, it } from "vitest";
 import {
   ZONE_CATEGORIES,
   getCategoryColor,
   getCategoryFillOpacity,
   getCategoryLabel,
-} from "./zone-manager";
+} from "./zone-categories";
 
 describe("ZONE_CATEGORIES", () => {
   it("has 6 categories", () => {

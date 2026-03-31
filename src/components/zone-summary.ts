@@ -1,6 +1,6 @@
 // src/components/zone-summary.ts
 import type { YardDesign, Zone, ZoneCategory } from "../types";
-import { getCategoryColor, getCategoryLabel } from "./zone-manager";
+import { getCategoryColor, getCategoryLabel } from "./zone-categories";
 
 export function formatZoneArea(
   category: ZoneCategory,
@@ -24,7 +24,7 @@ export function renderZoneSummary(
 
   const header = document.createElement("h3");
   const zones = design.zones ?? [];
-  header.textContent = `Zones (${zones.length})`;
+  header.textContent = `${zones.length === 1 ? "Zone" : "Zones"} (${zones.length})`;
   section.appendChild(header);
 
   if (zones.length > 0) {

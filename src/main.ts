@@ -213,7 +213,13 @@ function renderSummary(design: YardDesign): void {
         void renderMap(design.center, design.address);
       }
     },
-    design.imageMode ? undefined : () => void renderZoneEditor(design),
+    design.imageMode
+      ? () => {
+          window.alert(
+            "Zone editing requires a map-based design. Upload a new design using an address to draw zones.",
+          );
+        }
+      : () => void renderZoneEditor(design),
     (zoneId) => {
       design.zones = (design.zones ?? []).filter((z) => z.id !== zoneId);
       design.updatedAt = new Date().toISOString();
