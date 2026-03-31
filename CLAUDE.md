@@ -7,6 +7,16 @@
 - **Speckit commands**: `.claude/commands/speckit.*.md` drive the spec → plan → implement cycle
 - **Tech stack**: Deferred to first feature plan. These guidelines are framework-agnostic.
 
+## Enforcement Model
+
+Three layers, in order of reliability:
+
+1. **Hooks** (deterministic) — `.claude/hooks/` scripts gate actions via exit codes. These CANNOT be bypassed. They are the source of truth.
+2. **CLAUDE.md** (advisory) — Process instructions that inform hook behavior and guide the assistant. Followed on best-effort basis.
+3. **Skills** (process guidance) — Subagent-driven-development, TDD, etc. Structure the workflow but cannot enforce compliance.
+
+If a hook doesn't block it, it can be skipped. If compliance matters, it must be a hook.
+
 ## Autonomous Development Loop
 
 Run this loop without human input. Only stop to ask for help when stuck (3+ failed attempts), or at PR creation.
@@ -20,6 +30,7 @@ Before touching code, run through this checklist:
 3. **Confirm permissions**: Will any operation require human approval? Check for `git push`, `rm`, `npm install` that might prompt. If so, plan around them or flag upfront.
 4. **Signal session start**: Create `/tmp/claude-session-active-<repo-hash>` with a summary of what you're working on. This tells the Stop hook not to let you quit mid-task.
 5. **Verify dev environment**: Is the dev server running (if needed)? Are dependencies installed? Is the test suite passing on the current branch?
+6. **Branch discipline**: If starting a new feature, create a dedicated branch from main (`git checkout -b feature-name`). Never pile unrelated features onto an existing feature branch.
 
 If any blocker is unresolvable, stop and ask the user before proceeding.
 
@@ -95,19 +106,20 @@ Steps:
 3. **Code simplifier**: Run `code-simplifier` on changed files. Write output to `.reviews/completed/<commit-sha>-simplifier.md`.
 4. **Fix loop**: If reviewers find Critical or Important issues, fix them and re-review. Only proceed when all review files contain approval.
 
-**Review file format (enforced by hook):** Every spec and quality review file MUST include a signature line so the `review-enforcer.sh` hook can verify the file came from an actual review pass:
+**CRITICAL**: Review artifacts MUST be written by dedicated review subagents (spec-reviewer, code-quality-reviewer, code-simplifier-reviewer). The implementer subagent MUST NOT write its own review files. The review-enforcer hook validates `reviewer-agent:` fields to catch violations.
+
+**Review file format (enforced by hook):** Every review file MUST include these headers so `review-enforcer.sh` can verify authenticity:
 
 ```
 review-signed: <12-char-commit-sha>
-reviewer: spec-compliance | code-quality
+reviewer: spec-compliance | code-quality | code-simplifier
+reviewer-agent: spec-compliance | code-quality | code-simplifier
 reviewed-at: <ISO timestamp>
 
 [review content]
 ```
 
-The hook validates `review-signed: <sha>` matches the pending commit's SHA. Files without this header — including manually created files — will not clear the enforcement gate.
-
-Do NOT create review files manually — they must be created by the review subagents.
+The hook validates both `review-signed: <sha>` and `reviewer-agent:` match expected values. Files without correct headers — including manually created files — will not clear the enforcement gate.
 
 ### Phase 6: COMMIT
 
