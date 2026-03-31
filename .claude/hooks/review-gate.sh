@@ -44,7 +44,7 @@ if [ ! -f "${REVIEWS_DIR}/verification-pass.md" ]; then
 fi
 
 # Check for screenshot artifacts when UI files changed
-UI_FILES_IN_BRANCH=$(git diff --name-only main...HEAD 2>/dev/null | grep -E '(\.css|components/|src/app/|public/|src/style)' || true)
+UI_FILES_IN_BRANCH=$(git diff --name-only main...HEAD 2>/dev/null | grep -E '(\.css|components/|src/app/|public/|src/style|src/main\.ts)' || true)
 if [ -n "$UI_FILES_IN_BRANCH" ] && [ ! -d "${REVIEWS_DIR}/screenshots" ]; then
   ERRORS="${ERRORS}\n- UI files changed but no browser verification screenshots (.reviews/screenshots/)"
 fi
@@ -67,5 +67,10 @@ Dispatch review subagents to create these artifacts.
 BLOCK
   exit 2
 fi
+
+# All gate conditions met — remove session lock so on-stop.sh allows clean exit after PR creation
+REPO_HASH=$(printf '%s' "$REPO_ROOT" | md5 -q 2>/dev/null || printf '%s' "$REPO_ROOT" | md5sum | cut -d' ' -f1)
+SESSION_FILE="/tmp/claude-session-active-${REPO_HASH}"
+rm -f "$SESSION_FILE"
 
 exit 0

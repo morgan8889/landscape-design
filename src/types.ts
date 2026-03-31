@@ -24,11 +24,43 @@ export type ZoneCategory =
   | "deck"
   | "pool";
 
+export type PlantCategory =
+  | "perennial"
+  | "annual"
+  | "shrub"
+  | "ground-cover"
+  | "grass"
+  | "tree";
+
+export type Sun = "full-sun" | "partial-shade" | "full-shade";
+export type Water = "low" | "moderate" | "high";
+
+export interface PlantInfo {
+  id: string;
+  name: string;
+  category: PlantCategory;
+  sunRequirement: Sun;
+  waterNeed: Water;
+  spacingInches: number;
+  matureHeightFt: number;
+  matureWidthFt: number;
+  emoji: string;
+  tags: string[];
+  zoneCompatibility: ZoneCategory[];
+}
+
+export interface PlantAssignment {
+  plantId: string;
+  quantity: number;
+  calculatedQuantity: number;
+}
+
 export interface Zone {
   id: string;
   category: ZoneCategory;
   vertices: LatLng[];
   areaSqFt: number;
+  plants?: PlantAssignment[];
 }
 
 export interface YardDesign {

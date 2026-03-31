@@ -6,6 +6,7 @@ import { renderCalibrationTool } from "./components/calibration-tool";
 import { renderImageBoundaryDrawer } from "./components/image-boundary-drawer";
 import { renderImageUpload } from "./components/image-upload";
 import { createMapView } from "./components/map-view";
+import { renderPlantBrowser } from "./components/plant-browser";
 import { renderYardSummary } from "./components/yard-summary";
 import { renderZoneManager } from "./components/zone-manager";
 import { calculateAreaSqFt } from "./geo/area";
@@ -213,9 +214,45 @@ function renderSummary(design: YardDesign): void {
         void renderMap(design.center, design.address);
       }
     },
-    design.imageMode ? undefined : () => void renderZoneEditor(design),
+    design.imageMode
+      ? () => {
+          window.alert(
+            "Zone editing requires a map-based design. Upload a new design using an address to draw zones.",
+          );
+        }
+      : () => void renderZoneEditor(design),
     (zoneId) => {
       design.zones = (design.zones ?? []).filter((z) => z.id !== zoneId);
+      design.updatedAt = new Date().toISOString();
+      saveDesign(design);
+      renderSummary(design);
+    },
+    (zoneId) => {
+      const zone = (design.zones ?? []).find((z) => z.id === zoneId);
+      if (!zone) return;
+      renderPlantBrowser(
+        app,
+        zone,
+        (plantId, quantity, calculatedQuantity) => {
+          if (!zone.plants) zone.plants = [];
+          const existing = zone.plants.find((p) => p.plantId === plantId);
+          if (existing) {
+            existing.quantity += quantity;
+            existing.calculatedQuantity = calculatedQuantity;
+          } else {
+            zone.plants.push({ plantId, quantity, calculatedQuantity });
+          }
+          design.updatedAt = new Date().toISOString();
+          saveDesign(design);
+          renderSummary(design);
+        },
+        () => renderSummary(design),
+      );
+    },
+    (zoneId, plantId) => {
+      const zone = (design.zones ?? []).find((z) => z.id === zoneId);
+      if (!zone?.plants) return;
+      zone.plants = zone.plants.filter((p) => p.plantId !== plantId);
       design.updatedAt = new Date().toISOString();
       saveDesign(design);
       renderSummary(design);

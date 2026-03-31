@@ -14,6 +14,11 @@
 # ============================================================================
 set -euo pipefail
 
+# Prevent husky pre-commit hooks from re-running inside our hook.
+# We already run tests, typecheck, and lint — husky would double them and
+# can crash under set -euo pipefail when lint-staged finds no staged files.
+export HUSKY=0
+
 # Read the tool input from stdin
 INPUT=$(cat)
 COMMAND=$(printf '%s\n' "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null || true)
@@ -77,6 +82,11 @@ detect_ui_changes() {
         UI_FILES_DETECTED="${UI_FILES_DETECTED}    ${file}"$'\n'
         ;;
       screenshots/*)
+        found_ui=true
+        UI_FILES_DETECTED="${UI_FILES_DETECTED}    ${file}"$'\n'
+        ;;
+      src/main.ts)
+        # Render orchestrator — controls all top-level view transitions
         found_ui=true
         UI_FILES_DETECTED="${UI_FILES_DETECTED}    ${file}"$'\n'
         ;;
@@ -170,10 +180,26 @@ elif [ -f ".eslintrc.json" ] || [ -f ".eslintrc.js" ] || [ -f "eslint.config.js"
   echo "  Lint passed"
 fi
 
+# -- Dependency Security Audit --
+if command -v npm &>/dev/null && [ -f "package-lock.json" ]; then
+  echo "  > Running npm audit..."
+  if ! npm audit --audit-level=high > "$_LOG" 2>&1; then
+    echo ""
+    echo "BLOCKED: High-severity dependency vulnerabilities found."
+    echo "  Run 'npm audit' for details and 'npm audit fix' to resolve."
+    echo "  Output: $(tail -5 "$_LOG")"
+    rm -f "$_LOG"
+    exit 2
+  fi
+  echo "  No high-severity vulnerabilities"
+fi
+
 # -- Screenshot Evidence (when UI files staged) --
 if [ "$SKIP_BROWSER_TESTS" = "false" ]; then
   SCREENSHOTS_DIR="${REPO_ROOT}/.reviews/screenshots"
-  if [ ! -d "$SCREENSHOTS_DIR" ] || [ -z "$(find "$SCREENSHOTS_DIR" -name '*.png' -mmin -60 2>/dev/null | head -1)" ]; then
+  # Override recency window with SCREENSHOT_MAX_AGE_MINS env var (default: 60)
+  _MAX_AGE_MINS="${SCREENSHOT_MAX_AGE_MINS:-60}"
+  if [ ! -d "$SCREENSHOTS_DIR" ] || [ -z "$(find "$SCREENSHOTS_DIR" -name '*.png' -mmin -"$_MAX_AGE_MINS" 2>/dev/null | head -1)" ]; then
     echo ""
     echo "BLOCKED: UI files staged but no recent screenshots in .reviews/screenshots/"
     echo "  Take a screenshot during browser verification before committing."
@@ -194,6 +220,21 @@ for _cfg in playwright.config.ts playwright.config.js playwright.config.mjs play
 done
 
 if [ "$SKIP_BROWSER_TESTS" = "false" ] && [ "$_HAS_PLAYWRIGHT_CONFIG" = "true" ]; then
+  # Ensure dev server is running for E2E tests
+  if ! curl -sf http://localhost:5173 >/dev/null 2>&1; then
+    echo "  > Dev server not running — starting Vite..."
+    npx vite --port 5173 &
+    _VITE_PID=$!
+    for _i in 1 2 3 4 5; do
+      curl -sf http://localhost:5173 >/dev/null 2>&1 && break
+      sleep 1
+    done
+    if ! curl -sf http://localhost:5173 >/dev/null 2>&1; then
+      echo "  ⚠ Failed to start dev server — E2E tests may fail"
+    fi
+    trap "kill $_VITE_PID 2>/dev/null || true" EXIT
+  fi
+
   if [ -d "tests/e2e" ] || [ -d "e2e" ] || [ -d "test/e2e" ]; then
     echo "  > Running E2E tests (excluding visual)..."
     if ! npx playwright test --grep-invert @visual > "$_LOG" 2>&1; then

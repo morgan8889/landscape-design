@@ -41,19 +41,28 @@ REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
 REPO_HASH=$(printf '%s' "$REPO_ROOT" | md5 -q 2>/dev/null || printf '%s' "$REPO_ROOT" | md5sum | cut -d' ' -f1)
 LOG_FILE="/tmp/claude-circuit-${REPO_HASH}.log"
 
+# Prune entries older than 2 hours to prevent cross-session false positives
+CUTOFF=$(( $(date +%s) - 7200 ))
+if [ -f "$LOG_FILE" ]; then
+  PRUNED=$(awk -F'|' -v cutoff="$CUTOFF" '$1 >= cutoff' "$LOG_FILE" 2>/dev/null || true)
+  printf '%s' "$PRUNED" > "$LOG_FILE"
+fi
+
 # Normalize command for comparison (strip whitespace variations)
 NORMALIZED=$(printf '%s' "$COMMAND" | tr -s '[:space:]' ' ' | sed 's/^ //;s/ $//')
 
-# Append to log
-printf '%s\n' "$NORMALIZED" >> "$LOG_FILE"
+# Append to log with unix timestamp prefix: <epoch>|<command>
+printf '%s|%s\n' "$(date +%s)" "$NORMALIZED" >> "$LOG_FILE"
 
 # Check for repetition: same command appearing in last N entries
 THRESHOLD=3
 if [ -f "$LOG_FILE" ]; then
   # Count consecutive identical commands at the tail of the log
+  # Strip timestamp prefix (<epoch>|) before comparing
   CONSECUTIVE=0
   while IFS= read -r line; do
-    if [ "$line" = "$NORMALIZED" ]; then
+    CMD_PART="${line#*|}"
+    if [ "$CMD_PART" = "$NORMALIZED" ]; then
       CONSECUTIVE=$((CONSECUTIVE + 1))
     else
       CONSECUTIVE=0

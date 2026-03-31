@@ -27,6 +27,8 @@ export function renderYardSummary(
   onEdit: () => void,
   onAddZones?: () => void,
   onDeleteZone?: (zoneId: string) => void,
+  onAddPlants?: (zoneId: string) => void,
+  onRemovePlant?: (zoneId: string, plantId: string) => void,
 ): void {
   const wrapper = document.createElement("div");
   wrapper.className = "yard-summary";
@@ -91,6 +93,12 @@ export function renderYardSummary(
         if (onDeleteZone) onDeleteZone(zoneId);
       },
       onAddZones,
+      (zoneId) => {
+        if (onAddPlants) onAddPlants(zoneId);
+      },
+      (zoneId, plantId) => {
+        if (onRemovePlant) onRemovePlant(zoneId, plantId);
+      },
     );
   }
 

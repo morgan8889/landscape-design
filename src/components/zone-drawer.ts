@@ -1,7 +1,7 @@
 import { calculateAreaSqFt } from "../geo/area";
 // src/components/zone-drawer.ts
 import type { LatLng, Zone, ZoneCategory } from "../types";
-import { getCategoryColor, getCategoryFillOpacity } from "./zone-manager";
+import { getCategoryColor, getCategoryFillOpacity } from "./zone-categories";
 
 export interface ZoneDrawerHandle {
   destroy(silent?: boolean): void;

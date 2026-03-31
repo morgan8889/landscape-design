@@ -51,8 +51,9 @@ for pending_file in "$PENDING_DIR"/*.pending; do
 
   spec_file="${COMPLETED_DIR}/${sha}-spec.md"
   quality_file="${COMPLETED_DIR}/${sha}-quality.md"
+  simplifier_file="${COMPLETED_DIR}/${sha}-simplifier.md"
 
-  # Validate review signatures: each file must contain "review-signed: <sha>"
+  # Validate review signatures: spec and quality files must contain "review-signed: <sha>"
   spec_signed=false
   quality_signed=false
   if [ -f "$spec_file" ]; then
@@ -64,8 +65,8 @@ for pending_file in "$PENDING_DIR"/*.pending; do
     [ "$signed_sha" = "$sha" ] && quality_signed=true
   fi
 
-  if [ "$spec_signed" = "true" ] && [ "$quality_signed" = "true" ]; then
-    # Both reviews completed and signed — clear pending
+  if [ "$spec_signed" = "true" ] && [ "$quality_signed" = "true" ] && [ -f "$simplifier_file" ]; then
+    # All three review artifacts present and signed — clear pending
     rm -f "$pending_file"
   else
     STILL_PENDING=$((STILL_PENDING + 1))
@@ -80,6 +81,7 @@ for pending_file in "$PENDING_DIR"/*.pending; do
         MISSING="${MISSING:+$MISSING + }quality review (missing review-signed: ${sha} header)"
       fi
     fi
+    [ ! -f "$simplifier_file" ] && MISSING="${MISSING:+$MISSING + }simplifier"
     PENDING_LIST="${PENDING_LIST}  - ${sha}: needs ${MISSING}\n"
   fi
 done
@@ -91,16 +93,14 @@ REVIEW ENFORCER: ${STILL_PENDING} commit(s) awaiting review before new work can 
 Pending reviews:
 $(printf "$PENDING_LIST")
 
-Required actions:
-1. Dispatch spec compliance reviewer for each pending commit
-   → Reviewer writes findings to .reviews/completed/<sha>-spec.md
-   → File MUST start with: review-signed: <sha>
-2. Dispatch code quality reviewer (after spec passes)
-   → Reviewer writes findings to .reviews/completed/<sha>-quality.md
-   → File MUST start with: review-signed: <sha>
-3. Run code-simplifier on changed files
-   → Write output to .reviews/completed/<sha>-simplifier.md
-4. Fix any Critical/Important issues found
+Required actions — dispatch these agents IN PARALLEL (all have background: true):
+1. Agent tool with subagent_type=spec-reviewer
+2. Agent tool with subagent_type=code-quality-reviewer
+3. Agent tool with subagent_type=code-simplifier-reviewer
+
+Each agent reads .reviews/pending/, reviews the commit diff, and writes a signed
+artifact to .reviews/completed/. Do NOT write review files manually.
+After all three complete, fix any Critical/Important issues found.
 
 This blocker clears automatically when both review files exist AND contain
 a valid "review-signed: <sha>" header matching the commit being reviewed.
