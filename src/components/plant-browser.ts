@@ -7,6 +7,13 @@ function toTitleCase(s: string): string {
   return s.replace(/[-\s]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+export function resolveCostOverride(
+  priceEdited: boolean,
+  price: number,
+): number | undefined {
+  return priceEdited && !Number.isNaN(price) ? price : undefined;
+}
+
 export function renderPlantBrowser(
   container: HTMLElement,
   zone: Zone,
@@ -213,8 +220,7 @@ export function renderPlantBrowser(
         confirmBtn.addEventListener("click", () => {
           const qty = Number.parseInt(qtyInput.value, 10) || calcQty;
           const price = Number.parseFloat(priceInput.value);
-          const costOverride =
-            priceEdited && !Number.isNaN(price) ? price : undefined;
+          const costOverride = resolveCostOverride(priceEdited, price);
           onAdd(plant.id, qty, calcQty, costOverride);
           expandedPlantId = null;
           renderList();
