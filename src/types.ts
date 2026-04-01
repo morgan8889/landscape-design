@@ -47,7 +47,7 @@ export interface PlantInfo {
   emoji: string;
   tags: string[];
   zoneCompatibility: ZoneCategory[];
-  costPerUnit?: number;
+  costPerUnit: number;
 }
 
 export interface PlantAssignment {
