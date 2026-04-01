@@ -213,7 +213,8 @@ export function renderPlantBrowser(
         confirmBtn.addEventListener("click", () => {
           const qty = Number.parseInt(qtyInput.value, 10) || calcQty;
           const price = Number.parseFloat(priceInput.value);
-          const costOverride = priceEdited ? price : undefined;
+          const costOverride =
+            priceEdited && !Number.isNaN(price) ? price : undefined;
           onAdd(plant.id, qty, calcQty, costOverride);
           expandedPlantId = null;
           renderList();

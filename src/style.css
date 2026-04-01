@@ -1,6 +1,7 @@
 /* Dark theme variables */
 :root {
   --blue: #3b82f6;
+  --green: #4ade80;
   --bg: #0f0f1a;
   --surface: #1a1a2e;
   --text: #e2e8f0;
@@ -204,7 +205,7 @@ body {
 }
 
 .save-status {
-  color: #4ade80;
+  color: var(--green);
 }
 
 /* Image Upload */
@@ -791,7 +792,7 @@ body {
   padding: 0.5rem 0.75rem;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #4ade80;
+  color: var(--green);
   border-top: 1px solid var(--border);
 }
 
@@ -813,6 +814,6 @@ body {
 .plant-line-total {
   font-size: 0.9rem;
   font-weight: 500;
-  color: #4ade80;
+  color: var(--green);
   margin-left: 0.5rem;
 }
