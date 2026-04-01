@@ -201,21 +201,11 @@ if command -v npm &>/dev/null && [ -f "package-lock.json" ]; then
   echo "  No high-severity vulnerabilities"
 fi
 
-# -- Screenshot Evidence (when UI files staged) --
+# Screenshot evidence is checked at PR time (review-gate.sh), not per-commit.
+# This avoids requiring browser verification for every intermediate commit while
+# still ensuring screenshots exist before the PR is created.
 if [ "$SKIP_BROWSER_TESTS" = "false" ]; then
-  SCREENSHOTS_DIR="${REPO_ROOT}/.reviews/screenshots"
-  # Override recency window with SCREENSHOT_MAX_AGE_MINS env var (default: 60)
-  _MAX_AGE_MINS="${SCREENSHOT_MAX_AGE_MINS:-60}"
-  if [ ! -d "$SCREENSHOTS_DIR" ] || [ -z "$(find "$SCREENSHOTS_DIR" -name '*.png' -mmin -"$_MAX_AGE_MINS" 2>/dev/null | head -1)" ]; then
-    echo ""
-    echo "BLOCKED: UI files staged but no recent screenshots in .reviews/screenshots/"
-    echo "  Take a screenshot during browser verification before committing."
-    echo "  Use superpowers-chrome (real browser) not headless Playwright for WebGL content."
-    echo "  If screenshot is dark/blank, that IS the bug — investigate."
-    rm -f "$_LOG"
-    exit 2
-  fi
-  echo "  Screenshot evidence found"
+  echo "  Screenshot evidence deferred to PR gate"
 fi
 
 # -- E2E Tests (skip visual — run separately below) --

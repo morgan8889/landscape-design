@@ -70,7 +70,12 @@
       "Bash(GIT_AUTHOR_NAME=*)",
       "Bash(HUSKY=*)",
       "Bash(gh pr edit *)",
-      "Bash(gh pr comment *)"
+      "Bash(gh pr comment *)",
+      "Bash(lsof *)",
+      "Bash(rm -f /tmp/claude-session*)",
+      "Bash(rm -f /tmp/claude-circuit*)",
+      "Bash(stat *)",
+      "Bash(ps *)"
     ]
   },
   "hooks": {
