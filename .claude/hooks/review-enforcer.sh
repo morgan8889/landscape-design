@@ -47,6 +47,14 @@ for pending_file in "$PENDING_DIR"/*.pending; do
   [ ! -f "$pending_file" ] && continue
   sha=$(basename "$pending_file" .pending)
 
+  # Auto-clear stale pending reviews (>2h) — review agent may have crashed
+  FILE_AGE_SECS=$(( $(date +%s) - $(stat -f %m "$pending_file" 2>/dev/null || stat -c %Y "$pending_file" 2>/dev/null || echo 0) ))
+  if [ "$FILE_AGE_SECS" -gt $((2 * 3600)) ]; then
+    echo "WARNING: Stale pending review for ${sha} ($(( FILE_AGE_SECS / 60 ))m old). Auto-clearing — review agent may have crashed. Re-dispatch if needed."
+    rm -f "$pending_file"
+    continue
+  fi
+
   spec_file="${COMPLETED_DIR}/${sha}-spec.md"
   quality_file="${COMPLETED_DIR}/${sha}-quality.md"
   simplifier_file="${COMPLETED_DIR}/${sha}-simplifier.md"

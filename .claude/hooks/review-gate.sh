@@ -11,6 +11,13 @@
 set -euo pipefail
 
 INPUT=$(cat)
+
+# Fast exit: skip jq parsing if command clearly isn't gh pr create
+case "$INPUT" in
+  *'"gh pr create'*) ;;
+  *) exit 0 ;;
+esac
+
 COMMAND=$(printf '%s\n' "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null || true)
 
 [[ "$COMMAND" != *"gh pr create"* ]] && exit 0
