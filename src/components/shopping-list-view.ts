@@ -62,27 +62,17 @@ export function renderShoppingList(
   copyBtn.textContent = "Copy to Clipboard";
   copyBtn.addEventListener("click", () => {
     const text = formatShoppingListText(list, design.address, zoneLabels);
-    try {
-      navigator.clipboard.writeText(text).then(
-        () => {
-          copyBtn.textContent = "Copied!";
-          setTimeout(() => {
-            copyBtn.textContent = "Copy to Clipboard";
-          }, 2000);
-        },
-        () => {
-          copyBtn.textContent = "Copy failed";
-          setTimeout(() => {
-            copyBtn.textContent = "Copy to Clipboard";
-          }, 2000);
-        },
-      );
-    } catch {
-      copyBtn.textContent = "Copy failed";
+    const flash = (msg: string) => {
+      if (!copyBtn.isConnected) return;
+      copyBtn.textContent = msg;
       setTimeout(() => {
-        copyBtn.textContent = "Copy to Clipboard";
+        if (copyBtn.isConnected) copyBtn.textContent = "Copy to Clipboard";
       }, 2000);
-    }
+    };
+    navigator.clipboard.writeText(text).then(
+      () => flash("Copied!"),
+      () => flash("Copy failed"),
+    );
   });
 
   const printBtn = document.createElement("button");
