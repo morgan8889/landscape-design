@@ -39,6 +39,14 @@ mkdir -p "$AUDIT_DIR"
 # Log file per day per repo
 LOG_FILE="${AUDIT_DIR}/${DATE}-${REPO_NAME}-${REPO_HASH:0:8}.jsonl"
 
+# Rotate: clean up audit files older than 14 days (check every ~50 entries)
+if [ -f "$LOG_FILE" ]; then
+  ENTRY_COUNT=$(wc -l < "$LOG_FILE" 2>/dev/null || echo 0)
+  if [ "$ENTRY_COUNT" -gt 0 ] && [ $(( ENTRY_COUNT % 50 )) -eq 0 ]; then
+    find "$AUDIT_DIR" -name "*.jsonl" -mtime +14 -delete 2>/dev/null || true
+  fi
+fi
+
 # Append log entry (use jq for safe JSON construction)
 if command -v jq &>/dev/null; then
   ARGS=(--arg ts "$TS" --arg tool "$TOOL_NAME" --arg repo "$REPO_NAME" --arg input "$INPUT_SUMMARY")

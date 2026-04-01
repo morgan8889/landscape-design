@@ -21,6 +21,13 @@ export HUSKY=0
 
 # Read the tool input from stdin
 INPUT=$(cat)
+
+# Fast exit: skip jq parsing if command clearly isn't git commit
+case "$INPUT" in
+  *'"git commit'*) ;;
+  *) exit 0 ;;
+esac
+
 COMMAND=$(printf '%s\n' "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null || true)
 
 # Only intercept git commit commands
