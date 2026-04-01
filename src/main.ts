@@ -233,14 +233,20 @@ function renderSummary(design: YardDesign): void {
       renderPlantBrowser(
         app,
         zone,
-        (plantId, quantity, calculatedQuantity) => {
+        (plantId, quantity, calculatedQuantity, costPerUnit) => {
           if (!zone.plants) zone.plants = [];
           const existing = zone.plants.find((p) => p.plantId === plantId);
           if (existing) {
             existing.quantity += quantity;
             existing.calculatedQuantity = calculatedQuantity;
+            if (costPerUnit !== undefined) existing.costPerUnit = costPerUnit;
           } else {
-            zone.plants.push({ plantId, quantity, calculatedQuantity });
+            zone.plants.push({
+              plantId,
+              quantity,
+              calculatedQuantity,
+              costPerUnit,
+            });
           }
           design.updatedAt = new Date().toISOString();
           saveDesign(design);
