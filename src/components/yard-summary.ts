@@ -1,3 +1,5 @@
+import { getPlantById } from "../data/plant-catalog";
+import { calculateProjectCost, formatCurrency } from "../geo/plant-cost";
 import { exportDesignJson, saveDesign } from "../storage/local-store";
 // src/components/yard-summary.ts
 import type { YardDesign } from "../types";
@@ -9,6 +11,11 @@ export function formatArea(sqFt: number): string {
 
 export function formatPerimeter(ft: number): string {
   return `${Math.round(ft)} ft`;
+}
+
+export function formatProjectCost(cost: number): string {
+  if (cost === 0) return "—";
+  return formatCurrency(cost);
 }
 
 export function triggerJsonDownload(json: string, filename: string): void {
@@ -48,6 +55,12 @@ export function renderYardSummary(
     { label: "Points", value: String(pointCount) },
     { label: "USDA Zone", value: design.usdaZone ?? "Unknown" },
   ];
+
+  const projectCost = calculateProjectCost(
+    design.zones ?? [],
+    (id) => getPlantById(id)?.costPerUnit ?? 0,
+  );
+  cards.push({ label: "Est. Cost", value: formatProjectCost(projectCost) });
 
   for (const card of cards) {
     const cardEl = document.createElement("div");
