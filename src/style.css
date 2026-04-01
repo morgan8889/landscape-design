@@ -887,7 +887,7 @@ body {
 }
 
 .shopping-item-qty {
-  color: #22c55e;
+  color: var(--green);
   font-weight: 500;
   font-size: 0.875rem;
 }
