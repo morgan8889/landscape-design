@@ -1,6 +1,7 @@
 /* Dark theme variables */
 :root {
   --blue: #3b82f6;
+  --green: #4ade80;
   --bg: #0f0f1a;
   --surface: #1a1a2e;
   --text: #e2e8f0;
@@ -204,7 +205,7 @@ body {
 }
 
 .save-status {
-  color: #4ade80;
+  color: var(--green);
 }
 
 /* Image Upload */
@@ -777,4 +778,42 @@ body {
 
 .zone-delete-bottom {
   align-self: flex-end;
+}
+
+/* ── Cost Estimation ──────────────────────────────────────────────────── */
+
+.zone-plant-cost {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-left: 0.25rem;
+}
+
+.zone-cost-subtotal {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--green);
+  border-top: 1px solid var(--border);
+}
+
+.plant-price-label {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+.plant-price-input {
+  width: 5rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background: var(--bg);
+  color: var(--text);
+}
+
+.plant-line-total {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--green);
+  margin-left: 0.5rem;
 }
