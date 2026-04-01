@@ -1,4 +1,5 @@
 import { getPlantById } from "../data/plant-catalog";
+import { calculateZoneCost, formatCurrency } from "../geo/plant-cost";
 import { calculateCoveragePercent } from "../geo/plant-coverage";
 import type { Zone } from "../types";
 import { getCategoryColor, getCategoryLabel } from "./zone-categories";
@@ -6,6 +7,11 @@ import { getCategoryColor, getCategoryLabel } from "./zone-categories";
 export function formatCoverage(percent: number): string {
   if (percent > 100) return ">100%";
   return `~${Math.round(percent)}%`;
+}
+
+export function formatZoneCost(cost: number): string | null {
+  if (cost === 0) return null;
+  return formatCurrency(cost);
 }
 
 export function renderZoneDetail(
@@ -67,13 +73,17 @@ export function renderZoneDetail(
       const qty = document.createElement("span");
       qty.className = "zone-plant-qty";
       qty.textContent = `×${assignment.quantity}`;
+      const cost = document.createElement("span");
+      cost.className = "zone-plant-cost";
+      const unitCost = assignment.costPerUnit ?? info.costPerUnit;
+      cost.textContent = `— ${formatCurrency(unitCost * assignment.quantity)}`;
       const removeBtn = document.createElement("button");
       removeBtn.className = "zone-plant-remove";
       removeBtn.textContent = "×";
       removeBtn.addEventListener("click", () =>
         onRemovePlant(assignment.plantId),
       );
-      right.append(qty, removeBtn);
+      right.append(qty, cost, removeBtn);
 
       row.append(left, right);
       plantList.appendChild(row);
@@ -108,6 +118,19 @@ export function renderZoneDetail(
     coverageStats.append(countText, percentText);
     coverageBar.append(coverageLabel, coverageStats);
     card.appendChild(coverageBar);
+
+    // Cost subtotal
+    const zoneCost = calculateZoneCost(
+      plants,
+      (id) => getPlantById(id)?.costPerUnit ?? 0,
+    );
+    const formattedCost = formatZoneCost(zoneCost);
+    if (formattedCost) {
+      const costBar = document.createElement("div");
+      costBar.className = "zone-cost-subtotal";
+      costBar.textContent = `Estimated cost: ${formattedCost}`;
+      card.appendChild(costBar);
+    }
   } else {
     const empty = document.createElement("div");
     empty.className = "zone-detail-empty";
