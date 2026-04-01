@@ -3,6 +3,10 @@ import { formatCurrency } from "../geo/plant-cost";
 import { calculatePlantQuantity } from "../geo/plant-coverage";
 import type { PlantInfo, Zone } from "../types";
 
+function toTitleCase(s: string): string {
+  return s.replace(/[-\s]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 export function renderPlantBrowser(
   container: HTMLElement,
   zone: Zone,
@@ -10,7 +14,7 @@ export function renderPlantBrowser(
     plantId: string,
     quantity: number,
     calculatedQuantity: number,
-    costPerUnit: number | undefined,
+    costOverride: number | undefined,
   ) => void,
   onClose: () => void,
 ): void {
@@ -26,7 +30,7 @@ export function renderPlantBrowser(
 
   const titleDiv = document.createElement("div");
   const title = document.createElement("h3");
-  title.textContent = `Plants for ${zone.category.replace("-", " ").replace(/\b\w/g, (c) => c.toUpperCase())}`;
+  title.textContent = `Plants for ${toTitleCase(zone.category)}`;
   const subtitle = document.createElement("div");
   subtitle.className = "plant-browser-subtitle";
   const compatible = getPlantsForZone(zone.category);
@@ -122,9 +126,7 @@ export function renderPlantBrowser(
       name.textContent = plant.name;
       const meta = document.createElement("div");
       meta.className = "plant-meta";
-      const sunLabel = plant.sunRequirement
-        .replace("-", " ")
-        .replace(/\b\w/g, (c) => c.toUpperCase());
+      const sunLabel = toTitleCase(plant.sunRequirement);
       const waterLabel =
         plant.waterNeed.charAt(0).toUpperCase() + plant.waterNeed.slice(1);
       meta.textContent = `${plant.category} · ${sunLabel} · ${waterLabel} Water · ${plant.spacingInches}" spacing · ${formatCurrency(plant.costPerUnit)}/ea`;
@@ -172,13 +174,46 @@ export function renderPlantBrowser(
         recommended.className = "plant-qty-recommended";
         recommended.textContent = `(recommended: ${calcQty})`;
 
+        const priceRow = document.createElement("div");
+        priceRow.className = "plant-confirm-row";
+
+        const priceLabel = document.createElement("span");
+        priceLabel.className = "plant-price-label";
+        priceLabel.textContent = "Price:";
+
+        const priceInput = document.createElement("input");
+        priceInput.type = "number";
+        priceInput.className = "plant-price-input";
+        priceInput.value = plant.costPerUnit.toFixed(2);
+        priceInput.min = "0";
+        priceInput.step = "0.01";
+        let priceEdited = false;
+        priceInput.addEventListener("input", () => {
+          priceEdited = true;
+        });
+
+        const lineTotal = document.createElement("span");
+        lineTotal.className = "plant-line-total";
+
+        const updateLineTotal = (): void => {
+          const q = Number.parseInt(qtyInput.value, 10) || calcQty;
+          const p = Number.parseFloat(priceInput.value) || 0;
+          lineTotal.textContent = `= ${formatCurrency(q * p)}`;
+        };
+        updateLineTotal();
+
+        qtyInput.addEventListener("input", updateLineTotal);
+        priceInput.addEventListener("input", updateLineTotal);
+
+        priceRow.append(priceLabel, priceInput, lineTotal);
+
         const confirmBtn = document.createElement("button");
         confirmBtn.className = "btn btn-primary plant-confirm-btn";
         confirmBtn.textContent = "Confirm";
         confirmBtn.addEventListener("click", () => {
           const qty = Number.parseInt(qtyInput.value, 10) || calcQty;
           const price = Number.parseFloat(priceInput.value);
-          const costOverride = price !== plant.costPerUnit ? price : undefined;
+          const costOverride = priceEdited ? price : undefined;
           onAdd(plant.id, qty, calcQty, costOverride);
           expandedPlantId = null;
           renderList();
@@ -193,35 +228,6 @@ export function renderPlantBrowser(
         });
 
         inputRow.append(qtyLabel, qtyInput, recommended, confirmBtn, cancelBtn);
-
-        const priceRow = document.createElement("div");
-        priceRow.className = "plant-confirm-row";
-
-        const priceLabel = document.createElement("span");
-        priceLabel.className = "plant-qty-label";
-        priceLabel.textContent = "Price:";
-
-        const priceInput = document.createElement("input");
-        priceInput.type = "number";
-        priceInput.className = "plant-price-input";
-        priceInput.value = String(plant.costPerUnit);
-        priceInput.min = "0";
-        priceInput.step = "0.01";
-
-        const lineTotal = document.createElement("span");
-        lineTotal.className = "plant-line-total";
-
-        function updateLineTotal(): void {
-          const qty = Number.parseInt(qtyInput.value, 10) || 0;
-          const price = Number.parseFloat(priceInput.value) || 0;
-          lineTotal.textContent = `= ${formatCurrency(qty * price)}`;
-        }
-        updateLineTotal();
-
-        qtyInput.addEventListener("input", updateLineTotal);
-        priceInput.addEventListener("input", updateLineTotal);
-
-        priceRow.append(priceLabel, priceInput, lineTotal);
 
         confirm.append(calcLabel, inputRow, priceRow);
         listContainer.appendChild(confirm);

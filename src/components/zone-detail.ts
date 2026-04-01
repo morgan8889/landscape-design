@@ -1,5 +1,9 @@
 import { getPlantById } from "../data/plant-catalog";
-import { calculateZoneCost, formatCurrency } from "../geo/plant-cost";
+import {
+  calculateAssignmentCost,
+  calculateZoneCost,
+  formatCurrency,
+} from "../geo/plant-cost";
 import { calculateCoveragePercent } from "../geo/plant-coverage";
 import type { Zone } from "../types";
 import { getCategoryColor, getCategoryLabel } from "./zone-categories";
@@ -73,17 +77,25 @@ export function renderZoneDetail(
       const qty = document.createElement("span");
       qty.className = "zone-plant-qty";
       qty.textContent = `×${assignment.quantity}`;
-      const cost = document.createElement("span");
-      cost.className = "zone-plant-cost";
-      const unitCost = assignment.costPerUnit ?? info.costPerUnit;
-      cost.textContent = `— ${formatCurrency(unitCost * assignment.quantity)}`;
+      const lineCost = calculateAssignmentCost(
+        assignment.quantity,
+        assignment.costPerUnit,
+        info.costPerUnit,
+      );
       const removeBtn = document.createElement("button");
       removeBtn.className = "zone-plant-remove";
       removeBtn.textContent = "×";
       removeBtn.addEventListener("click", () =>
         onRemovePlant(assignment.plantId),
       );
-      right.append(qty, cost, removeBtn);
+      if (lineCost > 0) {
+        const cost = document.createElement("span");
+        cost.className = "zone-plant-cost";
+        cost.textContent = `— ${formatCurrency(lineCost)}`;
+        right.append(qty, cost, removeBtn);
+      } else {
+        right.append(qty, removeBtn);
+      }
 
       row.append(left, right);
       plantList.appendChild(row);
