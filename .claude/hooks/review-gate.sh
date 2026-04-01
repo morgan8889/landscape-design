@@ -72,5 +72,6 @@ fi
 REPO_HASH=$(printf '%s' "$REPO_ROOT" | md5 -q 2>/dev/null || printf '%s' "$REPO_ROOT" | md5sum | cut -d' ' -f1)
 SESSION_FILE="/tmp/claude-session-active-${REPO_HASH}"
 rm -f "$SESSION_FILE"
+touch "/tmp/claude-session-disarmed-${REPO_HASH}"
 
 exit 0

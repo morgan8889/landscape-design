@@ -24,20 +24,18 @@ PENDING_DIR="${REPO_ROOT}/.reviews/pending"
 PENDING_COUNT=$(find "$PENDING_DIR" -name "*.pending" 2>/dev/null | wc -l | tr -d ' ')
 [ "$PENDING_COUNT" -eq 0 ] && exit 0
 
-# Allow read-only and review-related commands through
+# Allow ONLY read-only and review-essential commands through
 case "$COMMAND" in
-  "git status"*|"git diff"*|"git log"*|"git show"*|"git rev-parse"*) exit 0 ;;
-  "npm test"*|"npm run test"*|"npx vitest"*|"npx tsc"*|"npm run typecheck"*|"npm run lint"*) exit 0 ;;
-  "ls "*|"cat "*|"head "*|"tail "*|"pwd"|"echo "*|"wc "*|"find "*) exit 0 ;;
-  "git commit"*) exit 0 ;;
-  "git add"*) exit 0 ;;
-  "git push"*) exit 0 ;;
-  "git checkout"*|"git switch"*|"git branch"*|"git merge"*|"git rebase"*|"git fetch"*|"git pull"*) exit 0 ;;
-  "gh "*) exit 0 ;;
-  "mkdir "*) exit 0 ;;
-  "chmod "*) exit 0 ;;
-  "cp "*) exit 0 ;;
-  "rm "*) exit 0 ;;
+  # Read-only git inspection
+  "git status"*|"git diff"*|"git log"*|"git show"*|"git rev-parse"*|"git fetch"*|"git branch"*) exit 0 ;;
+  # Test/lint (needed to verify review fixes)
+  "npm test"*|"npm run test"*|"npx vitest"*|"npx tsc"*|"npm run typecheck"*|"npm run lint"*|"npx biome"*) exit 0 ;;
+  # Read-only file inspection
+  "ls "*|"cat "*|"head "*|"tail "*|"pwd"|"echo "*|"wc "*|"find "*|"grep "*|"jq "*|"diff "*) exit 0 ;;
+  # Git staging and committing (post-commit-review only flags feat/fix/refactor — chore: passes clean)
+  "git add"*|"git commit"*) exit 0 ;;
+  # Review infrastructure + diagnostics
+  "mkdir -p"*|"chmod "*|"date"*|"ps "*|"stat "*) exit 0 ;;
 esac
 
 # Check if pending reviews have been resolved
