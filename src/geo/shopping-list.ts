@@ -92,7 +92,8 @@ export function aggregatePlants(
       emoji: entry.plant.emoji,
       category: entry.plant.category,
       totalQuantity: entry.totalQuantity,
-      unitCost: entry.lineTotal / entry.totalQuantity,
+      unitCost:
+        entry.totalQuantity > 0 ? entry.lineTotal / entry.totalQuantity : 0,
       lineTotal: entry.lineTotal,
       zoneIds: [...entry.zoneIds],
     });
