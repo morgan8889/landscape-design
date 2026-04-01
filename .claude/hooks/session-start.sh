@@ -22,6 +22,12 @@ fi
 REPO_HASH=$(printf '%s' "$REPO_ROOT" | md5 -q 2>/dev/null || printf '%s' "$REPO_ROOT" | md5sum | cut -d' ' -f1)
 SESSION_FILE="/tmp/claude-session-active-${REPO_HASH}"
 
+# Skip if session was intentionally disarmed (on-stop or review-gate removed it)
+DISARM_FILE="/tmp/claude-session-disarmed-${REPO_HASH}"
+if [ -f "$DISARM_FILE" ]; then
+  exit 0
+fi
+
 # Only create if it doesn't exist — don't overwrite original task context
 if [ ! -f "$SESSION_FILE" ]; then
   # Detect phase from file path: spec/plan files = interactive, src files = implementation
