@@ -11,7 +11,9 @@ export function resolveCostOverride(
   priceEdited: boolean,
   price: number,
 ): number | undefined {
-  return priceEdited && !Number.isNaN(price) ? price : undefined;
+  return priceEdited && Number.isFinite(price) && price >= 0
+    ? price
+    : undefined;
 }
 
 export function renderPlantBrowser(

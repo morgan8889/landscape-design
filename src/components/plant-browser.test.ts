@@ -17,4 +17,12 @@ describe("resolveCostOverride", () => {
   it("returns 0 when price is explicitly set to zero", () => {
     expect(resolveCostOverride(true, 0)).toBe(0);
   });
+
+  it("returns undefined when price is negative", () => {
+    expect(resolveCostOverride(true, -5)).toBeUndefined();
+  });
+
+  it("returns undefined when price is Infinity", () => {
+    expect(resolveCostOverride(true, Number.POSITIVE_INFINITY)).toBeUndefined();
+  });
 });
