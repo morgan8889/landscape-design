@@ -778,3 +778,34 @@ body {
 .zone-delete-bottom {
   align-self: flex-end;
 }
+
+/* ── Cost Estimation ──────────────────────────────────────────────────── */
+
+.zone-plant-cost {
+  color: #6b7280;
+  font-size: 0.85rem;
+  margin-left: 0.25rem;
+}
+
+.zone-cost-subtotal {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #059669;
+  border-top: 1px solid #e5e7eb;
+}
+
+.plant-price-input {
+  width: 5rem;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.plant-line-total {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #059669;
+  margin-left: 0.5rem;
+}
