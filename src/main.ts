@@ -7,6 +7,7 @@ import { renderImageBoundaryDrawer } from "./components/image-boundary-drawer";
 import { renderImageUpload } from "./components/image-upload";
 import { createMapView } from "./components/map-view";
 import { renderPlantBrowser } from "./components/plant-browser";
+import { renderShoppingList } from "./components/shopping-list-view";
 import { renderYardSummary } from "./components/yard-summary";
 import { renderZoneManager } from "./components/zone-manager";
 import { calculateAreaSqFt } from "./geo/area";
@@ -197,6 +198,11 @@ async function renderZoneEditor(design: YardDesign): Promise<void> {
   });
 }
 
+function renderShoppingListView(design: YardDesign): void {
+  const app = getApp();
+  renderShoppingList(app, design, () => renderSummary(design));
+}
+
 const IMAGE_MODE_ZONE_MSG =
   "Zone editing requires a map-based design. Upload a new design using an address to draw zones.";
 
@@ -263,6 +269,7 @@ function renderSummary(design: YardDesign): void {
       saveDesign(design);
       renderSummary(design);
     },
+    () => renderShoppingListView(design),
   );
 }
 

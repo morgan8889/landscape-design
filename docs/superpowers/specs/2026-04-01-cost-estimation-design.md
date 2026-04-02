@@ -1,7 +1,8 @@
 # Cost Estimation — Feature Design Spec
 
 **Date**: 2026-04-01
-**Status**: Approved
+**Status**: Complete
+**Completed**: 2026-04-01
 **Depends on**: Plant Palette (merged)
 
 ## Problem
@@ -147,3 +148,17 @@ Realistic average US retail prices per plant:
 3. **Test-First** — TDD for all cost math. E2E for user flows.
 4. **Incremental Delivery** — P1 delivers standalone value (see costs, override prices). No dependency on external APIs.
 5. **Simplicity** — Pure functions, existing patterns, no new dependencies. Computed on-the-fly, no cached state to manage.
+
+
+---
+
+## Build Summary
+
+- **Completed**: 2026-04-01
+- **Branch**: `cost-estimation`
+- **Key decisions**:
+  - Pure functions in `src/geo/plant-cost.ts` — no state, fully testable
+  - Costs computed on-the-fly from assignments; no cached totals to go stale
+  - `resolveCostOverride()` extracted as exported helper with `Number.isFinite && >= 0` guard to prevent negative/Infinity persisting to localStorage
+  - CSS `--green` variable added to `:root` to replace 3 hardcoded `#4ade80` occurrences
+- **Deviations from spec**: All P1 user stories implemented as specified. `local-store.ts` deserialization validation (loading costPerUnit without bounds check) deferred to issue #10 — the write-path bug is fixed, so risk is low.

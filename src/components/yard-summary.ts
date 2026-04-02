@@ -36,6 +36,7 @@ export function renderYardSummary(
   onDeleteZone?: (zoneId: string) => void,
   onAddPlants?: (zoneId: string) => void,
   onRemovePlant?: (zoneId: string, plantId: string) => void,
+  onShoppingList?: () => void,
 ): void {
   const wrapper = document.createElement("div");
   wrapper.className = "yard-summary";
@@ -90,7 +91,15 @@ export function renderYardSummary(
   editBtn.className = "btn btn-secondary edit-btn";
   editBtn.textContent = "Edit Boundary";
 
-  actionsDiv.append(saveBtn, exportBtn, editBtn);
+  if (onShoppingList && projectCost > 0) {
+    const shoppingBtn = document.createElement("button");
+    shoppingBtn.className = "btn btn-secondary shopping-list-btn";
+    shoppingBtn.textContent = "Shopping List";
+    shoppingBtn.addEventListener("click", onShoppingList);
+    actionsDiv.append(saveBtn, exportBtn, shoppingBtn, editBtn);
+  } else {
+    actionsDiv.append(saveBtn, exportBtn, editBtn);
+  }
 
   const status = document.createElement("p");
   status.className = "save-status";
