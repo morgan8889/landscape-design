@@ -566,4 +566,16 @@ describe("formatShoppingListText", () => {
     const result = formatShoppingListText(list, "101 Maple Dr", zoneLabels);
     expect(result).toContain("(Front Bed, z-unknown)");
   });
+
+  it("collapses newlines in address so separator length matches header", () => {
+    const list: ShoppingList = {
+      categories: [],
+      grandTotal: 0,
+      totalItems: 0,
+      totalQuantity: 0,
+    };
+    const result = formatShoppingListText(list, "123 Main\nSt", new Map());
+    const lines = result.split("\n");
+    expect(lines[1].length).toBe(lines[0].length);
+  });
 });
