@@ -141,8 +141,7 @@ export function formatShoppingListText(
   lines.push("=".repeat(header.length));
   lines.push("");
 
-  for (let i = 0; i < list.categories.length; i++) {
-    const cat = list.categories[i];
+  for (const cat of list.categories) {
     lines.push(cat.label.toUpperCase());
 
     for (const item of cat.items) {
