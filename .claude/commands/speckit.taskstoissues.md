@@ -18,7 +18,7 @@ You **MUST** consider the user input before proceeding (if not empty).
 
 ### Choose target: Plane or GitHub
 
-1. Check if Plane MCP tools are available (e.g. `create_work_item`). If available AND the user passed `--plane` or `plane` in arguments, use **Plane mode**. If unavailable or not requested, fall through to **GitHub mode**.
+1. Check if `PLANE_ENABLED=1` is set and Plane MCP tools are available (e.g. `create_work_item`). If both conditions met AND the user passed `--plane` or `plane` in arguments, use **Plane mode**. If either condition is unmet or not requested, fall through to **GitHub mode**.
 
 ### Plane mode
 

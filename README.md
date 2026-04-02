@@ -31,3 +31,52 @@ See `docs/superpowers/plans/` for per-feature implementation plans and `docs/sup
 ## Contributing
 
 This project uses a spec-driven workflow. See `.claude/commands/` for available slash commands and `.specify/memory/constitution.md` for project principles.
+
+## Plane Integration (Optional)
+
+Track work items in [Plane](https://plane.so) automatically. Hooks inject context at session start, commit, PR, and stop events.
+
+### Setup
+
+1. **Configure env var** — add to `~/.claude/settings.json`:
+   ```json
+   {
+     "env": {
+       "PLANE_ENABLED": "1",
+       "PLANE_API_KEY": "<your-api-key>",
+       "PLANE_WORKSPACE_SLUG": "<your-workspace>"
+     }
+   }
+   ```
+   Or export in your shell profile.
+
+2. **Add the Plane MCP server** — configure in `.mcp.json` or your MCP settings:
+   ```json
+   {
+     "mcpServers": {
+       "plane": {
+         "command": "python",
+         "args": ["-m", "plane_mcp", "stdio"],
+         "env": {
+           "PLANE_API_KEY": "<your-api-key>",
+           "PLANE_WORKSPACE_SLUG": "<your-workspace>"
+         }
+       }
+     }
+   }
+   ```
+
+3. **Populate project registry** — run `/speckit.specify` on your first feature. The skill auto-creates a Plane project and populates `.claude/skills/plane-dev/references/projects.md`.
+
+### What it does
+
+| Event | Plane Action |
+|-------|-------------|
+| Session start | Detects ticket from branch name, loads ticket state |
+| `feat:` commit | Adds commit comment to ticket, marks child tasks Done |
+| PR gate passes | Links PR to parent ticket, moves to In Review |
+| PR created | Moves parent ticket to Done |
+| `/speckit.specify` | Creates Plane project + parent ticket |
+| `/speckit.taskstoissues --plane` | Creates child tickets from tasks.md |
+
+Without `PLANE_ENABLED=1`, all Plane integration is silently skipped.

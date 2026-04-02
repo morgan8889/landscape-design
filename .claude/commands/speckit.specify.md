@@ -89,7 +89,7 @@ Given that feature description, do this:
    - The JSON output will contain BRANCH_NAME and SPEC_FILE paths
    - For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot")
 
-3. **Plane project setup (if Plane MCP available)**: If Plane MCP tools are available (e.g. `create_work_item` exists):
+3. **Plane project setup (if enabled)**: If `PLANE_ENABLED=1` is set and Plane MCP tools are available (e.g. `create_work_item` exists):
    - Read `.claude/skills/plane-dev/references/projects.md`
    - If no project exists for this repo, create one: `create_project(name=<repo name>, identifier=<3-5 char acronym>)`
    - Capture project ID and state UUIDs with `list_states(project_id)`, update `references/projects.md`

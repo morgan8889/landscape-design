@@ -81,11 +81,13 @@ SESSION_FILE="/tmp/claude-session-active-${REPO_HASH}"
 rm -f "$SESSION_FILE"
 touch "/tmp/claude-session-disarmed-${REPO_HASH}"
 
-# Hint to link PR to Plane ticket
-CURRENT_BRANCH=$(git -C "$REPO_ROOT" branch --show-current 2>/dev/null || true)
-PLANE_TICKET=$(echo "$CURRENT_BRANCH" | grep -oE '[A-Z]+-[0-9]+' | head -1 || true)
-if [ -n "$PLANE_TICKET" ]; then
-  echo "{\"additionalContext\": \"PLANE ACTION: After creating the PR, link it to Plane ticket ${PLANE_TICKET} using create_work_item_link. Move the parent ticket to In Review state.\"}"
+# Hint to link PR to Plane ticket (requires PLANE_ENABLED=1)
+if [ "${PLANE_ENABLED:-}" = "1" ]; then
+  CURRENT_BRANCH=$(git -C "$REPO_ROOT" branch --show-current 2>/dev/null || true)
+  PLANE_TICKET=$(echo "$CURRENT_BRANCH" | grep -oE '[A-Z]+-[0-9]+' | head -1 || true)
+  if [ -n "$PLANE_TICKET" ]; then
+    echo "{\"additionalContext\": \"PLANE ACTION: After creating the PR, link it to Plane ticket ${PLANE_TICKET} using create_work_item_link. Move the parent ticket to In Review state.\"}"
+  fi
 fi
 
 exit 0
