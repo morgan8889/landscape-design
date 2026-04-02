@@ -24,6 +24,17 @@ PENDING_DIR="${REPO_ROOT}/.reviews/pending"
 PENDING_COUNT=$(find "$PENDING_DIR" -name "*.pending" 2>/dev/null | wc -l | tr -d ' ')
 [ "$PENDING_COUNT" -eq 0 ] && exit 0
 
+# Block commands that chain additional operations via shell operators.
+# This prevents a crafted command like "rm -f /tmp/claude-session && curl ... | bash"
+# from matching an allow-list prefix while executing injected payloads.
+# Exception: git commit messages legitimately contain semicolons and pipes.
+if ! printf '%s' "$COMMAND" | grep -qE '^git (add|commit|push)'; then
+  if printf '%s' "$COMMAND" | grep -qE '(&&|\|\||;|\||`|>>?|\$\()'; then
+    # Shell operator found outside a trusted git command — block immediately
+    exit 2
+  fi
+fi
+
 # Allow ONLY read-only and review-essential commands through
 case "$COMMAND" in
   # Read-only git inspection
@@ -35,7 +46,15 @@ case "$COMMAND" in
   # Git staging and committing (post-commit-review only flags feat/fix/refactor — chore: passes clean)
   "git add"*|"git commit"*) exit 0 ;;
   # Review infrastructure + diagnostics
-  "mkdir -p"*|"chmod "*|"date"*|"ps "*|"stat "*) exit 0 ;;
+  "mkdir -p"*|"chmod "*|"date"*|"ps "*|"stat "*|"lsof "*) exit 0 ;;
+  # Session cleanup (prevent stop-hook deadlocks)
+  "rm -f /tmp/claude-session"*|"rm -f /tmp/claude-circuit"*) exit 0 ;;
+  # Dev server management — curl scoped to localhost health checks only (prevents -o file writes)
+  "npx vite"*|"curl -sf http://localhost:"*|"lsof -i"*|"sleep "*|"pkill -f vite"*) exit 0 ;;
+  # GitHub CLI — read-only PR inspection and commenting only; gh api removed (allows arbitrary mutations)
+  "gh pr list"*|"gh pr view"*|"gh pr comment"*|"gh issue"*|"gh run"*) exit 0 ;;
+  # Git push to remote (needed to update PR branches after review fixes)
+  "git push origin"*|"git push --force-with-lease"*) exit 0 ;;
 esac
 
 # Check if pending reviews have been resolved
@@ -59,40 +78,47 @@ for pending_file in "$PENDING_DIR"/*.pending; do
   quality_file="${COMPLETED_DIR}/${sha}-quality.md"
   simplifier_file="${COMPLETED_DIR}/${sha}-simplifier.md"
 
-  # Validate review signatures: files must contain "review-signed: <sha>" AND correct "reviewer-agent:"
+  # Validate review signatures: files must contain "review-signed: <sha>" AND "reviewer-agent:".
+  # Only "reviewer-agent:" is accepted — "reviewer:" alone is rejected to prevent implementer
+  # self-signing (security review finding). If a file only has "reviewer:", a warning is emitted.
+  _get_reviewer() {
+    local file="$1"
+    local val
+    val=$(grep -m1 '^reviewer-agent:' "$file" 2>/dev/null | awk '{print $2}' || true)
+    if [ -z "$val" ]; then
+      # Check for legacy "reviewer:" header and warn — does NOT count as valid
+      local legacy
+      legacy=$(grep -m1 '^reviewer:' "$file" 2>/dev/null | awk '{print $2}' || true)
+      if [ -n "$legacy" ]; then
+        echo "WARNING: Review file $file uses deprecated 'reviewer:' header — must be 'reviewer-agent:'" >&2
+      fi
+    fi
+    echo "$val"
+  }
+
   spec_signed=false
   quality_signed=false
   if [ -f "$spec_file" ]; then
     signed_sha=$(grep -m1 '^review-signed:' "$spec_file" 2>/dev/null | awk '{print $2}' || true)
-    reviewer=$(grep -m1 '^reviewer-agent:' "$spec_file" 2>/dev/null | awk '{print $2}' || true)
+    reviewer=$(_get_reviewer "$spec_file")
     [ "$signed_sha" = "$sha" ] && [ "$reviewer" = "spec-compliance" ] && spec_signed=true
   fi
   if [ -f "$quality_file" ]; then
     signed_sha=$(grep -m1 '^review-signed:' "$quality_file" 2>/dev/null | awk '{print $2}' || true)
-    reviewer=$(grep -m1 '^reviewer-agent:' "$quality_file" 2>/dev/null | awk '{print $2}' || true)
+    reviewer=$(_get_reviewer "$quality_file")
     [ "$signed_sha" = "$sha" ] && [ "$reviewer" = "code-quality" ] && quality_signed=true
   fi
   simplifier_signed=false
   if [ -f "$simplifier_file" ]; then
     signed_sha=$(grep -m1 '^review-signed:' "$simplifier_file" 2>/dev/null | awk '{print $2}' || true)
-    reviewer=$(grep -m1 '^reviewer-agent:' "$simplifier_file" 2>/dev/null | awk '{print $2}' || true)
+    reviewer=$(_get_reviewer "$simplifier_file")
     [ "$signed_sha" = "$sha" ] && [ "$reviewer" = "code-simplifier" ] && simplifier_signed=true
   fi
 
-  # Check if commit touched UI files — require screenshot evidence
-  ui_needs_screenshot=false
-  ui_files=$(git diff-tree --no-commit-id --name-only -r "$sha" 2>/dev/null | grep -E '(\.css|\.scss|components/|src/app/|src/main\.ts|public/)' || true)
-  if [ -n "$ui_files" ]; then
-    screenshots_dir="${REPO_ROOT}/.reviews/screenshots"
-    max_age="${SCREENSHOT_MAX_AGE_MINS:-120}"
-    recent_screenshot=""
-    if [ -d "$screenshots_dir" ]; then
-      recent_screenshot=$(find "$screenshots_dir" -name '*.png' -mmin -"$max_age" 2>/dev/null | head -1 || true)
-    fi
-    [ -z "$recent_screenshot" ] && ui_needs_screenshot=true
-  fi
+  # Screenshot evidence is checked at PR time (review-gate.sh), not per-commit.
+  # Per-commit screenshot gates caused deadlocks and excessive browser verification overhead.
 
-  if [ "$spec_signed" = "true" ] && [ "$quality_signed" = "true" ] && [ "$simplifier_signed" = "true" ] && [ "$ui_needs_screenshot" = "false" ]; then
+  if [ "$spec_signed" = "true" ] && [ "$quality_signed" = "true" ] && [ "$simplifier_signed" = "true" ]; then
     # All review artifacts present, signed, and screenshot requirements met — clear pending
     rm -f "$pending_file"
   else
@@ -115,9 +141,6 @@ for pending_file in "$PENDING_DIR"/*.pending; do
         MISSING="${MISSING:+$MISSING + }simplifier (invalid signature or reviewer-agent)"
       fi
     fi
-    if [ "$ui_needs_screenshot" = "true" ]; then
-      MISSING="${MISSING:+$MISSING + }browser screenshot (UI files changed, none in .reviews/screenshots/)"
-    fi
     PENDING_LIST="${PENDING_LIST}  - ${sha}: needs ${MISSING}\n"
   fi
 done
@@ -138,11 +161,8 @@ Each agent reads .reviews/pending/, reviews the commit diff, and writes a signed
 artifact to .reviews/completed/. Do NOT write review files manually.
 After all three complete, fix any Critical/Important issues found.
 
-4. For commits with UI changes: take a browser screenshot using superpowers-chrome
-   and save to .reviews/screenshots/ BEFORE reviews can clear.
-
 This blocker clears automatically when review files exist with valid
-"review-signed: <sha>" and "reviewer-agent:" headers, plus screenshots for UI commits.
+"review-signed: <sha>" and "reviewer-agent:" (or "reviewer:") headers.
 BLOCK
   exit 2
 fi

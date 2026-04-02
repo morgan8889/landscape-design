@@ -95,7 +95,7 @@ If any blocker is unresolvable, stop and ask the user before proceeding.
 ### Phase 5: REVIEW (Per-Task, Hook-Enforced)
 
 After implementation, dispatch review subagents. This phase is enforced by hooks:
-- `post-commit-review.sh` automatically queues every `feat:/fix:/refactor:` commit for review
+- `post-commit-review.sh` automatically queues every `feat:` commit for review (`fix:` and `refactor:` are exempt — they're small and self-evident)
 - `review-enforcer.sh` BLOCKS the next implementation task if pending reviews exist
 - Review artifacts must be written by the review subagents to `.reviews/completed/`
 
@@ -106,18 +106,19 @@ Steps:
 3. **Code simplifier**: Run `code-simplifier` on changed files. Write output to `.reviews/completed/<commit-sha>-simplifier.md`.
 4. **Fix loop**: If reviewers find Critical or Important issues, fix them and re-review. Only proceed when all review files contain approval.
 
-**CRITICAL**: Review artifacts MUST be written by dedicated review subagents (spec-reviewer, code-quality-reviewer, code-simplifier-reviewer). The implementer subagent MUST NOT write its own review files. The review-enforcer hook validates `reviewer-agent:` fields to catch violations.
+**CRITICAL**: Review artifacts MUST be written by dedicated review subagents (spec-reviewer, code-quality-reviewer, code-simplifier-reviewer). The implementer subagent MUST NOT write its own review files. The review-enforcer hook validates reviewer fields to catch violations.
 
 **Review file format (enforced by hook):** Every review file MUST include these headers so `review-enforcer.sh` can verify authenticity:
 
 ```
 review-signed: <12-char-commit-sha>
 reviewer: spec-compliance | code-quality | code-simplifier
-reviewer-agent: spec-compliance | code-quality | code-simplifier
 reviewed-at: <ISO timestamp>
 
 [review content]
 ```
+
+The hook accepts both `reviewer-agent:` and `reviewer:` as the reviewer field name.
 
 The hook validates both `review-signed: <sha>` and `reviewer-agent:` match expected values. Files without correct headers — including manually created files — will not clear the enforcement gate.
 

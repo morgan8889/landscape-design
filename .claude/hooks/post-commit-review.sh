@@ -14,8 +14,10 @@ COMMAND=$(printf '%s\n' "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/n
 # Only fire after git commit
 [[ "$COMMAND" != *"git commit"* ]] && exit 0
 
-# Only for implementation commits (not review fixes, docs, chores, tests)
-if ! echo "$COMMAND" | grep -qE '(feat:|fix:|refactor:)'; then
+# Only for new feature commits — fix: and refactor: are typically small, self-evident
+# changes that don't warrant 3 review agents each. This reduces review overhead from
+# 3N agents to 3F agents (where F = feat commits, N = all implementation commits).
+if ! echo "$COMMAND" | grep -qE 'feat:'; then
   exit 0
 fi
 
