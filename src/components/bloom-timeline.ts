@@ -118,15 +118,11 @@ export function renderBloomTimeline(
   });
   section.appendChild(toggleBtn);
 
-  // Build plant rows
-  const seenPlants = new Set<string>();
-  for (const month of timeline.months) {
-    for (const id of [...month.bloomingPlants, ...month.foliagePlants]) {
-      seenPlants.add(id);
-    }
-  }
+  // Pre-compute per-month Sets for O(1) lookup in plant row rendering
+  const bloomSets = timeline.months.map((m) => new Set(m.bloomingPlants));
+  const foliageSets = timeline.months.map((m) => new Set(m.foliagePlants));
 
-  for (const plantId of seenPlants) {
+  for (const plantId of timeline.plantIds) {
     const plant = getPlantById(plantId);
     if (!plant) continue;
 
@@ -138,16 +134,13 @@ export function renderBloomTimeline(
     nameCell.textContent = `${plant.emoji} ${plant.name}`;
     row.appendChild(nameCell);
 
-    for (const month of timeline.months) {
+    for (let i = 0; i < 12; i++) {
       const cell = document.createElement("div");
       cell.className = "bloom-cell";
 
-      const isBlooming = month.bloomingPlants.includes(plantId);
-      const isFoliage = month.foliagePlants.includes(plantId);
-
-      if (isBlooming) {
+      if (bloomSets[i].has(plantId)) {
         cell.classList.add("bloom-cell-bloom");
-      } else if (isFoliage) {
+      } else if (foliageSets[i].has(plantId)) {
         cell.classList.add("bloom-cell-foliage");
       }
 

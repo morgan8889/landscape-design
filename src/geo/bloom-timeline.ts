@@ -11,6 +11,7 @@ export interface BloomTimeline {
   months: MonthSummary[];
   gapMonths: number[];
   plantCount: number;
+  plantIds: string[];
 }
 
 export function buildBloomTimeline(
@@ -67,5 +68,10 @@ export function buildBloomTimeline(
     }
   }
 
-  return { months, gapMonths, plantCount };
+  const plantIds = [...seen].filter((id) => {
+    const p = getPlantInfo(id);
+    return p && (p.bloomMonths?.length || p.foliageMonths?.length);
+  });
+
+  return { months, gapMonths, plantCount, plantIds };
 }
