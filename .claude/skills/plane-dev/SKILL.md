@@ -7,6 +7,22 @@ description: Plane project management integration for the Superpowers developmen
 
 Plane is the source of truth for all work. Every Superpowers lifecycle event has a corresponding Plane action. No manual tracking.
 
+## Setup
+
+All Plane integration requires `PLANE_ENABLED=1` in the environment. Set it in `~/.claude/settings.json`:
+
+```json
+{
+  "env": {
+    "PLANE_ENABLED": "1"
+  }
+}
+```
+
+Or export it in your shell profile. Without this, all hooks and commands silently skip Plane actions.
+
+You also need the Plane MCP server configured — see the project README for full setup instructions.
+
 ## Workspace
 
 > **Setup required:** populate these values from your Plane instance, or run `list_projects()` to discover them.

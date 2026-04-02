@@ -45,13 +45,15 @@ if [ -d "$PENDING_DIR" ]; then
   fi
 fi
 
-# Detect Plane ticket from branch name
-CURRENT_BRANCH=$(git -C "$REPO_ROOT" branch --show-current 2>/dev/null || true)
-PLANE_TICKET=$(echo "$CURRENT_BRANCH" | grep -oE '[A-Z]+-[0-9]+' | head -1 || true)
-if [ -n "$PLANE_TICKET" ]; then
-  PROJ_ID=$(echo "$PLANE_TICKET" | grep -oE '^[A-Z]+')
-  ISSUE_NUM=$(echo "$PLANE_TICKET" | grep -oE '[0-9]+$')
-  CONTEXT_PARTS="${CONTEXT_PARTS:+$CONTEXT_PARTS }Plane ticket ${PLANE_TICKET} detected from branch. If Plane MCP is available, run retrieve_work_item_by_identifier(project_identifier=\"${PROJ_ID}\", issue_identifier=${ISSUE_NUM}) to load current ticket state."
+# Detect Plane ticket from branch name (requires PLANE_ENABLED=1)
+if [ "${PLANE_ENABLED:-}" = "1" ]; then
+  CURRENT_BRANCH=$(git -C "$REPO_ROOT" branch --show-current 2>/dev/null || true)
+  PLANE_TICKET=$(echo "$CURRENT_BRANCH" | grep -oE '[A-Z]+-[0-9]+' | head -1 || true)
+  if [ -n "$PLANE_TICKET" ]; then
+    PROJ_ID=$(echo "$PLANE_TICKET" | grep -oE '^[A-Z]+')
+    ISSUE_NUM=$(echo "$PLANE_TICKET" | grep -oE '[0-9]+$')
+    CONTEXT_PARTS="${CONTEXT_PARTS:+$CONTEXT_PARTS }Plane ticket ${PLANE_TICKET} detected from branch. If Plane MCP is available, run retrieve_work_item_by_identifier(project_identifier=\"${PROJ_ID}\", issue_identifier=${ISSUE_NUM}) to load current ticket state."
+  fi
 fi
 
 # Output context if we found anything useful
