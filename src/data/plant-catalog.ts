@@ -536,6 +536,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["walkable", "low-growing"],
     zoneCompatibility: ["garden-bed", "path", "patio"],
+    bloomMonths: [5, 6],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   },
   {
     id: "sedum-ground-cover",
@@ -549,6 +551,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["drought-tolerant", "succulent"],
     zoneCompatibility: ["garden-bed", "path", "patio"],
+    bloomMonths: [8, 9],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10],
   },
   {
     id: "liriope",
@@ -562,6 +566,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["evergreen", "drought-tolerant", "edging"],
     zoneCompatibility: ["garden-bed", "path"],
+    bloomMonths: [8, 9],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   },
 
   // ── Grasses ──────────────────────────────────────────────────────────────────
@@ -577,6 +583,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌾",
     tags: ["ornamental", "drought-tolerant"],
     zoneCompatibility: ["garden-bed", "patio"],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10, 11],
   },
   {
     id: "blue-fescue",
@@ -590,6 +597,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌾",
     tags: ["ornamental", "drought-tolerant", "blue-foliage"],
     zoneCompatibility: ["garden-bed", "patio", "path"],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   },
   {
     id: "mondo-grass",
@@ -603,6 +611,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["evergreen", "edging"],
     zoneCompatibility: ["garden-bed", "path"],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   },
   {
     id: "karl-foerster",
@@ -616,6 +625,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌾",
     tags: ["ornamental", "upright", "drought-tolerant"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [6, 7, 8, 9],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10, 11],
   },
   {
     id: "switchgrass",
@@ -629,6 +640,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌾",
     tags: ["native", "drought-tolerant", "wildlife"],
     zoneCompatibility: ["garden-bed"],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10, 11],
   },
   {
     id: "bermuda",
@@ -642,6 +654,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["turf", "drought-tolerant", "warm-season"],
     zoneCompatibility: ["lawn"],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10],
   },
   {
     id: "tall-fescue",
@@ -655,6 +668,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["turf", "cool-season", "shade-tolerant"],
     zoneCompatibility: ["lawn"],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   },
   {
     id: "zoysia",
@@ -668,6 +682,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["turf", "drought-tolerant", "warm-season"],
     zoneCompatibility: ["lawn"],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10],
   },
 
   // ── Trees ────────────────────────────────────────────────────────────────────
@@ -683,6 +698,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🍁",
     tags: ["ornamental", "fall-color", "specimen"],
     zoneCompatibility: ["garden-bed"],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10, 11],
   },
   {
     id: "dogwood",
@@ -696,6 +712,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["native", "spring-bloomer", "wildlife"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [4, 5],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10],
   },
   {
     id: "crape-myrtle",
@@ -709,6 +727,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["summer-bloomer", "drought-tolerant", "showy"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [6, 7, 8, 9],
   },
   {
     id: "redbud",
@@ -722,6 +741,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["native", "spring-bloomer", "specimen"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [3, 4],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10],
   },
   {
     id: "magnolia",
@@ -735,6 +756,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["fragrant", "spring-bloomer", "specimen"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [3, 4, 5],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   },
   {
     id: "river-birch",
@@ -748,6 +771,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌳",
     tags: ["native", "multi-trunk", "peeling-bark"],
     zoneCompatibility: ["garden-bed"],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10, 11],
   },
 
   // ── Patio / Pool / Container plants ─────────────────────────────────────────
@@ -763,6 +787,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌳",
     tags: ["evergreen", "formal", "container"],
     zoneCompatibility: ["patio", "garden-bed", "path"],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   },
   {
     id: "ornamental-pepper",
@@ -776,6 +801,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌶️",
     tags: ["colorful", "container", "ornamental"],
     zoneCompatibility: ["patio"],
+    bloomMonths: [6, 7, 8, 9, 10],
+    foliageMonths: [5, 6, 7, 8, 9, 10],
   },
   {
     id: "trailing-rosemary",
@@ -789,6 +816,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["fragrant", "edible", "drought-tolerant", "trailing"],
     zoneCompatibility: ["patio", "garden-bed"],
+    bloomMonths: [3, 4, 5],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   },
   {
     id: "potted-palm",
@@ -802,6 +831,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌴",
     tags: ["tropical", "container", "statement"],
     zoneCompatibility: ["patio", "pool", "deck"],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   },
   {
     id: "hibiscus",
@@ -815,6 +845,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌺",
     tags: ["tropical", "showy", "container"],
     zoneCompatibility: ["patio", "pool", "garden-bed"],
+    bloomMonths: [5, 6, 7, 8, 9, 10],
   },
   {
     id: "bird-of-paradise",
@@ -828,6 +859,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🦜",
     tags: ["tropical", "showy", "drought-tolerant"],
     zoneCompatibility: ["patio", "pool", "garden-bed"],
+    bloomMonths: [5, 6, 7, 8, 9],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   },
   {
     id: "bougainvillea",
@@ -841,6 +874,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["tropical", "colorful", "drought-tolerant", "climbing"],
     zoneCompatibility: ["patio", "garden-bed"],
+    bloomMonths: [4, 5, 6, 7, 8, 9, 10, 11],
   },
 
   // ── Pool Area ────────────────────────────────────────────────────────────────
@@ -856,6 +890,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "💙",
     tags: ["tropical", "strap-leaf", "pool-friendly"],
     zoneCompatibility: ["pool", "patio", "garden-bed"],
+    bloomMonths: [6, 7, 8],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   },
   {
     id: "dwarf-palmetto",
@@ -869,6 +905,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌴",
     tags: ["native", "tropical", "drought-tolerant", "pool-friendly"],
     zoneCompatibility: ["pool", "patio", "garden-bed"],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
   },
 ];
 
