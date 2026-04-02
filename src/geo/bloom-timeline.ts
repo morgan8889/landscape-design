@@ -46,6 +46,7 @@ export function buildBloomTimeline(
 
     for (const month of plant.bloomMonths ?? []) {
       const entry = months[month - 1];
+      if (!entry) continue;
       if (!entry.bloomingPlants.includes(plantId)) {
         entry.bloomingPlants.push(plantId);
       }
@@ -53,6 +54,7 @@ export function buildBloomTimeline(
 
     for (const month of plant.foliageMonths ?? []) {
       const entry = months[month - 1];
+      if (!entry) continue;
       if (!entry.foliagePlants.includes(plantId)) {
         entry.foliagePlants.push(plantId);
       }
