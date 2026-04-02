@@ -29,7 +29,7 @@ PENDING_COUNT=$(find "$PENDING_DIR" -name "*.pending" 2>/dev/null | wc -l | tr -
 # from matching an allow-list prefix while executing injected payloads.
 # Exception: git commit messages legitimately contain semicolons and pipes.
 if ! printf '%s' "$COMMAND" | grep -qE '^git (add|commit|push)'; then
-  if printf '%s' "$COMMAND" | grep -qE '(&&|\|\||;|\||`)'; then
+  if printf '%s' "$COMMAND" | grep -qE '(&&|\|\||;|\||`|>>?|\$\()'; then
     # Shell operator found outside a trusted git command — block immediately
     exit 2
   fi
