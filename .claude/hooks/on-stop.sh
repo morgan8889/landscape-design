@@ -55,9 +55,6 @@ if [ -f "$SESSION_FILE" ]; then
     # Hint to close Plane ticket
     STOP_BRANCH=$(git -C "$REPO_ROOT" branch --show-current 2>/dev/null || true)
     PLANE_TICKET=$(echo "$STOP_BRANCH" | grep -oE '[A-Z]+-[0-9]+' | head -1 || true)
-    if [ -n "$PLANE_TICKET" ]; then
-      echo "{\"additionalContext\": \"PLANE ACTION: PR created for ${PLANE_TICKET}. If Plane MCP is available, move the parent ticket to Done.\"}"
-    fi
     if command -v osascript &>/dev/null; then
       osascript -e 'display notification "PR created — session complete. Exiting cleanly." with title "Claude Code" sound name "Hero"' 2>/dev/null || true
     elif command -v notify-send &>/dev/null; then

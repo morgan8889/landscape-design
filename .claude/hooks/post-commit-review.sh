@@ -58,7 +58,7 @@ if [ -n "$COMMIT_SHA" ]; then
   # Detect Plane ticket from branch for post-commit update
   PLANE_TICKET=$(echo "$CURRENT_BRANCH" | grep -oE '[A-Z]+-[0-9]+' | head -1 || true)
   if [ -n "$PLANE_TICKET" ]; then
-    COMMIT_MSG=$(git -C "$REPO_ROOT" log -1 --format="%s" 2>/dev/null || true)
+    COMMIT_MSG=$(git -C "$REPO_ROOT" log -1 --format="%s" 2>/dev/null | sed 's/"/\\"/g' | tr '\n' ' ' || true)
     REVIEW_MSG="${REVIEW_MSG} PLANE ACTION: If Plane MCP is available, update ticket ${PLANE_TICKET} — add comment with commit ${COMMIT_SHA}: '${COMMIT_MSG}'. If this completes a child task, move it to Done and check if all siblings are done (move parent to In Review if so)."
   fi
   if [ -n "${BRANCH_WARNING:-}" ]; then
