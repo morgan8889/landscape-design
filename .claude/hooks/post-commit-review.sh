@@ -55,6 +55,12 @@ if [ -n "$COMMIT_SHA" ]; then
   git -C "$REPO_ROOT" log -1 --format="%H %s" > "${PENDING_DIR}/${COMMIT_SHA}.pending"
 
   REVIEW_MSG="REVIEW REQUIRED: Commit ${COMMIT_SHA} queued for review. The review-enforcer hook will BLOCK your next implementation action until reviews are complete. Dispatch these three agents IN PARALLEL (all have background: true): (1) Agent tool with subagent_type=spec-reviewer, (2) Agent tool with subagent_type=code-quality-reviewer, (3) Agent tool with subagent_type=code-simplifier-reviewer. Each agent reads .reviews/pending/, reviews the diff, and writes a signed artifact to .reviews/completed/. Do NOT write review files manually — the agents handle it."
+  # Detect Plane ticket from branch for post-commit update
+  PLANE_TICKET=$(echo "$CURRENT_BRANCH" | grep -oE '[A-Z]+-[0-9]+' | head -1 || true)
+  if [ -n "$PLANE_TICKET" ]; then
+    COMMIT_MSG=$(git -C "$REPO_ROOT" log -1 --format="%s" 2>/dev/null || true)
+    REVIEW_MSG="${REVIEW_MSG} PLANE ACTION: If Plane MCP is available, update ticket ${PLANE_TICKET} — add comment with commit ${COMMIT_SHA}: '${COMMIT_MSG}'. If this completes a child task, move it to Done and check if all siblings are done (move parent to In Review if so)."
+  fi
   if [ -n "${BRANCH_WARNING:-}" ]; then
     REVIEW_MSG="${REVIEW_MSG} ${BRANCH_WARNING}"
   fi
