@@ -49,10 +49,10 @@ case "$COMMAND" in
   "mkdir -p"*|"chmod "*|"date"*|"ps "*|"stat "*|"lsof "*) exit 0 ;;
   # Session cleanup (prevent stop-hook deadlocks)
   "rm -f /tmp/claude-session"*|"rm -f /tmp/claude-circuit"*) exit 0 ;;
-  # Dev server management (needed for browser verification during review)
-  "npx vite"*|"curl -sf"*|"lsof -i"*|"sleep "*|"pkill -f vite"*) exit 0 ;;
-  # GitHub CLI — read-only PR inspection and commenting only (not merge/delete/release)
-  "gh pr list"*|"gh pr view"*|"gh pr comment"*|"gh issue"*|"gh run"*|"gh api"*) exit 0 ;;
+  # Dev server management — curl scoped to localhost health checks only (prevents -o file writes)
+  "npx vite"*|"curl -sf http://localhost:"*|"lsof -i"*|"sleep "*|"pkill -f vite"*) exit 0 ;;
+  # GitHub CLI — read-only PR inspection and commenting only; gh api removed (allows arbitrary mutations)
+  "gh pr list"*|"gh pr view"*|"gh pr comment"*|"gh issue"*|"gh run"*) exit 0 ;;
   # Git push to remote (needed to update PR branches after review fixes)
   "git push origin"*|"git push --force-with-lease"*) exit 0 ;;
 esac
