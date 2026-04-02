@@ -34,6 +34,7 @@ export function buildBloomTimeline(
   }
 
   let plantCount = 0;
+  const plantIds: string[] = [];
 
   for (const plantId of seen) {
     const plant = getPlantInfo(plantId);
@@ -41,6 +42,7 @@ export function buildBloomTimeline(
     if (!plant.bloomMonths?.length && !plant.foliageMonths?.length) continue;
 
     plantCount++;
+    plantIds.push(plantId);
 
     for (const month of plant.bloomMonths ?? []) {
       const entry = months[month - 1];
@@ -67,11 +69,6 @@ export function buildBloomTimeline(
       gapMonths.push(entry.month);
     }
   }
-
-  const plantIds = [...seen].filter((id) => {
-    const p = getPlantInfo(id);
-    return p && (p.bloomMonths?.length || p.foliageMonths?.length);
-  });
 
   return { months, gapMonths, plantCount, plantIds };
 }
