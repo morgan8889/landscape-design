@@ -89,9 +89,18 @@ Given that feature description, do this:
    - The JSON output will contain BRANCH_NAME and SPEC_FILE paths
    - For single quotes in args like "I'm Groot", use escape syntax: e.g 'I'\''m Groot' (or double-quote if possible: "I'm Groot")
 
-3. Load `.specify/templates/spec-template.md` to understand required sections.
+3. **Plane project setup (if Plane MCP available)**: If Plane MCP tools are available (e.g. `create_work_item` exists):
+   - Read `.claude/skills/plane-dev/references/projects.md`
+   - If no project exists for this repo, create one: `create_project(name=<repo name>, identifier=<3-5 char acronym>)`
+   - Capture project ID and state UUIDs with `list_states(project_id)`, update `references/projects.md`
+   - Create a parent work item from the feature description: `create_work_item(project_id, name=<feature title>, description_html=<feature description>, state=<todo UUID>)`
+   - Include the ticket identifier (e.g. `PROJ-1`) in the branch name if not already present
+   - Announce: `"✓ Plane: Created PROJ-N — <feature title>"`
+   - If Plane MCP is not available, skip this step silently.
 
-4. Follow this execution flow:
+4. Load `.specify/templates/spec-template.md` to understand required sections.
+
+5. Follow this execution flow:
 
     1. Parse user description from Input
        If empty: ERROR "No feature description provided"
@@ -117,9 +126,9 @@ Given that feature description, do this:
     7. Identify Key Entities (if data involved)
     8. Return: SUCCESS (spec ready for planning)
 
-5. Write the specification to SPEC_FILE using the template structure, replacing placeholders with concrete details derived from the feature description (arguments) while preserving section order and headings.
+6. Write the specification to SPEC_FILE using the template structure, replacing placeholders with concrete details derived from the feature description (arguments) while preserving section order and headings.
 
-6. **Specification Quality Validation**: After writing the initial spec, validate it against quality criteria:
+7. **Specification Quality Validation**: After writing the initial spec, validate it against quality criteria:
 
    a. **Create Spec Quality Checklist**: Generate a checklist file at `FEATURE_DIR/checklists/requirements.md` using the checklist template structure with these validation items:
 
@@ -211,9 +220,9 @@ Given that feature description, do this:
 
    d. **Update Checklist**: After each validation iteration, update the checklist file with current pass/fail status
 
-7. Report completion with branch name, spec file path, checklist results, and readiness for the next phase (`/speckit.clarify` or `/speckit.plan`).
+8. Report completion with branch name, spec file path, checklist results, and readiness for the next phase (`/speckit.clarify` or `/speckit.plan`).
 
-8. **Check for extension hooks**: After reporting completion, check if `.specify/extensions.yml` exists in the project root.
+9. **Check for extension hooks**: After reporting completion, check if `.specify/extensions.yml` exists in the project root.
    - If it exists, read it and look for entries under the `hooks.after_specify` key
    - If the YAML cannot be parsed or is invalid, skip hook checking silently and continue normally
    - Filter out hooks where `enabled` is explicitly `false`. Treat hooks without an `enabled` field as enabled by default.

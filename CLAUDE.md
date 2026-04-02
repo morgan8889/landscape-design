@@ -236,6 +236,12 @@ All work must comply with `.specify/memory/constitution.md`:
 
 Quality gates must pass before PR: Spec, Plan, Test, Data, Simplicity.
 
+## Plane Integration (Optional)
+
+If the Plane MCP server is configured, work items are tracked in Plane automatically via the `plane-dev` skill. See `.claude/skills/plane-dev/SKILL.md` for the full lifecycle integration.
+
+@.claude/skills/plane-dev/SKILL.md
+
 ## Permission & Safety Rules
 
 - Never force push, never skip hooks, never amend published commits

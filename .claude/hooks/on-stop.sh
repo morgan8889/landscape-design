@@ -52,6 +52,9 @@ if [ -f "$SESSION_FILE" ]; then
   if echo "$LAST_MSG" | grep -qE 'github\.com/.*/pull/[0-9]+' 2>/dev/null; then
     rm -f "$SESSION_FILE"
     touch "$DISARM_FILE"
+    # Hint to close Plane ticket
+    STOP_BRANCH=$(git -C "$REPO_ROOT" branch --show-current 2>/dev/null || true)
+    PLANE_TICKET=$(echo "$STOP_BRANCH" | grep -oE '[A-Z]+-[0-9]+' | head -1 || true)
     if command -v osascript &>/dev/null; then
       osascript -e 'display notification "PR created — session complete. Exiting cleanly." with title "Claude Code" sound name "Hero"' 2>/dev/null || true
     elif command -v notify-send &>/dev/null; then
