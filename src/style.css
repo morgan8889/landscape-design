@@ -2,6 +2,8 @@
 :root {
   --blue: #3b82f6;
   --green: #4ade80;
+  --red: #ef4444;
+  --bloom-green: #22c55e;
   --bg: #0f0f1a;
   --surface: #1a1a2e;
   --text: #e2e8f0;
@@ -243,7 +245,7 @@ body {
   display: none;
 }
 .upload-error {
-  color: #ef4444;
+  color: var(--red);
   margin-top: 8px;
 }
 
@@ -359,7 +361,7 @@ body {
   cursor: pointer;
 }
 .boundary-vertex-first {
-  fill: #22c55e;
+  fill: var(--bloom-green);
 }
 
 /* Zone Drawing */
@@ -443,8 +445,8 @@ body {
   font-size: 0.75rem;
   border-radius: 4px;
   background: transparent;
-  color: #ef4444;
-  border: 1px solid #ef4444;
+  color: var(--red);
+  border: 1px solid var(--red);
   cursor: pointer;
 }
 
@@ -598,7 +600,7 @@ body {
 }
 
 .plant-add-btn {
-  background: #22c55e;
+  background: var(--bloom-green);
   color: #fff;
   font-size: 0.75rem;
   padding: 6px 12px;
@@ -609,7 +611,7 @@ body {
 .plant-confirm {
   padding: 12px;
   background: var(--surface);
-  border: 2px solid #22c55e;
+  border: 2px solid var(--bloom-green);
   border-radius: var(--radius);
 }
 
@@ -713,7 +715,7 @@ body {
 }
 
 .zone-plant-qty {
-  color: #22c55e;
+  color: var(--bloom-green);
   font-size: 0.8rem;
   font-weight: 500;
 }
@@ -721,7 +723,7 @@ body {
 .zone-plant-remove {
   background: transparent;
   border: none;
-  color: #ef4444;
+  color: var(--red);
   cursor: pointer;
   font-size: 0.875rem;
   padding: 2px 6px;
@@ -828,22 +830,22 @@ body {
 }
 
 .bloom-cell-active {
-  background: rgba(34, 197, 94, var(--bloom-intensity, 1));
+  background: rgba(74, 222, 128, var(--bloom-intensity, 1));
   color: #000;
 }
 
 .bloom-cell-gap {
-  background: #ef4444;
+  background: var(--red);
   opacity: 0.4;
 }
 
 .bloom-cell-bloom {
-  background: #22c55e;
+  background: var(--bloom-green);
   opacity: 0.8;
 }
 
 .bloom-cell-foliage {
-  background: #22c55e;
+  background: var(--bloom-green);
   opacity: 0.25;
 }
 
@@ -852,7 +854,7 @@ body {
 }
 
 .bloom-gap-callout {
-  color: #ef4444;
+  color: var(--red);
   font-size: 0.85rem;
   margin: 8px 0;
   font-weight: 500;
