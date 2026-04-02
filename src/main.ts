@@ -197,8 +197,12 @@ async function renderZoneEditor(design: YardDesign): Promise<void> {
   });
 }
 
+const IMAGE_MODE_ZONE_MSG =
+  "Zone editing requires a map-based design. Upload a new design using an address to draw zones.";
+
 function renderSummary(design: YardDesign): void {
   const app = getApp();
+  const zones = design.zones ?? [];
   renderYardSummary(
     app,
     design,
@@ -215,32 +219,34 @@ function renderSummary(design: YardDesign): void {
       }
     },
     design.imageMode
-      ? () => {
-          window.alert(
-            "Zone editing requires a map-based design. Upload a new design using an address to draw zones.",
-          );
-        }
+      ? () => window.alert(IMAGE_MODE_ZONE_MSG)
       : () => void renderZoneEditor(design),
     (zoneId) => {
-      design.zones = (design.zones ?? []).filter((z) => z.id !== zoneId);
+      design.zones = zones.filter((z) => z.id !== zoneId);
       design.updatedAt = new Date().toISOString();
       saveDesign(design);
       renderSummary(design);
     },
     (zoneId) => {
-      const zone = (design.zones ?? []).find((z) => z.id === zoneId);
+      const zone = zones.find((z) => z.id === zoneId);
       if (!zone) return;
       renderPlantBrowser(
         app,
         zone,
-        (plantId, quantity, calculatedQuantity) => {
+        (plantId, quantity, calculatedQuantity, costOverride) => {
           if (!zone.plants) zone.plants = [];
           const existing = zone.plants.find((p) => p.plantId === plantId);
           if (existing) {
             existing.quantity += quantity;
             existing.calculatedQuantity = calculatedQuantity;
+            if (costOverride !== undefined) existing.costPerUnit = costOverride;
           } else {
-            zone.plants.push({ plantId, quantity, calculatedQuantity });
+            zone.plants.push({
+              plantId,
+              quantity,
+              calculatedQuantity,
+              costPerUnit: costOverride,
+            });
           }
           design.updatedAt = new Date().toISOString();
           saveDesign(design);
@@ -250,7 +256,7 @@ function renderSummary(design: YardDesign): void {
       );
     },
     (zoneId, plantId) => {
-      const zone = (design.zones ?? []).find((z) => z.id === zoneId);
+      const zone = zones.find((z) => z.id === zoneId);
       if (!zone?.plants) return;
       zone.plants = zone.plants.filter((p) => p.plantId !== plantId);
       design.updatedAt = new Date().toISOString();

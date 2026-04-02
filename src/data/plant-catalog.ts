@@ -17,6 +17,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed", "patio", "path"],
     bloomMonths: [6, 7, 8],
     foliageMonths: [4, 5, 6, 7, 8, 9, 10],
+    costPerUnit: 8.0,
   },
   {
     id: "hosta-blue-angel",
@@ -31,6 +32,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["shade-loving", "foliage"],
     zoneCompatibility: ["garden-bed"],
     foliageMonths: [4, 5, 6, 7, 8, 9, 10],
+    costPerUnit: 12.0,
   },
   {
     id: "black-eyed-susan",
@@ -45,6 +47,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["native", "pollinator", "drought-tolerant"],
     zoneCompatibility: ["garden-bed", "path"],
     bloomMonths: [6, 7, 8, 9],
+    costPerUnit: 7.0,
   },
   {
     id: "daylily",
@@ -59,6 +62,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["drought-tolerant", "low-maintenance"],
     zoneCompatibility: ["garden-bed", "path"],
     bloomMonths: [6, 7, 8],
+    costPerUnit: 6.0,
   },
   {
     id: "coneflower",
@@ -73,6 +77,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["native", "pollinator", "drought-tolerant"],
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [6, 7, 8, 9],
+    costPerUnit: 7.0,
   },
   {
     id: "sedum",
@@ -88,6 +93,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed", "patio"],
     bloomMonths: [8, 9, 10],
     foliageMonths: [4, 5, 6, 7, 8, 9, 10, 11],
+    costPerUnit: 5.0,
   },
   {
     id: "astilbe",
@@ -103,6 +109,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [6, 7],
     foliageMonths: [4, 5, 6, 7, 8, 9],
+    costPerUnit: 9.0,
   },
   {
     id: "peony",
@@ -117,6 +124,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["fragrant", "showy"],
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [5, 6],
+    costPerUnit: 12.0,
   },
   {
     id: "bee-balm",
@@ -131,6 +139,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["native", "pollinator", "fragrant"],
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [6, 7, 8],
+    costPerUnit: 8.0,
   },
   {
     id: "coral-bells",
@@ -146,6 +155,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed", "patio"],
     bloomMonths: [5, 6, 7],
     foliageMonths: [3, 4, 5, 6, 7, 8, 9, 10, 11],
+    costPerUnit: 9.0,
   },
   {
     id: "russian-sage",
@@ -161,6 +171,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed", "path"],
     bloomMonths: [7, 8, 9],
     foliageMonths: [5, 6, 7, 8, 9, 10],
+    costPerUnit: 10.0,
   },
   {
     id: "catmint",
@@ -175,6 +186,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["fragrant", "drought-tolerant", "pollinator"],
     zoneCompatibility: ["garden-bed", "path"],
     bloomMonths: [5, 6, 7, 8, 9],
+    costPerUnit: 7.0,
   },
   {
     id: "iris",
@@ -189,6 +201,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["showy", "drought-tolerant"],
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [4, 5, 6],
+    costPerUnit: 6.0,
   },
   {
     id: "phlox",
@@ -203,6 +216,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["fragrant", "pollinator"],
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [7, 8, 9],
+    costPerUnit: 8.0,
   },
   {
     id: "salvia",
@@ -217,6 +231,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["pollinator", "drought-tolerant"],
     zoneCompatibility: ["garden-bed", "patio"],
     bloomMonths: [5, 6, 7, 8, 9],
+    costPerUnit: 7.0,
   },
 
   // ── Annuals ─────────────────────────────────────────────────────────────────
@@ -233,6 +248,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["pest-repellent", "low-maintenance"],
     zoneCompatibility: ["garden-bed", "patio"],
     bloomMonths: [5, 6, 7, 8, 9, 10],
+    costPerUnit: 3.0,
   },
   {
     id: "petunia",
@@ -247,6 +263,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["trailing", "colorful"],
     zoneCompatibility: ["garden-bed", "patio"],
     bloomMonths: [5, 6, 7, 8, 9, 10],
+    costPerUnit: 3.5,
   },
   {
     id: "zinnia",
@@ -261,6 +278,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["pollinator", "colorful", "cut-flower"],
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [6, 7, 8, 9, 10],
+    costPerUnit: 3.0,
   },
   {
     id: "impatiens",
@@ -275,6 +293,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["shade-loving", "colorful"],
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [5, 6, 7, 8, 9, 10],
+    costPerUnit: 3.5,
   },
   {
     id: "begonia",
@@ -289,6 +308,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["shade-tolerant", "colorful"],
     zoneCompatibility: ["garden-bed", "patio"],
     bloomMonths: [5, 6, 7, 8, 9, 10],
+    costPerUnit: 4.0,
   },
   {
     id: "geranium",
@@ -303,6 +323,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["fragrant", "colorful"],
     zoneCompatibility: ["garden-bed", "patio"],
     bloomMonths: [5, 6, 7, 8, 9, 10],
+    costPerUnit: 4.5,
   },
   {
     id: "snapdragon",
@@ -317,6 +338,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["colorful", "cut-flower"],
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [4, 5, 6, 7, 8, 9, 10],
+    costPerUnit: 3.5,
   },
   {
     id: "cosmos",
@@ -331,6 +353,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["pollinator", "airy", "cut-flower"],
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [6, 7, 8, 9, 10],
+    costPerUnit: 3.0,
   },
 
   // ── Shrubs ──────────────────────────────────────────────────────────────────
@@ -347,6 +370,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["evergreen", "formal", "hedge"],
     zoneCompatibility: ["garden-bed", "patio", "path"],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 25.0,
   },
   {
     id: "hydrangea",
@@ -362,6 +386,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [6, 7, 8, 9],
     foliageMonths: [4, 5, 6, 7, 8, 9, 10],
+    costPerUnit: 30.0,
   },
   {
     id: "azalea",
@@ -377,6 +402,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [4, 5],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 22.0,
   },
   {
     id: "rose-knockout",
@@ -391,6 +417,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["fragrant", "disease-resistant", "colorful"],
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [5, 6, 7, 8, 9, 10],
+    costPerUnit: 20.0,
   },
   {
     id: "holly",
@@ -405,6 +432,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["evergreen", "berries", "wildlife"],
     zoneCompatibility: ["garden-bed"],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 28.0,
   },
   {
     id: "lilac",
@@ -419,6 +447,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["fragrant", "spring-bloomer"],
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [4, 5],
+    costPerUnit: 25.0,
   },
   {
     id: "butterfly-bush",
@@ -433,6 +462,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["pollinator", "fragrant", "drought-tolerant"],
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [6, 7, 8, 9],
+    costPerUnit: 18.0,
   },
   {
     id: "spirea",
@@ -448,6 +478,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [4, 5, 6],
     foliageMonths: [3, 4, 5, 6, 7, 8, 9, 10, 11],
+    costPerUnit: 15.0,
   },
   {
     id: "juniper",
@@ -462,6 +493,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["evergreen", "drought-tolerant", "wildlife"],
     zoneCompatibility: ["garden-bed", "path"],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 20.0,
   },
 
   // ── Ground Covers ────────────────────────────────────────────────────────────
@@ -479,6 +511,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed", "path", "patio"],
     bloomMonths: [6, 7],
     foliageMonths: [4, 5, 6, 7, 8, 9, 10],
+    costPerUnit: 5.0,
   },
   {
     id: "pachysandra",
@@ -493,6 +526,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["shade-loving", "evergreen"],
     zoneCompatibility: ["garden-bed", "path"],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 4.0,
   },
   {
     id: "vinca",
@@ -508,6 +542,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed", "path"],
     bloomMonths: [4, 5, 6],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 3.5,
   },
   {
     id: "ajuga",
@@ -523,6 +558,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed", "path"],
     bloomMonths: [4, 5],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 4.0,
   },
   {
     id: "irish-moss",
@@ -538,6 +574,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed", "path", "patio"],
     bloomMonths: [5, 6],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 6.0,
   },
   {
     id: "sedum-ground-cover",
@@ -553,6 +590,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed", "path", "patio"],
     bloomMonths: [8, 9],
     foliageMonths: [4, 5, 6, 7, 8, 9, 10],
+    costPerUnit: 4.5,
   },
   {
     id: "liriope",
@@ -568,6 +606,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed", "path"],
     bloomMonths: [8, 9],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 5.0,
   },
 
   // ── Grasses ──────────────────────────────────────────────────────────────────
@@ -584,6 +623,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["ornamental", "drought-tolerant"],
     zoneCompatibility: ["garden-bed", "patio"],
     foliageMonths: [4, 5, 6, 7, 8, 9, 10, 11],
+    costPerUnit: 12.0,
   },
   {
     id: "blue-fescue",
@@ -598,6 +638,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["ornamental", "drought-tolerant", "blue-foliage"],
     zoneCompatibility: ["garden-bed", "patio", "path"],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 8.0,
   },
   {
     id: "mondo-grass",
@@ -612,6 +653,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["evergreen", "edging"],
     zoneCompatibility: ["garden-bed", "path"],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 5.0,
   },
   {
     id: "karl-foerster",
@@ -627,6 +669,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [6, 7, 8, 9],
     foliageMonths: [4, 5, 6, 7, 8, 9, 10, 11],
+    costPerUnit: 12.0,
   },
   {
     id: "switchgrass",
@@ -641,6 +684,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["native", "drought-tolerant", "wildlife"],
     zoneCompatibility: ["garden-bed"],
     foliageMonths: [4, 5, 6, 7, 8, 9, 10, 11],
+    costPerUnit: 10.0,
   },
   {
     id: "bermuda",
@@ -655,6 +699,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["turf", "drought-tolerant", "warm-season"],
     zoneCompatibility: ["lawn"],
     foliageMonths: [4, 5, 6, 7, 8, 9, 10],
+    costPerUnit: 3.0,
   },
   {
     id: "tall-fescue",
@@ -669,6 +714,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["turf", "cool-season", "shade-tolerant"],
     zoneCompatibility: ["lawn"],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 3.0,
   },
   {
     id: "zoysia",
@@ -683,6 +729,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["turf", "drought-tolerant", "warm-season"],
     zoneCompatibility: ["lawn"],
     foliageMonths: [4, 5, 6, 7, 8, 9, 10],
+    costPerUnit: 3.5,
   },
 
   // ── Trees ────────────────────────────────────────────────────────────────────
@@ -699,6 +746,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["ornamental", "fall-color", "specimen"],
     zoneCompatibility: ["garden-bed"],
     foliageMonths: [4, 5, 6, 7, 8, 9, 10, 11],
+    costPerUnit: 85.0,
   },
   {
     id: "dogwood",
@@ -714,6 +762,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [4, 5],
     foliageMonths: [4, 5, 6, 7, 8, 9, 10],
+    costPerUnit: 65.0,
   },
   {
     id: "crape-myrtle",
@@ -728,6 +777,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["summer-bloomer", "drought-tolerant", "showy"],
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [6, 7, 8, 9],
+    costPerUnit: 55.0,
   },
   {
     id: "redbud",
@@ -743,6 +793,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [3, 4],
     foliageMonths: [4, 5, 6, 7, 8, 9, 10],
+    costPerUnit: 60.0,
   },
   {
     id: "magnolia",
@@ -758,6 +809,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [3, 4, 5],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 120.0,
   },
   {
     id: "river-birch",
@@ -772,6 +824,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["native", "multi-trunk", "peeling-bark"],
     zoneCompatibility: ["garden-bed"],
     foliageMonths: [4, 5, 6, 7, 8, 9, 10, 11],
+    costPerUnit: 75.0,
   },
 
   // ── Patio / Pool / Container plants ─────────────────────────────────────────
@@ -788,6 +841,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["evergreen", "formal", "container"],
     zoneCompatibility: ["patio", "garden-bed", "path"],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 18.0,
   },
   {
     id: "ornamental-pepper",
@@ -803,6 +857,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["patio"],
     bloomMonths: [6, 7, 8, 9, 10],
     foliageMonths: [5, 6, 7, 8, 9, 10],
+    costPerUnit: 4.0,
   },
   {
     id: "trailing-rosemary",
@@ -818,6 +873,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["patio", "garden-bed"],
     bloomMonths: [3, 4, 5],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 8.0,
   },
   {
     id: "potted-palm",
@@ -832,6 +888,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["tropical", "container", "statement"],
     zoneCompatibility: ["patio", "pool", "deck"],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 45.0,
   },
   {
     id: "hibiscus",
@@ -846,6 +903,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["tropical", "showy", "container"],
     zoneCompatibility: ["patio", "pool", "garden-bed"],
     bloomMonths: [5, 6, 7, 8, 9, 10],
+    costPerUnit: 15.0,
   },
   {
     id: "bird-of-paradise",
@@ -861,6 +919,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["patio", "pool", "garden-bed"],
     bloomMonths: [5, 6, 7, 8, 9],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 25.0,
   },
   {
     id: "bougainvillea",
@@ -875,6 +934,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["tropical", "colorful", "drought-tolerant", "climbing"],
     zoneCompatibility: ["patio", "garden-bed"],
     bloomMonths: [4, 5, 6, 7, 8, 9, 10, 11],
+    costPerUnit: 20.0,
   },
 
   // ── Pool Area ────────────────────────────────────────────────────────────────
@@ -892,6 +952,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     zoneCompatibility: ["pool", "patio", "garden-bed"],
     bloomMonths: [6, 7, 8],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 10.0,
   },
   {
     id: "dwarf-palmetto",
@@ -906,6 +967,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["native", "tropical", "drought-tolerant", "pool-friendly"],
     zoneCompatibility: ["pool", "patio", "garden-bed"],
     foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+    costPerUnit: 35.0,
   },
 ];
 

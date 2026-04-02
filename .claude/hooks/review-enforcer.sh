@@ -24,20 +24,18 @@ PENDING_DIR="${REPO_ROOT}/.reviews/pending"
 PENDING_COUNT=$(find "$PENDING_DIR" -name "*.pending" 2>/dev/null | wc -l | tr -d ' ')
 [ "$PENDING_COUNT" -eq 0 ] && exit 0
 
-# Allow read-only and review-related commands through
+# Allow ONLY read-only and review-essential commands through
 case "$COMMAND" in
-  "git status"*|"git diff"*|"git log"*|"git show"*|"git rev-parse"*) exit 0 ;;
-  "npm test"*|"npm run test"*|"npx vitest"*|"npx tsc"*|"npm run typecheck"*|"npm run lint"*) exit 0 ;;
-  "ls "*|"cat "*|"head "*|"tail "*|"pwd"|"echo "*|"wc "*|"find "*) exit 0 ;;
-  "git commit"*) exit 0 ;;
-  "git add"*) exit 0 ;;
-  "git push"*) exit 0 ;;
-  "git checkout"*|"git switch"*|"git branch"*|"git merge"*|"git rebase"*|"git fetch"*|"git pull"*) exit 0 ;;
-  "gh "*) exit 0 ;;
-  "mkdir "*) exit 0 ;;
-  "chmod "*) exit 0 ;;
-  "cp "*) exit 0 ;;
-  "rm "*) exit 0 ;;
+  # Read-only git inspection
+  "git status"*|"git diff"*|"git log"*|"git show"*|"git rev-parse"*|"git fetch"*|"git branch"*) exit 0 ;;
+  # Test/lint (needed to verify review fixes)
+  "npm test"*|"npm run test"*|"npx vitest"*|"npx tsc"*|"npm run typecheck"*|"npm run lint"*|"npx biome"*) exit 0 ;;
+  # Read-only file inspection
+  "ls "*|"cat "*|"head "*|"tail "*|"pwd"|"echo "*|"wc "*|"find "*|"grep "*|"jq "*|"diff "*) exit 0 ;;
+  # Git staging and committing (post-commit-review only flags feat/fix/refactor — chore: passes clean)
+  "git add"*|"git commit"*) exit 0 ;;
+  # Review infrastructure + diagnostics
+  "mkdir -p"*|"chmod "*|"date"*|"ps "*|"stat "*) exit 0 ;;
 esac
 
 # Check if pending reviews have been resolved
@@ -49,39 +47,77 @@ for pending_file in "$PENDING_DIR"/*.pending; do
   [ ! -f "$pending_file" ] && continue
   sha=$(basename "$pending_file" .pending)
 
+  # Auto-clear stale pending reviews (>2h) — review agent may have crashed
+  FILE_AGE_SECS=$(( $(date +%s) - $(stat -f %m "$pending_file" 2>/dev/null || stat -c %Y "$pending_file" 2>/dev/null || echo 0) ))
+  if [ "$FILE_AGE_SECS" -gt $((2 * 3600)) ]; then
+    echo "WARNING: Stale pending review for ${sha} ($(( FILE_AGE_SECS / 60 ))m old). Auto-clearing — review agent may have crashed. Re-dispatch if needed."
+    rm -f "$pending_file"
+    continue
+  fi
+
   spec_file="${COMPLETED_DIR}/${sha}-spec.md"
   quality_file="${COMPLETED_DIR}/${sha}-quality.md"
   simplifier_file="${COMPLETED_DIR}/${sha}-simplifier.md"
 
-  # Validate review signatures: spec and quality files must contain "review-signed: <sha>"
+  # Validate review signatures: files must contain "review-signed: <sha>" AND correct "reviewer-agent:"
   spec_signed=false
   quality_signed=false
   if [ -f "$spec_file" ]; then
     signed_sha=$(grep -m1 '^review-signed:' "$spec_file" 2>/dev/null | awk '{print $2}' || true)
-    [ "$signed_sha" = "$sha" ] && spec_signed=true
+    reviewer=$(grep -m1 '^reviewer-agent:' "$spec_file" 2>/dev/null | awk '{print $2}' || true)
+    [ "$signed_sha" = "$sha" ] && [ "$reviewer" = "spec-compliance" ] && spec_signed=true
   fi
   if [ -f "$quality_file" ]; then
     signed_sha=$(grep -m1 '^review-signed:' "$quality_file" 2>/dev/null | awk '{print $2}' || true)
-    [ "$signed_sha" = "$sha" ] && quality_signed=true
+    reviewer=$(grep -m1 '^reviewer-agent:' "$quality_file" 2>/dev/null | awk '{print $2}' || true)
+    [ "$signed_sha" = "$sha" ] && [ "$reviewer" = "code-quality" ] && quality_signed=true
+  fi
+  simplifier_signed=false
+  if [ -f "$simplifier_file" ]; then
+    signed_sha=$(grep -m1 '^review-signed:' "$simplifier_file" 2>/dev/null | awk '{print $2}' || true)
+    reviewer=$(grep -m1 '^reviewer-agent:' "$simplifier_file" 2>/dev/null | awk '{print $2}' || true)
+    [ "$signed_sha" = "$sha" ] && [ "$reviewer" = "code-simplifier" ] && simplifier_signed=true
   fi
 
-  if [ "$spec_signed" = "true" ] && [ "$quality_signed" = "true" ] && [ -f "$simplifier_file" ]; then
-    # All three review artifacts present and signed — clear pending
+  # Check if commit touched UI files — require screenshot evidence
+  ui_needs_screenshot=false
+  ui_files=$(git diff-tree --no-commit-id --name-only -r "$sha" 2>/dev/null | grep -E '(\.css|\.scss|components/|src/app/|src/main\.ts|public/)' || true)
+  if [ -n "$ui_files" ]; then
+    screenshots_dir="${REPO_ROOT}/.reviews/screenshots"
+    max_age="${SCREENSHOT_MAX_AGE_MINS:-120}"
+    recent_screenshot=""
+    if [ -d "$screenshots_dir" ]; then
+      recent_screenshot=$(find "$screenshots_dir" -name '*.png' -mmin -"$max_age" 2>/dev/null | head -1 || true)
+    fi
+    [ -z "$recent_screenshot" ] && ui_needs_screenshot=true
+  fi
+
+  if [ "$spec_signed" = "true" ] && [ "$quality_signed" = "true" ] && [ "$simplifier_signed" = "true" ] && [ "$ui_needs_screenshot" = "false" ]; then
+    # All review artifacts present, signed, and screenshot requirements met — clear pending
     rm -f "$pending_file"
   else
     STILL_PENDING=$((STILL_PENDING + 1))
     MISSING=""
     if [ "$spec_signed" = "false" ]; then
-      [ ! -f "$spec_file" ] && MISSING="spec review" || MISSING="spec review (missing review-signed: ${sha} header)"
+      [ ! -f "$spec_file" ] && MISSING="spec review" || MISSING="spec review (invalid signature or reviewer-agent)"
     fi
     if [ "$quality_signed" = "false" ]; then
       if [ ! -f "$quality_file" ]; then
         MISSING="${MISSING:+$MISSING + }quality review"
       else
-        MISSING="${MISSING:+$MISSING + }quality review (missing review-signed: ${sha} header)"
+        MISSING="${MISSING:+$MISSING + }quality review (invalid signature or reviewer-agent)"
       fi
     fi
-    [ ! -f "$simplifier_file" ] && MISSING="${MISSING:+$MISSING + }simplifier"
+    if [ "$simplifier_signed" = "false" ]; then
+      if [ ! -f "$simplifier_file" ]; then
+        MISSING="${MISSING:+$MISSING + }simplifier"
+      else
+        MISSING="${MISSING:+$MISSING + }simplifier (invalid signature or reviewer-agent)"
+      fi
+    fi
+    if [ "$ui_needs_screenshot" = "true" ]; then
+      MISSING="${MISSING:+$MISSING + }browser screenshot (UI files changed, none in .reviews/screenshots/)"
+    fi
     PENDING_LIST="${PENDING_LIST}  - ${sha}: needs ${MISSING}\n"
   fi
 done
@@ -102,8 +138,11 @@ Each agent reads .reviews/pending/, reviews the commit diff, and writes a signed
 artifact to .reviews/completed/. Do NOT write review files manually.
 After all three complete, fix any Critical/Important issues found.
 
-This blocker clears automatically when both review files exist AND contain
-a valid "review-signed: <sha>" header matching the commit being reviewed.
+4. For commits with UI changes: take a browser screenshot using superpowers-chrome
+   and save to .reviews/screenshots/ BEFORE reviews can clear.
+
+This blocker clears automatically when review files exist with valid
+"review-signed: <sha>" and "reviewer-agent:" headers, plus screenshots for UI commits.
 BLOCK
   exit 2
 fi

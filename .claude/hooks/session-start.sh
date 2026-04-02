@@ -22,9 +22,25 @@ fi
 REPO_HASH=$(printf '%s' "$REPO_ROOT" | md5 -q 2>/dev/null || printf '%s' "$REPO_ROOT" | md5sum | cut -d' ' -f1)
 SESSION_FILE="/tmp/claude-session-active-${REPO_HASH}"
 
+# Skip if session was intentionally disarmed (on-stop or review-gate removed it)
+DISARM_FILE="/tmp/claude-session-disarmed-${REPO_HASH}"
+if [ -f "$DISARM_FILE" ]; then
+  exit 0
+fi
+
 # Only create if it doesn't exist — don't overwrite original task context
 if [ ! -f "$SESSION_FILE" ]; then
-  printf 'Auto-started: first file write in session (%s)\n' "$FILE_PATH" > "$SESSION_FILE"
+  # Detect phase from file path: spec/plan files = interactive, src files = implementation
+  PHASE="implementation"
+  case "$FILE_PATH" in
+    */specs/*|*/plans/*|*/brainstorm/*|*.md)
+      PHASE="interactive"
+      ;;
+    */src/*|*/tests/*|*.ts|*.tsx|*.js|*.jsx|*.css)
+      PHASE="implementation"
+      ;;
+  esac
+  printf 'phase: %s\ntask: first file write (%s)\nstarted: %s\n' "$PHASE" "$FILE_PATH" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$SESSION_FILE"
 fi
 
 exit 0

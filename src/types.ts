@@ -47,6 +47,7 @@ export interface PlantInfo {
   emoji: string;
   tags: string[];
   zoneCompatibility: ZoneCategory[];
+  costPerUnit: number;
   bloomMonths?: number[]; // 1–12, months when plant blooms
   foliageMonths?: number[]; // 1–12, months with seasonal foliage interest
 }
@@ -55,6 +56,7 @@ export interface PlantAssignment {
   plantId: string;
   quantity: number;
   calculatedQuantity: number;
+  costPerUnit?: number;
 }
 
 export interface Zone {

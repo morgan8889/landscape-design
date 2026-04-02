@@ -15,6 +15,10 @@ SOURCE=$(printf '%s' "$INPUT" | jq -r '.source // "startup"' 2>/dev/null || echo
 
 REPO_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
 
+# Clear disarm sentinel from previous session so fresh sessions can arm normally
+REPO_HASH=$(printf '%s' "$REPO_ROOT" | md5 -q 2>/dev/null || printf '%s' "$REPO_ROOT" | md5sum | cut -d' ' -f1)
+rm -f "/tmp/claude-session-disarmed-${REPO_HASH}"
+
 # Find the most recent spec directory with a tasks.md
 CURRENT_SPEC=""
 for spec_dir in "$REPO_ROOT"/.specify/specs/[0-9]* ; do

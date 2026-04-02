@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   formatArea,
   formatPerimeter,
+  formatProjectCost,
   triggerJsonDownload,
 } from "./yard-summary";
 
@@ -23,6 +24,20 @@ describe("formatPerimeter", () => {
 
   it("rounds to nearest integer", () => {
     expect(formatPerimeter(196.4)).toBe("196 ft");
+  });
+});
+
+describe("formatProjectCost", () => {
+  it("formats cost total", () => {
+    expect(formatProjectCost(1247)).toBe("$1,247.00");
+  });
+
+  it("returns dash for zero", () => {
+    expect(formatProjectCost(0)).toBe("—");
+  });
+
+  it("returns dash for no plants", () => {
+    expect(formatProjectCost(0)).toBe("—");
   });
 });
 

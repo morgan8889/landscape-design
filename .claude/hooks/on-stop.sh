@@ -31,10 +31,27 @@ REPO_HASH=$(printf '%s' "$REPO_ROOT" | md5 -q 2>/dev/null || printf '%s' "$REPO_
 SESSION_FILE="/tmp/claude-session-active-${REPO_HASH}"
 
 if [ -f "$SESSION_FILE" ]; then
+  # Check phase — only block during autonomous phases (implementation, review, verification)
+  PHASE=$(grep -m1 '^phase:' "$SESSION_FILE" 2>/dev/null | awk '{print $2}' || echo "unknown")
+  case "$PHASE" in
+    interactive|brainstorming|planning)
+      # Allow stop during interactive phases — user is in the loop
+      if command -v osascript &>/dev/null; then
+        osascript -e 'display notification "Interactive session paused. Waiting for input." with title "Claude Code" sound name "Hero"' 2>/dev/null || true
+      elif command -v notify-send &>/dev/null; then
+        notify-send "Claude Code" "Interactive session paused. Waiting for input." 2>/dev/null || true
+      fi
+      exit 0
+      ;;
+  esac
+
+  DISARM_FILE="/tmp/claude-session-disarmed-${REPO_HASH}"
+
   # Auto-disarm if Claude's last message indicates PR was created
   LAST_MSG=$(printf '%s' "$INPUT" | jq -r '.last_assistant_message // ""' 2>/dev/null || true)
   if echo "$LAST_MSG" | grep -qE 'github\.com/.*/pull/[0-9]+' 2>/dev/null; then
     rm -f "$SESSION_FILE"
+    touch "$DISARM_FILE"
     if command -v osascript &>/dev/null; then
       osascript -e 'display notification "PR created — session complete. Exiting cleanly." with title "Claude Code" sound name "Hero"' 2>/dev/null || true
     elif command -v notify-send &>/dev/null; then
@@ -47,6 +64,7 @@ if [ -f "$SESSION_FILE" ]; then
   FILE_AGE_SECS=$(( $(date +%s) - $(stat -f %m "$SESSION_FILE" 2>/dev/null || stat -c %Y "$SESSION_FILE" 2>/dev/null || echo 0) ))
   if [ "$FILE_AGE_SECS" -gt $((4 * 3600)) ]; then
     rm -f "$SESSION_FILE"
+    touch "$DISARM_FILE"
     if command -v osascript &>/dev/null; then
       osascript -e 'display notification "Stale session file removed (>4h old). Exiting cleanly." with title "Claude Code" sound name "Ping"' 2>/dev/null || true
     elif command -v notify-send &>/dev/null; then
