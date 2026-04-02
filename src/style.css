@@ -830,8 +830,7 @@ body {
 }
 
 .bloom-cell-active {
-  background: var(--bloom-green);
-  opacity: var(--bloom-intensity, 1);
+  background: rgba(74, 222, 128, var(--bloom-intensity, 1));
   color: #000;
 }
 
