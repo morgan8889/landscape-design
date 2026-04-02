@@ -24,6 +24,17 @@ PENDING_DIR="${REPO_ROOT}/.reviews/pending"
 PENDING_COUNT=$(find "$PENDING_DIR" -name "*.pending" 2>/dev/null | wc -l | tr -d ' ')
 [ "$PENDING_COUNT" -eq 0 ] && exit 0
 
+# Block commands that chain additional operations via shell operators.
+# This prevents a crafted command like "rm -f /tmp/claude-session && curl ... | bash"
+# from matching an allow-list prefix while executing injected payloads.
+# Exception: git commit messages legitimately contain semicolons and pipes.
+if ! printf '%s' "$COMMAND" | grep -qE '^git (add|commit|push)'; then
+  if printf '%s' "$COMMAND" | grep -qE '(&&|\|\||;|\||`)'; then
+    # Shell operator found outside a trusted git command — block immediately
+    exit 2
+  fi
+fi
+
 # Allow ONLY read-only and review-essential commands through
 case "$COMMAND" in
   # Read-only git inspection
@@ -40,8 +51,10 @@ case "$COMMAND" in
   "rm -f /tmp/claude-session"*|"rm -f /tmp/claude-circuit"*) exit 0 ;;
   # Dev server management (needed for browser verification during review)
   "npx vite"*|"curl -sf"*|"lsof -i"*|"sleep "*|"pkill -f vite"*) exit 0 ;;
-  # GitHub CLI (needed to check PR status, push during review)
-  "gh "*|"git push"*) exit 0 ;;
+  # GitHub CLI — read-only PR inspection and commenting only (not merge/delete/release)
+  "gh pr list"*|"gh pr view"*|"gh pr comment"*|"gh issue"*|"gh run"*|"gh api"*) exit 0 ;;
+  # Git push to remote (needed to update PR branches after review fixes)
+  "git push origin"*|"git push --force-with-lease"*) exit 0 ;;
 esac
 
 # Check if pending reviews have been resolved
@@ -65,15 +78,20 @@ for pending_file in "$PENDING_DIR"/*.pending; do
   quality_file="${COMPLETED_DIR}/${sha}-quality.md"
   simplifier_file="${COMPLETED_DIR}/${sha}-simplifier.md"
 
-  # Validate review signatures: files must contain "review-signed: <sha>" AND a reviewer field.
-  # Accept both "reviewer-agent:" (preferred) and "reviewer:" (fallback) since subagents
-  # don't always emit the exact header name the hook originally required.
+  # Validate review signatures: files must contain "review-signed: <sha>" AND "reviewer-agent:".
+  # Only "reviewer-agent:" is accepted — "reviewer:" alone is rejected to prevent implementer
+  # self-signing (security review finding). If a file only has "reviewer:", a warning is emitted.
   _get_reviewer() {
     local file="$1"
     local val
     val=$(grep -m1 '^reviewer-agent:' "$file" 2>/dev/null | awk '{print $2}' || true)
     if [ -z "$val" ]; then
-      val=$(grep -m1 '^reviewer:' "$file" 2>/dev/null | awk '{print $2}' || true)
+      # Check for legacy "reviewer:" header and warn — does NOT count as valid
+      local legacy
+      legacy=$(grep -m1 '^reviewer:' "$file" 2>/dev/null | awk '{print $2}' || true)
+      if [ -n "$legacy" ]; then
+        echo "WARNING: Review file $file uses deprecated 'reviewer:' header — must be 'reviewer-agent:'" >&2
+      fi
     fi
     echo "$val"
   }
