@@ -3,6 +3,7 @@ import { calculateProjectCost, formatCurrency } from "../geo/plant-cost";
 import { exportDesignJson, saveDesign } from "../storage/local-store";
 // src/components/yard-summary.ts
 import type { YardDesign } from "../types";
+import { renderBloomTimeline } from "./bloom-timeline";
 import { renderZoneSummary } from "./zone-summary";
 
 export function formatArea(sqFt: number): string {
@@ -122,6 +123,7 @@ export function renderYardSummary(
         if (onRemovePlant) onRemovePlant(zoneId, plantId);
       },
     );
+    renderBloomTimeline(wrapper, design.zones ?? []);
   }
 
   container.textContent = "";

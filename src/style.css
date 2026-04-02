@@ -780,6 +780,155 @@ body {
   align-self: flex-end;
 }
 
+/* ── Bloom Timeline ─────────────────────────────────────────────────────── */
+.bloom-timeline {
+  margin-top: 24px;
+  padding: 16px;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+}
+
+.bloom-timeline h3 {
+  margin: 0 0 12px 0;
+}
+
+.bloom-grid {
+  display: grid;
+  grid-template-columns: 140px repeat(12, 1fr);
+  gap: 2px;
+  align-items: center;
+}
+
+.bloom-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding-right: 8px;
+}
+
+.bloom-month-label {
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.bloom-cell {
+  height: 28px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: var(--bg);
+}
+
+.bloom-cell-active {
+  background: rgba(34, 197, 94, var(--bloom-intensity, 1));
+  color: #000;
+}
+
+.bloom-cell-gap {
+  background: #ef4444;
+  opacity: 0.4;
+}
+
+.bloom-cell-bloom {
+  background: #22c55e;
+  opacity: 0.8;
+}
+
+.bloom-cell-foliage {
+  background: #22c55e;
+  opacity: 0.25;
+}
+
+.bloom-summary-row {
+  margin-bottom: 8px;
+}
+
+.bloom-gap-callout {
+  color: #ef4444;
+  font-size: 0.85rem;
+  margin: 8px 0;
+  font-weight: 500;
+}
+
+.bloom-toggle {
+  font-size: 0.8rem;
+  margin: 8px 0;
+}
+
+.bloom-plant-rows {
+  margin-top: 8px;
+}
+
+.bloom-plant-rows--collapsed {
+  display: none;
+}
+
+.bloom-plant-row {
+  margin-bottom: 2px;
+}
+
+.bloom-plant-row .bloom-label {
+  font-size: 0.75rem;
+}
+
+@media print {
+  .bloom-timeline {
+    break-inside: avoid;
+    background: #fff;
+    border: 1px solid #ccc;
+    color: #000;
+  }
+
+  .bloom-toggle {
+    display: none;
+  }
+
+  .bloom-plant-rows,
+  .bloom-plant-rows--collapsed {
+    display: block !important;
+  }
+
+  .bloom-cell-active {
+    background: #4ade80;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .bloom-cell-gap {
+    background: #fca5a5;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .bloom-cell-bloom {
+    background: #4ade80;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .bloom-cell-foliage {
+    background: #bbf7d0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .bloom-gap-callout {
+    color: #dc2626;
+  }
+
+  .bloom-label {
+    color: #333;
+  }
+}
+
 /* ── Cost Estimation ──────────────────────────────────────────────────── */
 
 .zone-plant-cost {

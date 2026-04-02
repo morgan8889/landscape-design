@@ -15,6 +15,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "💜",
     tags: ["fragrant", "drought-tolerant", "pollinator"],
     zoneCompatibility: ["garden-bed", "patio", "path"],
+    bloomMonths: [6, 7, 8],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10],
     costPerUnit: 8.0,
   },
   {
@@ -29,6 +31,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["shade-loving", "foliage"],
     zoneCompatibility: ["garden-bed"],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10],
     costPerUnit: 12.0,
   },
   {
@@ -43,6 +46,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌻",
     tags: ["native", "pollinator", "drought-tolerant"],
     zoneCompatibility: ["garden-bed", "path"],
+    bloomMonths: [6, 7, 8, 9],
     costPerUnit: 7.0,
   },
   {
@@ -57,6 +61,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["drought-tolerant", "low-maintenance"],
     zoneCompatibility: ["garden-bed", "path"],
+    bloomMonths: [6, 7, 8],
     costPerUnit: 6.0,
   },
   {
@@ -71,6 +76,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌺",
     tags: ["native", "pollinator", "drought-tolerant"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [6, 7, 8, 9],
     costPerUnit: 7.0,
   },
   {
@@ -85,6 +91,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["drought-tolerant", "succulent"],
     zoneCompatibility: ["garden-bed", "patio"],
+    bloomMonths: [8, 9, 10],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10, 11],
     costPerUnit: 5.0,
   },
   {
@@ -99,6 +107,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["shade-tolerant", "feathery"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [6, 7],
+    foliageMonths: [4, 5, 6, 7, 8, 9],
     costPerUnit: 9.0,
   },
   {
@@ -113,6 +123,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["fragrant", "showy"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [5, 6],
     costPerUnit: 12.0,
   },
   {
@@ -127,6 +138,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌺",
     tags: ["native", "pollinator", "fragrant"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [6, 7, 8],
     costPerUnit: 8.0,
   },
   {
@@ -141,6 +153,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🍂",
     tags: ["foliage", "shade-tolerant"],
     zoneCompatibility: ["garden-bed", "patio"],
+    bloomMonths: [5, 6, 7],
+    foliageMonths: [3, 4, 5, 6, 7, 8, 9, 10, 11],
     costPerUnit: 9.0,
   },
   {
@@ -155,6 +169,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "💜",
     tags: ["drought-tolerant", "fragrant", "airy"],
     zoneCompatibility: ["garden-bed", "path"],
+    bloomMonths: [7, 8, 9],
+    foliageMonths: [5, 6, 7, 8, 9, 10],
     costPerUnit: 10.0,
   },
   {
@@ -169,6 +185,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "💜",
     tags: ["fragrant", "drought-tolerant", "pollinator"],
     zoneCompatibility: ["garden-bed", "path"],
+    bloomMonths: [5, 6, 7, 8, 9],
     costPerUnit: 7.0,
   },
   {
@@ -183,6 +200,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "💜",
     tags: ["showy", "drought-tolerant"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [4, 5, 6],
     costPerUnit: 6.0,
   },
   {
@@ -197,6 +215,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["fragrant", "pollinator"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [7, 8, 9],
     costPerUnit: 8.0,
   },
   {
@@ -211,6 +230,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "💙",
     tags: ["pollinator", "drought-tolerant"],
     zoneCompatibility: ["garden-bed", "patio"],
+    bloomMonths: [5, 6, 7, 8, 9],
     costPerUnit: 7.0,
   },
 
@@ -227,6 +247,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🟡",
     tags: ["pest-repellent", "low-maintenance"],
     zoneCompatibility: ["garden-bed", "patio"],
+    bloomMonths: [5, 6, 7, 8, 9, 10],
     costPerUnit: 3.0,
   },
   {
@@ -241,6 +262,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["trailing", "colorful"],
     zoneCompatibility: ["garden-bed", "patio"],
+    bloomMonths: [5, 6, 7, 8, 9, 10],
     costPerUnit: 3.5,
   },
   {
@@ -255,6 +277,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["pollinator", "colorful", "cut-flower"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [6, 7, 8, 9, 10],
     costPerUnit: 3.0,
   },
   {
@@ -269,6 +292,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["shade-loving", "colorful"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [5, 6, 7, 8, 9, 10],
     costPerUnit: 3.5,
   },
   {
@@ -283,6 +307,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["shade-tolerant", "colorful"],
     zoneCompatibility: ["garden-bed", "patio"],
+    bloomMonths: [5, 6, 7, 8, 9, 10],
     costPerUnit: 4.0,
   },
   {
@@ -297,6 +322,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌺",
     tags: ["fragrant", "colorful"],
     zoneCompatibility: ["garden-bed", "patio"],
+    bloomMonths: [5, 6, 7, 8, 9, 10],
     costPerUnit: 4.5,
   },
   {
@@ -311,6 +337,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["colorful", "cut-flower"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [4, 5, 6, 7, 8, 9, 10],
     costPerUnit: 3.5,
   },
   {
@@ -325,6 +352,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["pollinator", "airy", "cut-flower"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [6, 7, 8, 9, 10],
     costPerUnit: 3.0,
   },
 
@@ -341,6 +369,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌳",
     tags: ["evergreen", "formal", "hedge"],
     zoneCompatibility: ["garden-bed", "patio", "path"],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 25.0,
   },
   {
@@ -355,6 +384,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "💙",
     tags: ["showy", "cut-flower"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [6, 7, 8, 9],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10],
     costPerUnit: 30.0,
   },
   {
@@ -369,6 +400,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌺",
     tags: ["spring-bloomer", "colorful"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [4, 5],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 22.0,
   },
   {
@@ -383,6 +416,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌹",
     tags: ["fragrant", "disease-resistant", "colorful"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [5, 6, 7, 8, 9, 10],
     costPerUnit: 20.0,
   },
   {
@@ -397,6 +431,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["evergreen", "berries", "wildlife"],
     zoneCompatibility: ["garden-bed"],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 28.0,
   },
   {
@@ -411,6 +446,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "💜",
     tags: ["fragrant", "spring-bloomer"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [4, 5],
     costPerUnit: 25.0,
   },
   {
@@ -425,6 +461,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🦋",
     tags: ["pollinator", "fragrant", "drought-tolerant"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [6, 7, 8, 9],
     costPerUnit: 18.0,
   },
   {
@@ -439,6 +476,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["low-maintenance", "spring-bloomer"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [4, 5, 6],
+    foliageMonths: [3, 4, 5, 6, 7, 8, 9, 10, 11],
     costPerUnit: 15.0,
   },
   {
@@ -453,6 +492,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌲",
     tags: ["evergreen", "drought-tolerant", "wildlife"],
     zoneCompatibility: ["garden-bed", "path"],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 20.0,
   },
 
@@ -469,6 +509,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["fragrant", "drought-tolerant", "walkable"],
     zoneCompatibility: ["garden-bed", "path", "patio"],
+    bloomMonths: [6, 7],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10],
     costPerUnit: 5.0,
   },
   {
@@ -483,6 +525,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["shade-loving", "evergreen"],
     zoneCompatibility: ["garden-bed", "path"],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 4.0,
   },
   {
@@ -497,6 +540,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "💙",
     tags: ["evergreen", "trailing"],
     zoneCompatibility: ["garden-bed", "path"],
+    bloomMonths: [4, 5, 6],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 3.5,
   },
   {
@@ -511,6 +556,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "💙",
     tags: ["shade-tolerant", "colorful-foliage"],
     zoneCompatibility: ["garden-bed", "path"],
+    bloomMonths: [4, 5],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 4.0,
   },
   {
@@ -525,6 +572,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["walkable", "low-growing"],
     zoneCompatibility: ["garden-bed", "path", "patio"],
+    bloomMonths: [5, 6],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 6.0,
   },
   {
@@ -539,6 +588,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["drought-tolerant", "succulent"],
     zoneCompatibility: ["garden-bed", "path", "patio"],
+    bloomMonths: [8, 9],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10],
     costPerUnit: 4.5,
   },
   {
@@ -553,6 +604,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["evergreen", "drought-tolerant", "edging"],
     zoneCompatibility: ["garden-bed", "path"],
+    bloomMonths: [8, 9],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 5.0,
   },
 
@@ -569,6 +622,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌾",
     tags: ["ornamental", "drought-tolerant"],
     zoneCompatibility: ["garden-bed", "patio"],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10, 11],
     costPerUnit: 12.0,
   },
   {
@@ -583,6 +637,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌾",
     tags: ["ornamental", "drought-tolerant", "blue-foliage"],
     zoneCompatibility: ["garden-bed", "patio", "path"],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 8.0,
   },
   {
@@ -597,6 +652,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["evergreen", "edging"],
     zoneCompatibility: ["garden-bed", "path"],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 5.0,
   },
   {
@@ -611,6 +667,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌾",
     tags: ["ornamental", "upright", "drought-tolerant"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [6, 7, 8, 9],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10, 11],
     costPerUnit: 12.0,
   },
   {
@@ -625,6 +683,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌾",
     tags: ["native", "drought-tolerant", "wildlife"],
     zoneCompatibility: ["garden-bed"],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10, 11],
     costPerUnit: 10.0,
   },
   {
@@ -639,6 +698,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["turf", "drought-tolerant", "warm-season"],
     zoneCompatibility: ["lawn"],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10],
     costPerUnit: 3.0,
   },
   {
@@ -653,6 +713,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["turf", "cool-season", "shade-tolerant"],
     zoneCompatibility: ["lawn"],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 3.0,
   },
   {
@@ -667,6 +728,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["turf", "drought-tolerant", "warm-season"],
     zoneCompatibility: ["lawn"],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10],
     costPerUnit: 3.5,
   },
 
@@ -683,6 +745,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🍁",
     tags: ["ornamental", "fall-color", "specimen"],
     zoneCompatibility: ["garden-bed"],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10, 11],
     costPerUnit: 85.0,
   },
   {
@@ -697,6 +760,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["native", "spring-bloomer", "wildlife"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [4, 5],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10],
     costPerUnit: 65.0,
   },
   {
@@ -711,6 +776,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["summer-bloomer", "drought-tolerant", "showy"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [6, 7, 8, 9],
     costPerUnit: 55.0,
   },
   {
@@ -725,6 +791,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["native", "spring-bloomer", "specimen"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [3, 4],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10],
     costPerUnit: 60.0,
   },
   {
@@ -739,6 +807,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["fragrant", "spring-bloomer", "specimen"],
     zoneCompatibility: ["garden-bed"],
+    bloomMonths: [3, 4, 5],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 120.0,
   },
   {
@@ -753,6 +823,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌳",
     tags: ["native", "multi-trunk", "peeling-bark"],
     zoneCompatibility: ["garden-bed"],
+    foliageMonths: [4, 5, 6, 7, 8, 9, 10, 11],
     costPerUnit: 75.0,
   },
 
@@ -769,6 +840,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌳",
     tags: ["evergreen", "formal", "container"],
     zoneCompatibility: ["patio", "garden-bed", "path"],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 18.0,
   },
   {
@@ -783,6 +855,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌶️",
     tags: ["colorful", "container", "ornamental"],
     zoneCompatibility: ["patio"],
+    bloomMonths: [6, 7, 8, 9, 10],
+    foliageMonths: [5, 6, 7, 8, 9, 10],
     costPerUnit: 4.0,
   },
   {
@@ -797,6 +871,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌿",
     tags: ["fragrant", "edible", "drought-tolerant", "trailing"],
     zoneCompatibility: ["patio", "garden-bed"],
+    bloomMonths: [3, 4, 5],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 8.0,
   },
   {
@@ -811,6 +887,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌴",
     tags: ["tropical", "container", "statement"],
     zoneCompatibility: ["patio", "pool", "deck"],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 45.0,
   },
   {
@@ -825,6 +902,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌺",
     tags: ["tropical", "showy", "container"],
     zoneCompatibility: ["patio", "pool", "garden-bed"],
+    bloomMonths: [5, 6, 7, 8, 9, 10],
     costPerUnit: 15.0,
   },
   {
@@ -839,6 +917,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🦜",
     tags: ["tropical", "showy", "drought-tolerant"],
     zoneCompatibility: ["patio", "pool", "garden-bed"],
+    bloomMonths: [5, 6, 7, 8, 9],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 25.0,
   },
   {
@@ -853,6 +933,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌸",
     tags: ["tropical", "colorful", "drought-tolerant", "climbing"],
     zoneCompatibility: ["patio", "garden-bed"],
+    bloomMonths: [4, 5, 6, 7, 8, 9, 10, 11],
     costPerUnit: 20.0,
   },
 
@@ -869,6 +950,8 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "💙",
     tags: ["tropical", "strap-leaf", "pool-friendly"],
     zoneCompatibility: ["pool", "patio", "garden-bed"],
+    bloomMonths: [6, 7, 8],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 10.0,
   },
   {
@@ -883,6 +966,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     emoji: "🌴",
     tags: ["native", "tropical", "drought-tolerant", "pool-friendly"],
     zoneCompatibility: ["pool", "patio", "garden-bed"],
+    foliageMonths: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
     costPerUnit: 35.0,
   },
 ];
