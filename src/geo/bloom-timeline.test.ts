@@ -17,7 +17,6 @@ const basePlant = (
   emoji: "🌸",
   tags: [],
   zoneCompatibility: ["garden-bed"],
-  costPerUnit: 5,
   ...overrides,
 });
 
