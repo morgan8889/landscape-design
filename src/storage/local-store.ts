@@ -12,11 +12,33 @@ export function saveDesign(design: YardDesign): boolean {
   }
 }
 
+function isValidCost(v: unknown): v is number {
+  return typeof v === "number" && Number.isFinite(v) && v >= 0;
+}
+
+function sanitizeDesign(design: YardDesign): YardDesign {
+  if (design.zones) {
+    for (const zone of design.zones) {
+      if (zone.plants) {
+        for (const plant of zone.plants) {
+          if (
+            plant.costPerUnit !== undefined &&
+            !isValidCost(plant.costPerUnit)
+          ) {
+            plant.costPerUnit = undefined;
+          }
+        }
+      }
+    }
+  }
+  return design;
+}
+
 export function loadDesign(): YardDesign | null {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return null;
   try {
-    return JSON.parse(raw) as YardDesign;
+    return sanitizeDesign(JSON.parse(raw) as YardDesign);
   } catch {
     return null;
   }

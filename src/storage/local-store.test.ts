@@ -52,6 +52,78 @@ describe("loadDesign", () => {
   });
 });
 
+describe("loadDesign sanitizes costPerUnit", () => {
+  const designWithPlants = (costPerUnit: unknown): string =>
+    JSON.stringify({
+      ...sampleDesign,
+      zones: [
+        {
+          id: "z1",
+          category: "garden-bed",
+          vertices: [],
+          areaSqFt: 100,
+          plants: [
+            {
+              plantId: "lavender",
+              quantity: 5,
+              calculatedQuantity: 5,
+              costPerUnit,
+            },
+          ],
+        },
+      ],
+    });
+
+  function loadedCostPerUnit(): unknown {
+    const design = loadDesign();
+    return design?.zones?.[0]?.plants?.[0]?.costPerUnit;
+  }
+
+  it("preserves valid costPerUnit", () => {
+    localStorage.setItem(STORAGE_KEY, designWithPlants(12.5));
+    expect(loadedCostPerUnit()).toBe(12.5);
+  });
+
+  it("preserves costPerUnit of zero", () => {
+    localStorage.setItem(STORAGE_KEY, designWithPlants(0));
+    expect(loadedCostPerUnit()).toBe(0);
+  });
+
+  it("strips negative costPerUnit", () => {
+    localStorage.setItem(STORAGE_KEY, designWithPlants(-5));
+    expect(loadedCostPerUnit()).toBeUndefined();
+  });
+
+  it("strips Infinity costPerUnit", () => {
+    // JSON.stringify converts Infinity to null, so inject raw
+    const raw = designWithPlants(0).replace(
+      '"costPerUnit":0',
+      '"costPerUnit":1e999',
+    );
+    localStorage.setItem(STORAGE_KEY, raw);
+    expect(loadedCostPerUnit()).toBeUndefined();
+  });
+
+  it("strips NaN costPerUnit (parsed as null from JSON)", () => {
+    const raw = designWithPlants(0).replace(
+      '"costPerUnit":0',
+      '"costPerUnit":null',
+    );
+    localStorage.setItem(STORAGE_KEY, raw);
+    expect(loadedCostPerUnit()).toBeUndefined();
+  });
+
+  it("strips string costPerUnit", () => {
+    localStorage.setItem(STORAGE_KEY, designWithPlants("free"));
+    expect(loadedCostPerUnit()).toBeUndefined();
+  });
+
+  it("handles design with no zones", () => {
+    saveDesign(sampleDesign);
+    expect(loadDesign()).toEqual(sampleDesign);
+  });
+});
+
 describe("exportDesignJson", () => {
   it("returns a JSON string of the design", () => {
     const json = exportDesignJson(sampleDesign);
