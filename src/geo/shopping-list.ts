@@ -136,7 +136,7 @@ export function formatShoppingListText(
 ): string {
   const lines: string[] = [];
 
-  const header = `SHOPPING LIST \u2014 ${address}`;
+  const header = `SHOPPING LIST \u2014 ${address.replace(/[\r\n]+/g, " ")}`;
   lines.push(header);
   lines.push("=".repeat(header.length));
   lines.push("");
