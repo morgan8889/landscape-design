@@ -777,6 +777,7 @@ export const PLANT_CATALOG: PlantInfo[] = [
     tags: ["summer-bloomer", "drought-tolerant", "showy"],
     zoneCompatibility: ["garden-bed"],
     bloomMonths: [6, 7, 8, 9],
+    foliageMonths: [3, 4, 5, 6, 7, 8, 9, 10, 11],
     costPerUnit: 55.0,
   },
   {
