@@ -96,8 +96,10 @@ describe("renderBloomTimeline", () => {
     renderBloomTimeline(container, zones);
     const plantRows = container.querySelector(".bloom-plant-rows");
     expect(plantRows).not.toBeNull();
-    // Initially hidden
-    expect((plantRows as HTMLElement).hidden).toBe(true);
+    // Initially collapsed via CSS class
+    expect(plantRows?.classList.contains("bloom-plant-rows--collapsed")).toBe(
+      true,
+    );
   });
 
   it("does not render gap callout when all months covered", () => {

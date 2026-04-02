@@ -83,7 +83,7 @@ export function renderBloomTimeline(
       cell.classList.add("bloom-cell-active");
       const intensity =
         maxInterest > 0 ? Math.max(0.3, month.totalInterest / maxInterest) : 0;
-      cell.style.opacity = String(intensity);
+      cell.style.setProperty("--bloom-intensity", String(intensity));
     }
     cell.textContent =
       month.totalInterest > 0 ? String(month.totalInterest) : "";
@@ -102,15 +102,17 @@ export function renderBloomTimeline(
 
   // Expandable plant rows
   const plantSection = document.createElement("div");
-  plantSection.className = "bloom-plant-rows";
-  plantSection.hidden = true;
+  plantSection.className = "bloom-plant-rows bloom-plant-rows--collapsed";
 
   const toggleBtn = document.createElement("button");
+  toggleBtn.type = "button";
   toggleBtn.className = "btn btn-secondary bloom-toggle";
   toggleBtn.textContent = `Show ${timeline.plantCount} plants`;
   toggleBtn.addEventListener("click", () => {
-    plantSection.hidden = !plantSection.hidden;
-    toggleBtn.textContent = plantSection.hidden
+    const collapsed = plantSection.classList.toggle(
+      "bloom-plant-rows--collapsed",
+    );
+    toggleBtn.textContent = collapsed
       ? `Show ${timeline.plantCount} plants`
       : "Hide plants";
   });

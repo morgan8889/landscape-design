@@ -827,7 +827,7 @@ body {
 }
 
 .bloom-cell-active {
-  background: #22c55e;
+  background: rgba(34, 197, 94, var(--bloom-intensity, 1));
   color: #000;
 }
 
@@ -866,6 +866,10 @@ body {
   margin-top: 8px;
 }
 
+.bloom-plant-rows--collapsed {
+  display: none;
+}
+
 .bloom-plant-row {
   margin-bottom: 2px;
 }
@@ -886,7 +890,8 @@ body {
     display: none;
   }
 
-  .bloom-plant-rows {
+  .bloom-plant-rows,
+  .bloom-plant-rows--collapsed {
     display: block !important;
   }
 
