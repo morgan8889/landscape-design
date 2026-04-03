@@ -37,15 +37,24 @@ export function showConfirmDialog(opts: {
   const actionsEl = document.createElement("div");
   actionsEl.className = "confirm-dialog-actions";
 
+  const previouslyFocused = document.activeElement as HTMLElement | null;
+
   function close(): void {
     overlay.remove();
     document.removeEventListener("keydown", onKeyDown);
+    previouslyFocused?.focus();
   }
 
   function ghostAction(): (() => void) | undefined {
     return (
       opts.onDismiss ??
       [...opts.actions].reverse().find((a) => a.variant === "ghost")?.onClick
+    );
+  }
+
+  function focusableButtons(): HTMLElement[] {
+    return Array.from(
+      dialog.querySelectorAll<HTMLElement>("button:not([disabled])"),
     );
   }
 
@@ -61,13 +70,34 @@ export function showConfirmDialog(opts: {
   }
 
   function onKeyDown(e: KeyboardEvent): void {
-    if (e.key !== "Escape") return;
-    // Only handle Escape for the topmost dialog
+    // Only handle for the topmost dialog
     const dialogs = document.querySelectorAll(".confirm-dialog-overlay");
     if (dialogs[dialogs.length - 1] !== overlay) return;
-    const handler = ghostAction();
-    close();
-    handler?.();
+
+    if (e.key === "Escape") {
+      const handler = ghostAction();
+      close();
+      handler?.();
+      return;
+    }
+
+    if (e.key === "Tab") {
+      const focusable = focusableButtons();
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if (document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
+    }
   }
 
   overlay.addEventListener("click", (e) => {
@@ -82,6 +112,9 @@ export function showConfirmDialog(opts: {
   dialog.append(titleEl, bodyEl, actionsEl);
   overlay.appendChild(dialog);
   document.body.appendChild(overlay);
+
+  // Auto-focus first button and trap focus within dialog
+  focusableButtons()[0]?.focus();
 
   return close;
 }

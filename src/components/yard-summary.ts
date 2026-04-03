@@ -106,7 +106,14 @@ export function renderYardSummary(
     location.reload();
   };
 
+  let pendingReset: ReturnType<typeof setTimeout> | undefined;
+
   newDesignBtn.addEventListener("click", () => {
+    // Cancel any pending reset before opening a new dialog (prevents orphaned reload)
+    if (pendingReset !== undefined) {
+      clearTimeout(pendingReset);
+      pendingReset = undefined;
+    }
     showConfirmDialog({
       title: "Start a new design?",
       body: "Download a backup of your current design before starting over?",
@@ -117,7 +124,7 @@ export function renderYardSummary(
           onClick: () => {
             const json = exportDesignJson(design);
             triggerJsonDownload(json, `yard-design-${design.id}.json`);
-            setTimeout(resetDesign, 300);
+            pendingReset = setTimeout(resetDesign, 300);
           },
         },
         {
