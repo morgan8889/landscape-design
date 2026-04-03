@@ -1194,7 +1194,7 @@ body {
 }
 
 .confirm-dialog-btn-danger:hover {
-  background: #dc2626;
+  background: color-mix(in srgb, var(--red) 80%, black);
 }
 
 .confirm-dialog-btn-ghost {
