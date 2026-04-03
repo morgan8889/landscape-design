@@ -12,6 +12,7 @@ export function showConfirmDialog(opts: {
   title: string;
   body: string;
   actions: DialogAction[];
+  onDismiss?: () => void;
 }): () => void {
   const overlay = document.createElement("div");
   overlay.className = "confirm-dialog-overlay";
@@ -42,8 +43,10 @@ export function showConfirmDialog(opts: {
   }
 
   function ghostAction(): (() => void) | undefined {
-    return [...opts.actions].reverse().find((a) => a.variant === "ghost")
-      ?.onClick;
+    return (
+      opts.onDismiss ??
+      [...opts.actions].reverse().find((a) => a.variant === "ghost")?.onClick
+    );
   }
 
   for (const action of opts.actions) {
