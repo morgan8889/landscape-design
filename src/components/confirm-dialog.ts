@@ -14,11 +14,17 @@ export function showConfirmDialog(opts: {
   const overlay = document.createElement("div");
   overlay.className = "confirm-dialog-overlay";
 
+  const titleId = `confirm-dialog-title-${Math.random().toString(36).slice(2)}`;
+
   const dialog = document.createElement("div");
   dialog.className = "confirm-dialog";
+  dialog.setAttribute("role", "dialog");
+  dialog.setAttribute("aria-modal", "true");
+  dialog.setAttribute("aria-labelledby", titleId);
 
   const titleEl = document.createElement("h3");
   titleEl.className = "confirm-dialog-title";
+  titleEl.id = titleId;
   titleEl.textContent = opts.title;
 
   const bodyEl = document.createElement("p");
