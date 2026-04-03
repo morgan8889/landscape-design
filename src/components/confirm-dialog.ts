@@ -6,6 +6,8 @@ export interface DialogAction {
   onClick: () => void;
 }
 
+let _dialogSeq = 0;
+
 export function showConfirmDialog(opts: {
   title: string;
   body: string;
@@ -14,7 +16,7 @@ export function showConfirmDialog(opts: {
   const overlay = document.createElement("div");
   overlay.className = "confirm-dialog-overlay";
 
-  const titleId = `confirm-dialog-title-${Math.random().toString(36).slice(2)}`;
+  const titleId = `confirm-dialog-title-${++_dialogSeq}`;
 
   const dialog = document.createElement("div");
   dialog.className = "confirm-dialog";

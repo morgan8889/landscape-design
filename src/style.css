@@ -1188,9 +1188,9 @@ body {
 }
 
 .confirm-dialog-btn-danger {
-  background: #ef4444;
+  background: var(--red);
   color: #fff;
-  border-color: #ef4444;
+  border-color: var(--red);
 }
 
 .confirm-dialog-btn-danger:hover {
