@@ -1,3 +1,4 @@
+// src/components/yard-summary.ts
 import { getPlantById } from "../data/plant-catalog";
 import { calculateProjectCost, formatCurrency } from "../geo/plant-cost";
 import {
@@ -5,7 +6,6 @@ import {
   exportDesignJson,
   saveDesign,
 } from "../storage/local-store";
-// src/components/yard-summary.ts
 import type { YardDesign } from "../types";
 import { renderBloomTimeline } from "./bloom-timeline";
 import { showConfirmDialog } from "./confirm-dialog";

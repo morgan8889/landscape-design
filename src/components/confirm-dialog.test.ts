@@ -103,4 +103,36 @@ describe("showConfirmDialog", () => {
     expect(document.querySelector(".confirm-dialog-overlay")).toBeNull();
     expect(onClick).not.toHaveBeenCalled();
   });
+
+  it("Escape only closes the topmost dialog when stacked", () => {
+    const onCancel1 = vi.fn();
+    const onCancel2 = vi.fn();
+    showConfirmDialog({
+      title: "First",
+      body: "Background dialog",
+      actions: [
+        { label: "OK", variant: "danger", onClick: vi.fn() },
+        { label: "Cancel", variant: "ghost", onClick: onCancel1 },
+      ],
+    });
+    showConfirmDialog({
+      title: "Second",
+      body: "Foreground dialog",
+      actions: [
+        { label: "OK", variant: "danger", onClick: vi.fn() },
+        { label: "Cancel", variant: "ghost", onClick: onCancel2 },
+      ],
+    });
+
+    document.dispatchEvent(
+      new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
+    );
+
+    // Only the second (topmost) dialog should close
+    expect(onCancel2).toHaveBeenCalledOnce();
+    expect(onCancel1).not.toHaveBeenCalled();
+    expect(document.querySelectorAll(".confirm-dialog-overlay")).toHaveLength(
+      1,
+    );
+  });
 });

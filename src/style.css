@@ -1187,6 +1187,10 @@ body {
   border-color: var(--blue);
 }
 
+.confirm-dialog-btn-primary:hover {
+  background: color-mix(in srgb, var(--blue) 80%, black);
+}
+
 .confirm-dialog-btn-danger {
   background: var(--red);
   color: #fff;
@@ -1200,4 +1204,13 @@ body {
 .confirm-dialog-btn-ghost {
   background: transparent;
   border-color: var(--border);
+}
+
+.confirm-dialog-btn-ghost:hover {
+  background: color-mix(in srgb, var(--border) 40%, transparent);
+}
+
+.confirm-dialog-btn:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
 }
