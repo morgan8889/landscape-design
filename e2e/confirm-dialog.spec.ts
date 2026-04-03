@@ -58,13 +58,18 @@ test("Cancel closes dialog and preserves design", async ({ page }) => {
 });
 
 test("Start Over clears design and shows address search", async ({ page }) => {
-  await page.addInitScript((design) => {
+  // Use evaluate (not addInitScript) so localStorage is NOT re-populated on reload
+  await page.goto("/");
+  await page.evaluate((design) => {
     localStorage.setItem("yard-design", JSON.stringify(design));
   }, FIXTURE_DESIGN);
+  await page.reload();
 
-  await page.goto("/");
   await page.getByRole("button", { name: /New Design/i }).click();
-  await page.getByRole("button", { name: /^Start Over$/i }).click();
+  await Promise.all([
+    page.waitForNavigation(),
+    page.getByRole("button", { name: /^Start Over$/i }).click(),
+  ]);
 
   await expect(page.locator(".yard-summary")).not.toBeVisible();
   const stored = await page.evaluate(() => localStorage.getItem("yard-design"));
