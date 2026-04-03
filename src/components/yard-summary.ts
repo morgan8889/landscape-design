@@ -101,6 +101,11 @@ export function renderYardSummary(
   newDesignBtn.className = "btn btn-secondary new-design-btn";
   newDesignBtn.textContent = "New Design";
 
+  const resetDesign = () => {
+    clearDesign();
+    location.reload();
+  };
+
   newDesignBtn.addEventListener("click", () => {
     showConfirmDialog({
       title: "Start a new design?",
@@ -112,17 +117,13 @@ export function renderYardSummary(
           onClick: () => {
             const json = exportDesignJson(design);
             triggerJsonDownload(json, `yard-design-${design.id}.json`);
-            clearDesign();
-            location.reload();
+            setTimeout(resetDesign, 300);
           },
         },
         {
           label: "Start Over",
           variant: "danger",
-          onClick: () => {
-            clearDesign();
-            location.reload();
-          },
+          onClick: resetDesign,
         },
         { label: "Cancel", variant: "ghost", onClick: () => {} },
       ],
