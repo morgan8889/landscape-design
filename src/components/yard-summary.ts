@@ -1,9 +1,14 @@
+// src/components/yard-summary.ts
 import { getPlantById } from "../data/plant-catalog";
 import { calculateProjectCost, formatCurrency } from "../geo/plant-cost";
-import { exportDesignJson, saveDesign } from "../storage/local-store";
-// src/components/yard-summary.ts
+import {
+  clearDesign,
+  exportDesignJson,
+  saveDesign,
+} from "../storage/local-store";
 import type { YardDesign } from "../types";
 import { renderBloomTimeline } from "./bloom-timeline";
+import { showConfirmDialog } from "./confirm-dialog";
 import { renderZoneSummary } from "./zone-summary";
 
 export function formatArea(sqFt: number): string {
@@ -92,14 +97,54 @@ export function renderYardSummary(
   editBtn.className = "btn btn-secondary edit-btn";
   editBtn.textContent = "Edit Boundary";
 
+  const newDesignBtn = document.createElement("button");
+  newDesignBtn.className = "btn btn-secondary new-design-btn";
+  newDesignBtn.textContent = "New Design";
+
+  const resetDesign = () => {
+    clearDesign();
+    location.reload();
+  };
+
+  let pendingReset: ReturnType<typeof setTimeout> | undefined;
+
+  newDesignBtn.addEventListener("click", () => {
+    // Cancel any pending reset before opening a new dialog (prevents orphaned reload)
+    if (pendingReset !== undefined) {
+      clearTimeout(pendingReset);
+      pendingReset = undefined;
+    }
+    showConfirmDialog({
+      title: "Start a new design?",
+      body: "Download a backup of your current design before starting over?",
+      actions: [
+        {
+          label: "Download & Start Over",
+          variant: "primary",
+          onClick: () => {
+            const json = exportDesignJson(design);
+            triggerJsonDownload(json, `yard-design-${design.id}.json`);
+            pendingReset = setTimeout(resetDesign, 300);
+          },
+        },
+        {
+          label: "Start Over",
+          variant: "danger",
+          onClick: resetDesign,
+        },
+        { label: "Cancel", variant: "ghost", onClick: () => {} },
+      ],
+    });
+  });
+
   if (onShoppingList && projectCost > 0) {
     const shoppingBtn = document.createElement("button");
     shoppingBtn.className = "btn btn-secondary shopping-list-btn";
     shoppingBtn.textContent = "Shopping List";
     shoppingBtn.addEventListener("click", onShoppingList);
-    actionsDiv.append(saveBtn, exportBtn, shoppingBtn, editBtn);
+    actionsDiv.append(saveBtn, exportBtn, shoppingBtn, editBtn, newDesignBtn);
   } else {
-    actionsDiv.append(saveBtn, exportBtn, editBtn);
+    actionsDiv.append(saveBtn, exportBtn, editBtn, newDesignBtn);
   }
 
   const status = document.createElement("p");

@@ -58,3 +58,70 @@ test("summary shows Edit Zones button when zones already exist", async ({
   await expect(page.getByRole("button", { name: /Edit Zones/i })).toBeVisible();
   await expect(page.locator(".zone-item")).toBeVisible();
 });
+
+const DESIGN_WITH_ZONE = {
+  id: "test-zones-confirm",
+  address: "321 Zone St, Denver, CO",
+  center: { lat: 39.7392, lng: -104.9903 },
+  boundary: [
+    { lat: 39.7394, lng: -104.9907 },
+    { lat: 39.7394, lng: -104.9899 },
+    { lat: 39.739, lng: -104.9899 },
+    { lat: 39.739, lng: -104.9907 },
+  ],
+  areaSqFt: 1100,
+  perimeterFt: 130,
+  usdaZone: "5b",
+  createdAt: "2026-04-03T00:00:00Z",
+  updatedAt: "2026-04-03T00:00:00Z",
+  zones: [
+    {
+      id: "zone-confirm-1",
+      category: "garden-bed",
+      vertices: [
+        { lat: 39.7393, lng: -104.9905 },
+        { lat: 39.7393, lng: -104.9901 },
+        { lat: 39.7391, lng: -104.9901 },
+      ],
+      areaSqFt: 200,
+    },
+  ],
+};
+
+test("zone delete button opens confirm dialog", async ({ page }) => {
+  await page.addInitScript((design) => {
+    localStorage.setItem("yard-design", JSON.stringify(design));
+  }, DESIGN_WITH_ZONE);
+
+  await page.goto("/");
+  await expect(page.locator(".zone-item")).toBeVisible();
+  await page.locator(".zone-delete").click();
+  await expect(page.locator(".confirm-dialog-overlay")).toBeVisible();
+  await expect(page.locator(".confirm-dialog-title")).toContainText(
+    "Delete zone?",
+  );
+});
+
+test("cancel on zone delete dialog preserves zone", async ({ page }) => {
+  await page.addInitScript((design) => {
+    localStorage.setItem("yard-design", JSON.stringify(design));
+  }, DESIGN_WITH_ZONE);
+
+  await page.goto("/");
+  await page.locator(".zone-delete").click();
+  await page.getByRole("button", { name: /Cancel/i }).click();
+  await expect(page.locator(".confirm-dialog-overlay")).not.toBeVisible();
+  await expect(page.locator(".zone-item")).toBeVisible();
+});
+
+test("confirm on zone delete dialog removes the zone", async ({ page }) => {
+  await page.addInitScript((design) => {
+    localStorage.setItem("yard-design", JSON.stringify(design));
+  }, DESIGN_WITH_ZONE);
+
+  await page.goto("/");
+  await page.locator(".zone-delete").click();
+  await page.getByRole("button", { name: /^Delete$/i }).click();
+  await expect(page.locator(".confirm-dialog-overlay")).not.toBeVisible();
+  await expect(page.locator(".zone-item")).not.toBeVisible();
+});

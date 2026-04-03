@@ -6,6 +6,7 @@ import {
 } from "../geo/plant-cost";
 import { calculateCoveragePercent } from "../geo/plant-coverage";
 import type { Zone } from "../types";
+import { showConfirmDialog } from "./confirm-dialog";
 import { getCategoryColor, getCategoryLabel } from "./zone-categories";
 
 export function formatCoverage(percent: number): string {
@@ -85,9 +86,20 @@ export function renderZoneDetail(
       const removeBtn = document.createElement("button");
       removeBtn.className = "zone-plant-remove";
       removeBtn.textContent = "×";
-      removeBtn.addEventListener("click", () =>
-        onRemovePlant(assignment.plantId),
-      );
+      removeBtn.addEventListener("click", () => {
+        showConfirmDialog({
+          title: "Remove plant?",
+          body: `Remove ${info.name} from this zone?`,
+          actions: [
+            {
+              label: "Remove",
+              variant: "danger",
+              onClick: () => onRemovePlant(assignment.plantId),
+            },
+            { label: "Cancel", variant: "ghost", onClick: () => {} },
+          ],
+        });
+      });
       if (lineCost > 0) {
         const cost = document.createElement("span");
         cost.className = "zone-plant-cost";

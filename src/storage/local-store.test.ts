@@ -2,7 +2,12 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from "vitest";
 import type { YardDesign } from "../types";
-import { exportDesignJson, loadDesign, saveDesign } from "./local-store";
+import {
+  clearDesign,
+  exportDesignJson,
+  loadDesign,
+  saveDesign,
+} from "./local-store";
 
 const STORAGE_KEY = "yard-design";
 
@@ -124,9 +129,71 @@ describe("loadDesign sanitizes costPerUnit", () => {
   });
 });
 
+describe("loadDesign sanitizes quantity", () => {
+  const designWithQuantity = (quantity: unknown): string =>
+    JSON.stringify({
+      ...sampleDesign,
+      zones: [
+        {
+          id: "z1",
+          category: "garden-bed",
+          vertices: [],
+          areaSqFt: 100,
+          plants: [{ plantId: "lavender", quantity, calculatedQuantity: 5 }],
+        },
+      ],
+    });
+
+  function loadedQuantity(): unknown {
+    return loadDesign()?.zones?.[0]?.plants?.[0]?.quantity;
+  }
+
+  it("preserves valid integer quantity", () => {
+    localStorage.setItem(STORAGE_KEY, designWithQuantity(5));
+    expect(loadedQuantity()).toBe(5);
+  });
+
+  it("clamps zero quantity to 1", () => {
+    localStorage.setItem(STORAGE_KEY, designWithQuantity(0));
+    expect(loadedQuantity()).toBe(1);
+  });
+
+  it("clamps negative quantity to 1", () => {
+    localStorage.setItem(STORAGE_KEY, designWithQuantity(-3));
+    expect(loadedQuantity()).toBe(1);
+  });
+
+  it("clamps fractional quantity to 1", () => {
+    localStorage.setItem(STORAGE_KEY, designWithQuantity(2.7));
+    expect(loadedQuantity()).toBe(1);
+  });
+
+  it("clamps NaN quantity to 1", () => {
+    const raw = designWithQuantity(0).replace(
+      '"quantity":0',
+      '"quantity":null',
+    );
+    localStorage.setItem(STORAGE_KEY, raw);
+    expect(loadedQuantity()).toBe(1);
+  });
+});
+
 describe("exportDesignJson", () => {
   it("returns a JSON string of the design", () => {
     const json = exportDesignJson(sampleDesign);
     expect(JSON.parse(json)).toEqual(sampleDesign);
+  });
+});
+
+describe("clearDesign", () => {
+  it("removes the saved design from localStorage", () => {
+    saveDesign(sampleDesign);
+    clearDesign();
+    expect(loadDesign()).toBeNull();
+  });
+
+  it("is a no-op when nothing is saved", () => {
+    expect(() => clearDesign()).not.toThrow();
+    expect(loadDesign()).toBeNull();
   });
 });

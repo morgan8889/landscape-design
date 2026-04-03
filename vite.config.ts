@@ -16,7 +16,6 @@ export default defineConfig({
         "src/components/image-boundary-drawer.ts",
         "src/components/zone-drawer.ts",
         "src/components/zone-manager.ts",
-        "src/components/zone-summary.ts",
       ],
       thresholds: {
         lines: 30,

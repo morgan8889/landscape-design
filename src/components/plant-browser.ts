@@ -7,6 +7,16 @@ function toTitleCase(s: string): string {
   return s.replace(/[-\s]+/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+export function filterPlants(plants: PlantInfo[], filter: string): PlantInfo[] {
+  if (!filter) return plants;
+  return plants.filter(
+    (p) =>
+      p.sunRequirement === filter ||
+      p.waterNeed === filter ||
+      p.tags.includes(filter),
+  );
+}
+
 export function resolveCostOverride(
   priceEdited: boolean,
   price: number,
@@ -73,16 +83,6 @@ export function renderPlantBrowser(
 
   let activeFilter = "";
 
-  function applyFilters(plants: PlantInfo[]): PlantInfo[] {
-    if (!activeFilter) return plants;
-    return plants.filter(
-      (p) =>
-        p.sunRequirement === activeFilter ||
-        p.waterNeed === activeFilter ||
-        p.tags.includes(activeFilter),
-    );
-  }
-
   function renderFilterChips(): void {
     filterBar.textContent = "";
     for (const f of filters) {
@@ -106,7 +106,10 @@ export function renderPlantBrowser(
 
   function renderList(): void {
     const query = searchInput.value;
-    const results = applyFilters(searchPlants(query, zone.category));
+    const results = filterPlants(
+      searchPlants(query, zone.category),
+      activeFilter,
+    );
     listContainer.textContent = "";
 
     if (results.length === 0) {
