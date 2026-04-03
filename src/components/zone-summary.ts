@@ -1,4 +1,5 @@
 import type { YardDesign, Zone } from "../types";
+import { showConfirmDialog } from "./confirm-dialog";
 import { renderZoneDetail } from "./zone-detail";
 
 export function formatZoneArea(category: string, areaSqFt: number): string {
@@ -46,7 +47,20 @@ export function renderZoneSummary(
       const deleteBtn = document.createElement("button");
       deleteBtn.className = "zone-delete zone-delete-bottom";
       deleteBtn.textContent = "Delete Zone";
-      deleteBtn.addEventListener("click", () => onDelete(zone.id));
+      deleteBtn.addEventListener("click", () => {
+        showConfirmDialog({
+          title: "Delete zone?",
+          body: "This zone and all its plant assignments will be removed.",
+          actions: [
+            {
+              label: "Delete",
+              variant: "danger",
+              onClick: () => onDelete(zone.id),
+            },
+            { label: "Cancel", variant: "ghost", onClick: () => {} },
+          ],
+        });
+      });
       wrapper.appendChild(deleteBtn);
 
       list.appendChild(wrapper);
