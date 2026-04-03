@@ -47,3 +47,7 @@ export function loadDesign(): YardDesign | null {
 export function exportDesignJson(design: YardDesign): string {
   return JSON.stringify(design, null, 2);
 }
+
+export function clearDesign(): void {
+  localStorage.removeItem(STORAGE_KEY);
+}

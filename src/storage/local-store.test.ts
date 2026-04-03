@@ -2,7 +2,12 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it } from "vitest";
 import type { YardDesign } from "../types";
-import { exportDesignJson, loadDesign, saveDesign } from "./local-store";
+import {
+  clearDesign,
+  exportDesignJson,
+  loadDesign,
+  saveDesign,
+} from "./local-store";
 
 const STORAGE_KEY = "yard-design";
 
@@ -128,5 +133,18 @@ describe("exportDesignJson", () => {
   it("returns a JSON string of the design", () => {
     const json = exportDesignJson(sampleDesign);
     expect(JSON.parse(json)).toEqual(sampleDesign);
+  });
+});
+
+describe("clearDesign", () => {
+  it("removes the saved design from localStorage", () => {
+    saveDesign(sampleDesign);
+    clearDesign();
+    expect(loadDesign()).toBeNull();
+  });
+
+  it("is a no-op when nothing is saved", () => {
+    expect(() => clearDesign()).not.toThrow();
+    expect(loadDesign()).toBeNull();
   });
 });
