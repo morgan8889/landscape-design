@@ -33,6 +33,11 @@ export function showConfirmDialog(opts: {
     document.removeEventListener("keydown", onKeyDown);
   }
 
+  function ghostAction(): (() => void) | undefined {
+    return [...opts.actions].reverse().find((a) => a.variant === "ghost")
+      ?.onClick;
+  }
+
   for (const action of opts.actions) {
     const btn = document.createElement("button");
     btn.className = `btn confirm-dialog-btn confirm-dialog-btn-${action.variant}`;
@@ -46,20 +51,19 @@ export function showConfirmDialog(opts: {
 
   function onKeyDown(e: KeyboardEvent): void {
     if (e.key !== "Escape") return;
-    const ghost = [...opts.actions]
-      .reverse()
-      .find((a) => a.variant === "ghost");
+    // Only handle Escape for the topmost dialog
+    const dialogs = document.querySelectorAll(".confirm-dialog-overlay");
+    if (dialogs[dialogs.length - 1] !== overlay) return;
+    const handler = ghostAction();
     close();
-    ghost?.onClick();
+    handler?.();
   }
 
   overlay.addEventListener("click", (e) => {
     if (e.target !== overlay) return;
-    const ghost = [...opts.actions]
-      .reverse()
-      .find((a) => a.variant === "ghost");
+    const handler = ghostAction();
     close();
-    ghost?.onClick();
+    handler?.();
   });
 
   document.addEventListener("keydown", onKeyDown);
